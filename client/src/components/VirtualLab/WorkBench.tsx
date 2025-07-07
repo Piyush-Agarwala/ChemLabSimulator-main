@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FlaskConical, Play, Pause, RotateCcw } from "lucide-react";
-import { AnimatedEquipment } from "./AnimatedEquipment";
 import { ExperimentSteps } from "./ExperimentSteps";
 
 interface WorkBenchProps {
