@@ -32,6 +32,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   isRunning,
   experimentTitle,
   currentGuidedStep = 1,
+  dropwiseAnimation = { active: false, chemicalId: "", drops: [] },
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [temperature, setTemperature] = useState(22);
