@@ -433,19 +433,73 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Enhanced chemical composition display */}
       {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
               .join(" + ")}
           </div>
-          {/* Show chemical formula for HCl in conical flask */}
-          {id === "conical_flask" && chemicals.some((c) => c.id === "hcl") && (
-            <div className="text-blue-600 font-semibold text-center mt-1">
-              Formula: HCl
-            </div>
+
+          {/* Enhanced formula display for conical flask with NaOH + HCl reaction */}
+          {id === "conical_flask" && (
+            <>
+              {/* Show individual chemical formulas */}
+              <div className="text-blue-600 font-semibold text-center mt-1">
+                {chemicals
+                  .map((c) => {
+                    if (c.id === "hcl") return "HCl";
+                    if (c.id === "naoh") return "NaOH";
+                    if (c.id === "phenol") return "C₂₀H₁₄O₄";
+                    return "";
+                  })
+                  .filter(Boolean)
+                  .join(" + ")}
+              </div>
+
+              {/* Show complete reaction equation when both NaOH and HCl are present */}
+              {chemicals.some((c) => c.id === "hcl") &&
+                chemicals.some((c) => c.id === "naoh") && (
+                  <div className="bg-green-50 border border-green-200 rounded px-2 py-1 mt-2">
+                    <div className="text-green-800 font-bold text-center text-xs">
+                      Neutralization Reaction
+                    </div>
+                    <div className="text-green-700 font-semibold text-center mt-1">
+                      NaOH + HCl → NaCl + H₂O
+                    </div>
+                    <div className="text-green-600 text-center text-xs mt-1">
+                      Sodium hydroxide + Hydrochloric acid → Salt + Water
+                    </div>
+                  </div>
+                )}
+
+              {/* Show individual chemical when only one is present */}
+              {chemicals.length === 1 &&
+                chemicals.some((c) => c.id === "hcl") && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded px-2 py-1 mt-2">
+                    <div className="text-yellow-800 font-bold text-center text-xs">
+                      Strong Acid
+                    </div>
+                    <div className="text-yellow-700 text-center text-xs">
+                      Hydrochloric acid - pH &lt; 7
+                    </div>
+                  </div>
+                )}
+
+              {chemicals.length === 1 &&
+                chemicals.some((c) => c.id === "naoh") && (
+                  <div className="bg-blue-50 border border-blue-200 rounded px-2 py-1 mt-2">
+                    <div className="text-blue-800 font-bold text-center text-xs">
+                      Strong Base
+                    </div>
+                    <div className="text-blue-700 text-center text-xs">
+                      Sodium hydroxide - pH &gt; 7
+                    </div>
+                  </div>
+                )}
+            </>
           )}
-          <div className="text-gray-600 text-center">
+
+          <div className="text-gray-600 text-center mt-1">
             {chemicals
               .reduce((sum, chemical) => sum + chemical.amount, 0)
               .toFixed(1)}{" "}
