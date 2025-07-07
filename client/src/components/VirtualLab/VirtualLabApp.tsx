@@ -591,7 +591,7 @@ function VirtualLabApp({
               (sum, c) => sum + c.amount,
               0,
             );
-            handleReaction(newChemicals, totalVolume);
+            handleReaction(newChemicals, totalVolume, equipmentId);
 
             // Update measurements for experiments 2 and 3
             if (
