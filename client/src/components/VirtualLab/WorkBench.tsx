@@ -356,9 +356,8 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 opacity-60"></div>
             </div>
 
-            {/* Animated Equipment - Only for experiments 2 and 3 */}
-            {(experimentTitle.includes("Acid-Base") ||
-              experimentTitle.includes("Equilibrium")) && (
+            {/* Animated Equipment - Only for equilibrium experiment */}
+            {experimentTitle.includes("Equilibrium") && (
               <div
                 className="absolute inset-0"
                 style={{
