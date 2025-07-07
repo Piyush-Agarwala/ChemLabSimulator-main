@@ -146,6 +146,192 @@ export const Equipment: React.FC<EquipmentProps> = ({
   };
 
   const getEquipmentSpecificRendering = () => {
+    if (id === "conical_flask" && isOnWorkbench) {
+      const hasHCl = chemicals.some((c) => c.id === "hcl");
+      const hasNaOH = chemicals.some((c) => c.id === "naoh");
+      const isNeutralizationReaction = hasHCl && hasNaOH;
+
+      return (
+        <div className="relative">
+          {/* Enhanced Conical Flask Illustration */}
+          <svg
+            width="80"
+            height="100"
+            viewBox="0 0 80 100"
+            className="drop-shadow-lg"
+          >
+            {/* Flask body - conical shape */}
+            <path
+              d="M30 20 L30 35 L15 75 L65 75 L50 35 L50 20 Z"
+              fill="rgba(59, 130, 246, 0.1)"
+              stroke="#2563eb"
+              strokeWidth="2"
+            />
+            {/* Flask neck */}
+            <rect
+              x="35"
+              y="10"
+              width="10"
+              height="15"
+              fill="rgba(59, 130, 246, 0.1)"
+              stroke="#2563eb"
+              strokeWidth="2"
+              rx="1"
+            />
+            {/* Flask opening */}
+            <ellipse
+              cx="40"
+              cy="10"
+              rx="5"
+              ry="2"
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth="2"
+            />
+
+            {/* Solution in conical flask */}
+            {chemicals.length > 0 && (
+              <path
+                d={`M${20 + chemicals.length} ${75 - getSolutionHeight() * 0.5} L${60 - chemicals.length} ${75 - getSolutionHeight() * 0.5} L65 75 L15 75 Z`}
+                fill={getMixedColor()}
+                opacity="0.8"
+                className="transition-all duration-500"
+              />
+            )}
+
+            {/* Special neutralization reaction effects */}
+            {isNeutralizationReaction && (
+              <g>
+                {/* Heat visualization */}
+                <circle
+                  cx="40"
+                  cy="55"
+                  r="3"
+                  fill="rgba(255, 165, 0, 0.6)"
+                  className="animate-pulse"
+                />
+                <circle
+                  cx="35"
+                  cy="60"
+                  r="2"
+                  fill="rgba(255, 165, 0, 0.4)"
+                  className="animate-pulse"
+                  style={{ animationDelay: "0.5s" }}
+                />
+                <circle
+                  cx="45"
+                  cy="60"
+                  r="2"
+                  fill="rgba(255, 165, 0, 0.4)"
+                  className="animate-pulse"
+                  style={{ animationDelay: "1s" }}
+                />
+
+                {/* Vigorous bubbling for neutralization */}
+                {[...Array(8)].map((_, i) => (
+                  <circle
+                    key={i}
+                    cx={25 + i * 7}
+                    cy={70 - (i % 3) * 5}
+                    r="1.5"
+                    fill="rgba(255, 255, 255, 0.9)"
+                    className="animate-bounce"
+                    style={{
+                      animationDelay: `${i * 0.2}s`,
+                      animationDuration: "1s",
+                    }}
+                  />
+                ))}
+              </g>
+            )}
+
+            {/* Regular bubbling for other reactions */}
+            {chemicals.length > 1 && !isNeutralizationReaction && (
+              <g>
+                {[...Array(4)].map((_, i) => (
+                  <circle
+                    key={i}
+                    cx={25 + i * 10}
+                    cy={65 - (i % 2) * 5}
+                    r="1"
+                    fill="rgba(255, 255, 255, 0.7)"
+                    className="animate-bounce"
+                    style={{
+                      animationDelay: `${i * 0.4}s`,
+                      animationDuration: "2s",
+                    }}
+                  />
+                ))}
+              </g>
+            )}
+
+            {/* Volume markings */}
+            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
+              <line x1="67" y1="50" x2="70" y2="50" />
+              <text x="71" y="53" fontSize="5">
+                250
+              </text>
+              <line x1="67" y1="60" x2="70" y2="60" />
+              <text x="71" y="63" fontSize="5">
+                150
+              </text>
+              <line x1="67" y1="70" x2="70" y2="70" />
+              <text x="71" y="73" fontSize="5">
+                50
+              </text>
+            </g>
+
+            {/* Flask label */}
+            <text
+              x="40"
+              y="90"
+              textAnchor="middle"
+              fontSize="7"
+              fill="#374151"
+              fontWeight="bold"
+            >
+              Conical Flask
+            </text>
+          </svg>
+
+          {/* Special reaction indicator */}
+          {isNeutralizationReaction && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+              Neutralizing!
+            </div>
+          )}
+
+          {/* Enhanced chemical composition display */}
+          {chemicals.length > 0 && (
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
+              <div className="text-gray-800 font-medium text-center">
+                {isNeutralizationReaction
+                  ? "NaOH + HCl"
+                  : chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
+              </div>
+              {isNeutralizationReaction && (
+                <div className="text-green-600 font-bold text-center text-xs">
+                  → NaCl + H₂O
+                </div>
+              )}
+              <div className="text-gray-600 text-center">
+                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
+              </div>
+            </div>
+          )}
+
+          {/* Drop success animation */}
+          {isDropping && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+                ✓ Added!
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (id === "burette" && isOnWorkbench) {
       return (
         <div className="relative">
