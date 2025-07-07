@@ -97,6 +97,11 @@ function VirtualLabApp({
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [currentGuidedStep, setCurrentGuidedStep] = useState(1);
+  const [dropwiseAnimation, setDropwiseAnimation] = useState<{
+    active: boolean;
+    chemicalId: string;
+    drops: Array<{ id: string; x: number; y: number; color: string }>;
+  }>({ active: false, chemicalId: "", drops: [] });
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
