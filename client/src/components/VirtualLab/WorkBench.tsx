@@ -392,42 +392,46 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
                 {dropwiseAnimation.drops.map((drop) => (
                   <div
                     key={drop.id}
-                    className="absolute w-3 h-3 rounded-full shadow-lg animate-bounce transform transition-all duration-1500 ease-in"
+                    className="absolute w-3 h-3 rounded-full shadow-lg transform transition-all ease-in"
                     style={{
                       backgroundColor: drop.color,
                       left: drop.x - 6, // Center the drop
                       top: drop.y,
-                      animation: `dropFall 1.5s ease-in forwards`,
                       boxShadow: `0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.5)`,
+                      animation: "dropFall 1.5s ease-in forwards",
                     }}
                   >
                     {/* Drop highlight for realistic effect */}
                     <div className="absolute top-0 left-1 w-1 h-1 bg-white rounded-full opacity-70"></div>
                   </div>
                 ))}
+
+                {/* Inject CSS animation directly */}
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                    @keyframes dropFall {
+                      0% {
+                        transform: translateY(0) scale(1);
+                        opacity: 1;
+                      }
+                      50% {
+                        transform: translateY(120px) scale(1.1);
+                        opacity: 0.8;
+                      }
+                      100% {
+                        transform: translateY(200px) scale(0.8);
+                        opacity: 0;
+                      }
+                    }
+                  `,
+                  }}
+                />
               </div>
             )}
 
             {/* Equipment placement area with more generous spacing */}
             <div className="absolute inset-0 p-12">{children}</div>
-
-            {/* Drop animation CSS */}
-            <style jsx>{`
-              @keyframes dropFall {
-                0% {
-                  transform: translateY(0) scale(1);
-                  opacity: 1;
-                }
-                50% {
-                  transform: translateY(120px) scale(1.1);
-                  opacity: 0.8;
-                }
-                100% {
-                  transform: translateY(200px) scale(0.8);
-                  opacity: 0;
-                }
-              }
-            `}</style>
           </div>
         </div>
       </div>
