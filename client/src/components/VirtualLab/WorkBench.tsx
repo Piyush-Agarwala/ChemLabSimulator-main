@@ -9,6 +9,11 @@ interface WorkBenchProps {
   isRunning: boolean;
   experimentTitle: string;
   currentGuidedStep?: number;
+  dropwiseAnimation?: {
+    active: boolean;
+    chemicalId: string;
+    drops: Array<{ id: string; x: number; y: number; color: string }>;
+  };
 }
 
 interface Step {
