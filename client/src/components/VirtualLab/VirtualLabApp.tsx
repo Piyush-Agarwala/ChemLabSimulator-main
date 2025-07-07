@@ -340,14 +340,74 @@ function VirtualLabApp({
       ];
     } else if (experimentTitle.includes("Acid-Base")) {
       return [
-        { id: "burette", name: "50mL Burette", icon: <TestTube size={36} /> },
+        {
+          id: "burette",
+          name: "50mL Burette",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-blue-600"
+            >
+              {/* Burette body - narrow vertical tube */}
+              <rect
+                x="16"
+                y="4"
+                width="4"
+                height="24"
+                rx="1"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(59, 130, 246, 0.1)"
+              />
+              {/* Burette top opening */}
+              <rect
+                x="14"
+                y="3"
+                width="8"
+                height="3"
+                rx="1"
+                stroke="currentColor"
+                strokeWidth="1"
+                fill="rgba(59, 130, 246, 0.2)"
+              />
+              {/* Volume markings */}
+              <g stroke="currentColor" strokeWidth="1">
+                <line x1="12" y1="8" x2="14" y2="8" />
+                <line x1="12" y1="12" x2="14" y2="12" />
+                <line x1="12" y1="16" x2="14" y2="16" />
+                <line x1="12" y1="20" x2="14" y2="20" />
+                <line x1="12" y1="24" x2="14" y2="24" />
+              </g>
+              {/* Burette stopcock/tap */}
+              <rect
+                x="15"
+                y="28"
+                width="6"
+                height="3"
+                rx="1"
+                stroke="currentColor"
+                strokeWidth="1"
+                fill="rgba(107, 114, 128, 0.8)"
+              />
+              {/* Burette tip */}
+              <path
+                d="M17 31 L18 33 L19 31 Z"
+                stroke="currentColor"
+                strokeWidth="1"
+                fill="rgba(59, 130, 246, 0.3)"
+              />
+            </svg>
+          ),
+        },
         {
           id: "conical_flask",
           name: "250mL Conical Flask",
           icon: <FlaskConical size={36} />,
         },
         { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
-        { id: "beaker", name: "Beaker", icon: <Beaker size={36} /> },
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
@@ -417,8 +477,20 @@ function VirtualLabApp({
     (id: string, x: number, y: number) => {
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
+
+        // For conical flask in Acid-Base experiment, center it in the workspace
+        let finalX = x;
+        let finalY = y;
+        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
+          // Center the conical flask in the workspace
+          finalX = 500; // Center horizontally (better centered for workspace)
+          finalY = 250; // Center vertically (positioned well within workspace)
+        }
+
         if (existing) {
-          return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
+          return prev.map((pos) =>
+            pos.id === id ? { ...pos, x: finalX, y: finalY } : pos,
+          );
         }
 
         // Check if this completes a guided step for Aspirin Synthesis
@@ -431,7 +503,7 @@ function VirtualLabApp({
           }
         }
 
-        return [...prev, { id, x, y, chemicals: [] }];
+        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],

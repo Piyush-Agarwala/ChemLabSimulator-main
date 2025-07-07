@@ -433,12 +433,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Enhanced chemical composition display */}
       {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
               .join(" + ")}
           </div>
+          {/* Show chemical formula for HCl in conical flask */}
+          {id === "conical_flask" && chemicals.some((c) => c.id === "hcl") && (
+            <div className="text-blue-600 font-semibold text-center mt-1">
+              Formula: HCl
+            </div>
+          )}
           <div className="text-gray-600 text-center">
             {chemicals
               .reduce((sum, chemical) => sum + chemical.amount, 0)
@@ -468,6 +474,67 @@ export const Equipment: React.FC<EquipmentProps> = ({
 export const equipmentList = [
   { id: "beaker", name: "Beaker", icon: <Beaker size={36} /> },
   { id: "flask", name: "Erlenmeyer Flask", icon: <FlaskConical size={36} /> },
-  { id: "burette", name: "Burette", icon: <TestTube size={36} /> },
+  {
+    id: "burette",
+    name: "Burette",
+    icon: (
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 36 36"
+        fill="none"
+        className="text-blue-600"
+      >
+        {/* Burette body - narrow vertical tube */}
+        <rect
+          x="16"
+          y="4"
+          width="4"
+          height="24"
+          rx="1"
+          stroke="currentColor"
+          strokeWidth="2"
+          fill="rgba(59, 130, 246, 0.1)"
+        />
+        {/* Burette top opening */}
+        <rect
+          x="14"
+          y="3"
+          width="8"
+          height="3"
+          rx="1"
+          stroke="currentColor"
+          strokeWidth="1"
+          fill="rgba(59, 130, 246, 0.2)"
+        />
+        {/* Volume markings */}
+        <g stroke="currentColor" strokeWidth="1">
+          <line x1="12" y1="8" x2="14" y2="8" />
+          <line x1="12" y1="12" x2="14" y2="12" />
+          <line x1="12" y1="16" x2="14" y2="16" />
+          <line x1="12" y1="20" x2="14" y2="20" />
+          <line x1="12" y1="24" x2="14" y2="24" />
+        </g>
+        {/* Burette stopcock/tap */}
+        <rect
+          x="15"
+          y="28"
+          width="6"
+          height="3"
+          rx="1"
+          stroke="currentColor"
+          strokeWidth="1"
+          fill="rgba(107, 114, 128, 0.8)"
+        />
+        {/* Burette tip */}
+        <path
+          d="M17 31 L18 33 L19 31 Z"
+          stroke="currentColor"
+          strokeWidth="1"
+          fill="rgba(59, 130, 246, 0.3)"
+        />
+      </svg>
+    ),
+  },
   { id: "thermometer", name: "Thermometer", icon: <Thermometer size={36} /> },
 ];

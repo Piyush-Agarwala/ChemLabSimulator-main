@@ -198,20 +198,6 @@ export const AnimatedEquipment: React.FC<AnimatedEquipmentProps> = ({
           )}
         </div>
       </div>
-
-      {/* Magnetic Stirrer - Larger */}
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
-        <div className="w-40 h-12 bg-gray-700 rounded-lg shadow-lg">
-          <div className="flex items-center justify-between px-6 py-2">
-            <div className="text-sm text-white font-medium">
-              MAGNETIC STIRRER
-            </div>
-            <div
-              className={`w-4 h-4 rounded-full ${isStirring ? "bg-green-400 animate-pulse" : "bg-red-400"}`}
-            ></div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
