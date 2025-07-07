@@ -199,7 +199,7 @@ function VirtualLabApp({
         {
           id: "water",
           name: "Distilled Water",
-          formula: "H₂O",
+          formula: "H��O",
           color: "#87CEEB",
           concentration: "Pure",
           volume: 100,
@@ -636,7 +636,7 @@ function VirtualLabApp({
         id: Date.now().toString(),
         type: "reaction",
         title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H��O",
+        description: "HCl + NaOH → NaCl + H₂O",
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
           reaction: "HCl + NaOH → NaCl + H₂O",
