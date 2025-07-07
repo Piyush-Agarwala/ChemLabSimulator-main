@@ -356,26 +356,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 opacity-60"></div>
             </div>
 
-            {/* Animated Equipment - Only for equilibrium experiment */}
-            {experimentTitle.includes("Equilibrium") && (
-              <div
-                className="absolute inset-0"
-                style={{
-                  transform: "scale(1.4)",
-                  transformOrigin: "center bottom",
-                }}
-              >
-                <AnimatedEquipment
-                  isStirring={isStirring}
-                  isDropping={isDropping}
-                  temperature={temperature}
-                  solutionColor={solutionColor}
-                  volume={volume}
-                  bubbling={bubbling}
-                />
-              </div>
-            )}
-
             {/* Helpful hints for Aspirin Synthesis */}
             {experimentTitle.includes("Aspirin") && (
               <div className="absolute top-6 left-6 bg-blue-100 border-2 border-blue-300 rounded-lg p-4 max-w-sm z-20">
