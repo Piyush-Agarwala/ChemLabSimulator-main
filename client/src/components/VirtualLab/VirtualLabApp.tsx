@@ -590,103 +590,31 @@ function VirtualLabApp({
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
 
-    // Special handling for phenolphthalein added to burette
+    // Add phenolphthalein to burette when dropped
     if (chemicalId === "phenol" && equipmentId === "burette") {
-      // Start dropwise animation from burette to conical flask
-      const burettePos = equipmentPositions.find((pos) => pos.id === "burette");
-      const conicalFlaskPos = equipmentPositions.find(
-        (pos) => pos.id === "conical_flask",
+      setToastMessage(`Added ${amount}mL of ${chemical.name} to burette`);
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add chemical to burette normally
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
       );
-
-      if (burettePos && conicalFlaskPos) {
-        setDropwiseAnimation({
-          active: true,
-          chemicalId: chemicalId,
-          drops: [],
-        });
-
-        // Create sequential drops that fall from burette to conical flask
-        const createDropSequence = () => {
-          const dropCount = Math.floor(amount / 2); // 1 drop per 2mL
-          let currentDrop = 0;
-
-          const dropInterval = setInterval(() => {
-            if (currentDrop >= dropCount) {
-              clearInterval(dropInterval);
-              setDropwiseAnimation((prev) => ({
-                ...prev,
-                active: false,
-                drops: [],
-              }));
-
-              // After drops finish, add chemical to conical flask instead of burette
-              setEquipmentPositions((prevPos) =>
-                prevPos.map((pos) => {
-                  if (pos.id === "conical_flask") {
-                    const updatedChemicals = [
-                      ...pos.chemicals,
-                      {
-                        id: chemicalId,
-                        name: chemical.name,
-                        color: chemical.color,
-                        amount,
-                        concentration: chemical.concentration,
-                      },
-                    ];
-
-                    // Check for reactions in conical flask
-                    if (updatedChemicals.length >= 2) {
-                      const totalVolume = updatedChemicals.reduce(
-                        (sum, c) => sum + c.amount,
-                        0,
-                      );
-                      handleReaction(
-                        updatedChemicals,
-                        totalVolume,
-                        "conical_flask",
-                      );
-                    }
-
-                    return { ...pos, chemicals: updatedChemicals };
-                  }
-                  return pos;
-                }),
-              );
-              return;
-            }
-
-            // Create new drop
-            const dropId = `drop-${Date.now()}-${currentDrop}`;
-            setDropwiseAnimation((prev) => ({
-              ...prev,
-              drops: [
-                ...prev.drops,
-                {
-                  id: dropId,
-                  x: burettePos.x,
-                  y: burettePos.y + 60, // Start from bottom of burette
-                  color: chemical.color,
-                },
-              ],
-            }));
-
-            // Animate drop falling and remove it after animation
-            setTimeout(() => {
-              setDropwiseAnimation((prev) => ({
-                ...prev,
-                drops: prev.drops.filter((drop) => drop.id !== dropId),
-              }));
-            }, 1500); // Drop animation duration
-
-            currentDrop++;
-          }, 800); // Interval between drops
-        };
-
-        setToastMessage(`💧 Phenolphthalein dropping from burette...`);
-        setTimeout(() => setToastMessage(null), 3000);
-        createDropSequence();
-        return;
-      }
+      return;
     }
 
     setEquipmentPositions((prev) =>
