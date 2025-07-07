@@ -433,12 +433,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       {/* Enhanced chemical composition display */}
       {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
               .join(" + ")}
           </div>
+          {/* Show chemical formula for HCl in conical flask */}
+          {id === "conical_flask" && chemicals.some((c) => c.id === "hcl") && (
+            <div className="text-blue-600 font-semibold text-center mt-1">
+              Formula: HCl
+            </div>
+          )}
           <div className="text-gray-600 text-center">
             {chemicals
               .reduce((sum, chemical) => sum + chemical.amount, 0)
