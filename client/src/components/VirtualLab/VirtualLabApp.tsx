@@ -536,7 +536,7 @@ function VirtualLabApp({
             newPositions[buretteIndex] = {
               ...newPositions[buretteIndex],
               x: finalX, // Same position as conical flask
-              y: finalY - 120, // 120px above conical flask
+              y: finalY - 180, // 180px above conical flask for proper gap
             };
           }
         }
