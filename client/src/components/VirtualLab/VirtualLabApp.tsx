@@ -487,6 +487,19 @@ function VirtualLabApp({
           finalY = 250; // Center vertically (positioned well within workspace)
         }
 
+        // For burette in Acid-Base experiment, position it above the conical flask
+        if (id === "burette" && experimentTitle.includes("Acid-Base")) {
+          const conicalFlask = prev.find((pos) => pos.id === "conical_flask");
+          if (conicalFlask) {
+            finalX = conicalFlask.x; // Same horizontal position as conical flask
+            finalY = conicalFlask.y - 120; // Position 120px above the conical flask
+          } else {
+            // If conical flask not placed yet, use default position that anticipates flask placement
+            finalX = 500;
+            finalY = 130; // Above the expected conical flask position
+          }
+        }
+
         if (existing) {
           return prev.map((pos) =>
             pos.id === id ? { ...pos, x: finalX, y: finalY } : pos,
@@ -503,7 +516,27 @@ function VirtualLabApp({
           }
         }
 
-        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
+        // Auto-adjust burette position when conical flask is placed
+        const newPositions = [
+          ...prev,
+          { id, x: finalX, y: finalY, chemicals: [] },
+        ];
+
+        // If a conical flask was just placed and there's already a burette, reposition the burette
+        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
+          const buretteIndex = newPositions.findIndex(
+            (pos) => pos.id === "burette",
+          );
+          if (buretteIndex !== -1) {
+            newPositions[buretteIndex] = {
+              ...newPositions[buretteIndex],
+              x: finalX, // Same position as conical flask
+              y: finalY - 120, // 120px above conical flask
+            };
+          }
+        }
+
+        return newPositions;
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
