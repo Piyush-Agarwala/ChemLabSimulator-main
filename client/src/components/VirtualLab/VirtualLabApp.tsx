@@ -408,7 +408,6 @@ function VirtualLabApp({
           icon: <FlaskConical size={36} />,
         },
         { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
-        { id: "beaker", name: "Beaker", icon: <Beaker size={36} /> },
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
@@ -478,8 +477,20 @@ function VirtualLabApp({
     (id: string, x: number, y: number) => {
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
+
+        // For conical flask in Acid-Base experiment, center it in the workspace
+        let finalX = x;
+        let finalY = y;
+        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
+          // Center the conical flask in the workspace
+          finalX = 400; // Center horizontally (approximate workspace width / 2)
+          finalY = 300; // Center vertically (approximate workspace height / 2)
+        }
+
         if (existing) {
-          return prev.map((pos) => (pos.id === id ? { ...pos, x, y } : pos));
+          return prev.map((pos) =>
+            pos.id === id ? { ...pos, x: finalX, y: finalY } : pos,
+          );
         }
 
         // Check if this completes a guided step for Aspirin Synthesis
@@ -492,7 +503,7 @@ function VirtualLabApp({
           }
         }
 
-        return [...prev, { id, x, y, chemicals: [] }];
+        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
