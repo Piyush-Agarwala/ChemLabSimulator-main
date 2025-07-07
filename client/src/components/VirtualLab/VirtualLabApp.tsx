@@ -97,6 +97,11 @@ function VirtualLabApp({
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [currentGuidedStep, setCurrentGuidedStep] = useState(1);
+  const [dropwiseAnimation, setDropwiseAnimation] = useState<{
+    active: boolean;
+    chemicalId: string;
+    drops: Array<{ id: string; x: number; y: number; color: string }>;
+  }>({ active: false, chemicalId: "", drops: [] });
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -199,7 +204,7 @@ function VirtualLabApp({
         {
           id: "water",
           name: "Distilled Water",
-          formula: "H₂O",
+          formula: "H��O",
           color: "#87CEEB",
           concentration: "Pure",
           volume: 100,
@@ -487,6 +492,19 @@ function VirtualLabApp({
           finalY = 250; // Center vertically (positioned well within workspace)
         }
 
+        // For burette in Acid-Base experiment, position it above the conical flask
+        if (id === "burette" && experimentTitle.includes("Acid-Base")) {
+          const conicalFlask = prev.find((pos) => pos.id === "conical_flask");
+          if (conicalFlask) {
+            finalX = conicalFlask.x; // Same horizontal position as conical flask
+            finalY = conicalFlask.y - 180; // Position 180px above the conical flask for proper gap
+          } else {
+            // If conical flask not placed yet, use default position that anticipates flask placement
+            finalX = 500;
+            finalY = 70; // Above the expected conical flask position
+          }
+        }
+
         if (existing) {
           return prev.map((pos) =>
             pos.id === id ? { ...pos, x: finalX, y: finalY } : pos,
@@ -503,7 +521,27 @@ function VirtualLabApp({
           }
         }
 
-        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
+        // Auto-adjust burette position when conical flask is placed
+        const newPositions = [
+          ...prev,
+          { id, x: finalX, y: finalY, chemicals: [] },
+        ];
+
+        // If a conical flask was just placed and there's already a burette, reposition the burette
+        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
+          const buretteIndex = newPositions.findIndex(
+            (pos) => pos.id === "burette",
+          );
+          if (buretteIndex !== -1) {
+            newPositions[buretteIndex] = {
+              ...newPositions[buretteIndex],
+              x: finalX, // Same position as conical flask
+              y: finalY - 180, // 180px above conical flask for proper gap
+            };
+          }
+        }
+
+        return newPositions;
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
@@ -552,6 +590,33 @@ function VirtualLabApp({
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
 
+    // Add phenolphthalein to burette when dropped
+    if (chemicalId === "phenol" && equipmentId === "burette") {
+      setToastMessage(`Added ${amount}mL of ${chemical.name} to burette`);
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add chemical to burette normally
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
+      );
+      return;
+    }
+
     setEquipmentPositions((prev) =>
       prev.map((pos) => {
         if (pos.id === equipmentId) {
@@ -591,7 +656,7 @@ function VirtualLabApp({
               (sum, c) => sum + c.amount,
               0,
             );
-            handleReaction(newChemicals, totalVolume);
+            handleReaction(newChemicals, totalVolume, equipmentId);
 
             // Update measurements for experiments 2 and 3
             if (
@@ -625,29 +690,76 @@ function VirtualLabApp({
     setSelectedChemical(null);
   };
 
-  const handleReaction = (chemicals: any[], totalVolume: number) => {
-    // Simplified reaction detection
+  const handleReaction = (
+    chemicals: any[],
+    totalVolume: number,
+    equipmentId?: string,
+  ) => {
+    // Enhanced reaction detection with equipment specificity
     const hasAcid = chemicals.some((c) => c.id === "hcl");
     const hasBase = chemicals.some((c) => c.id === "naoh");
     const hasIndicator = chemicals.some((c) => c.id === "phenol");
 
     if (hasAcid && hasBase) {
+      // Calculate reaction specifics
+      const hclAmount = chemicals.find((c) => c.id === "hcl")?.amount || 0;
+      const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
+
+      // Calculate limiting reagent (assuming equal molarity)
+      const limitingAmount = Math.min(hclAmount, naohAmount);
+      const excessReagent =
+        hclAmount > naohAmount
+          ? "HCl"
+          : naohAmount > hclAmount
+            ? "NaOH"
+            : "none";
+
+      let reactionTitle = "Acid-Base Neutralization Detected";
+      let reactionDescription = "NaOH + HCl → NaCl + H₂O";
+
+      // Enhanced messaging for conical flask
+      if (equipmentId === "conical_flask") {
+        reactionTitle = "Neutralization Reaction in Conical Flask";
+        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: NaOH + HCl → NaCl + H₂O`;
+      }
+
       const result: Result = {
         id: Date.now().toString(),
         type: "reaction",
-        title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H��O",
+        title: reactionTitle,
+        description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "HCl + NaOH → NaCl + H₂O",
+          reaction: "NaOH + HCl → NaCl + H₂O",
           reactionType: "Acid-Base Neutralization",
-          balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+          balancedEquation: "NaOH(aq) + HCl(aq) → NaCl(aq) + H₂O(l)",
           products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
           yield: 95,
+          volumeAdded: limitingAmount,
+          totalVolume: totalVolume,
+          ph: 7.0,
+          molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
+          mechanism: [
+            "1. HCl dissociates: HCl → H⁺ + Cl⁻",
+            "2. NaOH dissociates: NaOH → Na⁺ + OH��",
+            "3. Neutralization: H⁺ + OH⁻ → H₂O",
+            "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
+          ],
+          thermodynamics: {
+            deltaH: -57.3,
+            deltaG: -79.9,
+            equilibriumConstant: 1.0e14,
+          },
         },
       };
 
       setResults((prev) => [...prev, result]);
+
+      // Special toast message for conical flask
+      if (equipmentId === "conical_flask") {
+        setToastMessage(`🧪 Neutralization complete! NaOH + HCl → NaCl + H₂O`);
+        setTimeout(() => setToastMessage(null), 4000);
+      }
     }
   };
 
@@ -932,6 +1044,7 @@ function VirtualLabApp({
               isRunning={isRunning}
               experimentTitle={experimentTitle}
               currentGuidedStep={currentGuidedStep}
+              dropwiseAnimation={dropwiseAnimation}
             >
               {equipmentPositions.map((pos) => {
                 const equipment = experimentEquipment.find(

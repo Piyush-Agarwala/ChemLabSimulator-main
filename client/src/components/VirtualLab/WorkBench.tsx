@@ -9,6 +9,11 @@ interface WorkBenchProps {
   isRunning: boolean;
   experimentTitle: string;
   currentGuidedStep?: number;
+  dropwiseAnimation?: {
+    active: boolean;
+    chemicalId: string;
+    drops: Array<{ id: string; x: number; y: number; color: string }>;
+  };
 }
 
 interface Step {
@@ -27,6 +32,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   isRunning,
   experimentTitle,
   currentGuidedStep = 1,
+  dropwiseAnimation = { active: false, chemicalId: "", drops: [] },
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [temperature, setTemperature] = useState(22);
@@ -377,6 +383,50 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
                   {currentGuidedStep > 6 &&
                     "Aspirin synthesis steps completed!"}
                 </div>
+              </div>
+            )}
+
+            {/* Dropwise Animation Layer */}
+            {dropwiseAnimation.active && (
+              <div className="absolute inset-0 pointer-events-none z-30">
+                {dropwiseAnimation.drops.map((drop) => (
+                  <div
+                    key={drop.id}
+                    className="absolute w-3 h-3 rounded-full shadow-lg transform transition-all ease-in"
+                    style={{
+                      backgroundColor: drop.color,
+                      left: drop.x - 6, // Center the drop
+                      top: drop.y,
+                      boxShadow: `0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.5)`,
+                      animation: "dropFall 1.5s ease-in forwards",
+                    }}
+                  >
+                    {/* Drop highlight for realistic effect */}
+                    <div className="absolute top-0 left-1 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                  </div>
+                ))}
+
+                {/* Inject CSS animation directly */}
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                    @keyframes dropFall {
+                      0% {
+                        transform: translateY(0) scale(1);
+                        opacity: 1;
+                      }
+                      50% {
+                        transform: translateY(120px) scale(1.1);
+                        opacity: 0.8;
+                      }
+                      100% {
+                        transform: translateY(200px) scale(0.8);
+                        opacity: 0;
+                      }
+                    }
+                  `,
+                  }}
+                />
               </div>
             )}
 
