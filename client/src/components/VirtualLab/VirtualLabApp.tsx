@@ -625,29 +625,76 @@ function VirtualLabApp({
     setSelectedChemical(null);
   };
 
-  const handleReaction = (chemicals: any[], totalVolume: number) => {
-    // Simplified reaction detection
+  const handleReaction = (
+    chemicals: any[],
+    totalVolume: number,
+    equipmentId?: string,
+  ) => {
+    // Enhanced reaction detection with equipment specificity
     const hasAcid = chemicals.some((c) => c.id === "hcl");
     const hasBase = chemicals.some((c) => c.id === "naoh");
     const hasIndicator = chemicals.some((c) => c.id === "phenol");
 
     if (hasAcid && hasBase) {
+      // Calculate reaction specifics
+      const hclAmount = chemicals.find((c) => c.id === "hcl")?.amount || 0;
+      const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
+
+      // Calculate limiting reagent (assuming equal molarity)
+      const limitingAmount = Math.min(hclAmount, naohAmount);
+      const excessReagent =
+        hclAmount > naohAmount
+          ? "HCl"
+          : naohAmount > hclAmount
+            ? "NaOH"
+            : "none";
+
+      let reactionTitle = "Acid-Base Neutralization Detected";
+      let reactionDescription = "NaOH + HCl → NaCl + H₂O";
+
+      // Enhanced messaging for conical flask
+      if (equipmentId === "conical_flask") {
+        reactionTitle = "Neutralization Reaction in Conical Flask";
+        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: NaOH + HCl → NaCl + H₂O`;
+      }
+
       const result: Result = {
         id: Date.now().toString(),
         type: "reaction",
-        title: "Acid-Base Neutralization Detected",
-        description: "HCl + NaOH → NaCl + H₂O",
+        title: reactionTitle,
+        description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "HCl + NaOH → NaCl + H₂O",
+          reaction: "NaOH + HCl → NaCl + H₂O",
           reactionType: "Acid-Base Neutralization",
-          balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+          balancedEquation: "NaOH(aq) + HCl(aq) → NaCl(aq) + H₂O(l)",
           products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
           yield: 95,
+          volumeAdded: limitingAmount,
+          totalVolume: totalVolume,
+          ph: 7.0,
+          molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
+          mechanism: [
+            "1. HCl dissociates: HCl → H⁺ + Cl⁻",
+            "2. NaOH dissociates: NaOH → Na⁺ + OH⁻",
+            "3. Neutralization: H⁺ + OH⁻ → H₂O",
+            "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
+          ],
+          thermodynamics: {
+            deltaH: -57.3,
+            deltaG: -79.9,
+            equilibriumConstant: 1.0e14,
+          },
         },
       };
 
       setResults((prev) => [...prev, result]);
+
+      // Special toast message for conical flask
+      if (equipmentId === "conical_flask") {
+        setToastMessage(`🧪 Neutralization complete! NaOH + HCl → NaCl + H₂O`);
+        setTimeout(() => setToastMessage(null), 4000);
+      }
     }
   };
 
