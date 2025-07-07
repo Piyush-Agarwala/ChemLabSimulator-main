@@ -483,8 +483,8 @@ function VirtualLabApp({
         let finalY = y;
         if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
           // Center the conical flask in the workspace
-          finalX = 400; // Center horizontally (approximate workspace width / 2)
-          finalY = 300; // Center vertically (approximate workspace height / 2)
+          finalX = 500; // Center horizontally (better centered for workspace)
+          finalY = 250; // Center vertically (positioned well within workspace)
         }
 
         if (existing) {
