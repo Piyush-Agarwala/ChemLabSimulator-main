@@ -5,6 +5,7 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { ChemicalFormulas } from "./ChemicalFormulas";
 import {
   FlaskConical,
   Atom,
@@ -1200,13 +1201,19 @@ function VirtualLabApp({
                       )}
                     </div>
                   ))}
+
+                  {/* Chemical Formulas Section */}
+                  <ChemicalFormulas experimentTitle={experimentTitle} />
                 </div>
               ) : (
-                <ExperimentSteps
-                  currentStep={currentStep}
-                  steps={experimentSteps}
-                  onStepClick={handleStepClick}
-                />
+                <div className="space-y-4">
+                  <ExperimentSteps
+                    currentStep={currentStep}
+                    steps={experimentSteps}
+                    onStepClick={handleStepClick}
+                  />
+                  <ChemicalFormulas experimentTitle={experimentTitle} />
+                </div>
               )}
             </div>
           </div>
