@@ -26,6 +26,7 @@ interface EquipmentProps {
     amount: number,
   ) => void;
   stirrerActive?: boolean;
+  hasNaOHInFlask?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
