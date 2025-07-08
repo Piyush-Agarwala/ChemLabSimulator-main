@@ -1170,6 +1170,20 @@ function VirtualLabApp({
         markStepCompleted(5, "Solution turned pink");
       }
 
+      // Automatically stop titration when color transition is complete (endpoint reached)
+      if (progress >= 1) {
+        setTimeout(() => {
+          if (isTitrating) {
+            setIsTitrating(false);
+            setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
+            setToastMessage(
+              "🎯 Endpoint reached! Titration completed automatically.",
+            );
+            setTimeout(() => setToastMessage(null), 4000);
+          }
+        }, 1000); // Small delay for visual effect
+      }
+
       if (progress < 1) {
         requestAnimationFrame(animateColor);
       }
