@@ -504,11 +504,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "magnetic_stirrer" && isOnWorkbench) {
       return (
         <div className="relative">
-          {/* Magnetic Stirrer Visualization - 3x larger */}
-          <div className="relative w-72 h-48">
+          {/* Magnetic Stirrer Visualization - 2.5x larger */}
+          <div className="relative w-60 h-40">
             <svg
-              width="288"
-              height="192"
+              width="240"
+              height="160"
               viewBox="0 0 96 64"
               className="drop-shadow-lg"
             >
