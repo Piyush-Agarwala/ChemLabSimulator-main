@@ -122,6 +122,7 @@ function VirtualLabApp({
   // Step completion tracking for Acid-Base Titration
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [hasCalculatedResult, setHasCalculatedResult] = useState(false);
+  const [showResultsPanel, setShowResultsPanel] = useState(false);
 
   // Helper function to mark steps as completed for Acid-Base Titration
   const markStepCompleted = (stepNumber: number, message: string) => {
