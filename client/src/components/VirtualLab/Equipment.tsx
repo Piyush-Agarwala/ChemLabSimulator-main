@@ -577,8 +577,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
-      {/* Drag over animation */}
-      {isDragOver && (
+      {/* Drag over animation - only for equipment selection bar */}
+      {isDragOver && !isOnWorkbench && (
         <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
       )}
 
