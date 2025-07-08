@@ -73,6 +73,11 @@ export default function Experiment() {
     setIsRunning(!isRunning);
   };
 
+  const resetTimer = () => {
+    setIsRunning(false);
+    setTimer(0);
+  };
+
   const handleCompleteStep = () => {
     updateProgressMutation.mutate({
       experimentId: experimentId,
