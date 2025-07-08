@@ -801,6 +801,9 @@ function VirtualLabApp({
       );
       setTimeout(() => setToastMessage(null), 3000);
 
+      // Mark step 3 as completed: Phenolphthalein added to conical flask
+      markStepCompleted(3, "Phenolphthalein added to conical flask");
+
       // Add phenolphthalein to conical flask - this is the correct usage for titration
       setEquipmentPositions((prev) =>
         prev.map((pos) => {
