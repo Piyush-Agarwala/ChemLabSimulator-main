@@ -359,6 +359,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
           <div
             onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className="relative w-full overflow-hidden border-2 border-dashed border-blue-200 rounded-lg"
             style={{
