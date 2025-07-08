@@ -381,7 +381,6 @@ function VirtualLabApp({
             />
           ),
         },
-        { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
         {
           id: "magnetic_stirrer",
           name: "Magnetic Stirrer",
@@ -1031,7 +1030,7 @@ function VirtualLabApp({
 
     if (!stirrer || !conicalFlask) {
       setToastMessage(
-        "���️ Please place both magnetic stirrer and conical flask!",
+        "�����️ Please place both magnetic stirrer and conical flask!",
       );
       setTimeout(() => setToastMessage(null), 3000);
       return;
