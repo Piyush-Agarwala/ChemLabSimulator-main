@@ -218,21 +218,30 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   <div className="absolute inset-0 bg-pink-400 opacity-60 animate-pulse rounded-b-lg"></div>
                 )}
 
-                {/* Bubbling animation for reactions */}
-                {isNeutralizationReaction && (
+                {/* Enhanced bubbling animation for reactions and stirring */}
+                {(isNeutralizationReaction || stirrerActive) && (
                   <div className="absolute inset-0">
-                    {[...Array(6)].map((_, i) => (
+                    {[...Array(stirrerActive ? 10 : 6)].map((_, i) => (
                       <div
                         key={i}
-                        className="absolute w-1 h-1 bg-white opacity-80 rounded-full animate-bounce"
+                        className={`absolute w-1 h-1 bg-white opacity-80 rounded-full ${
+                          stirrerActive ? "animate-pulse" : "animate-bounce"
+                        }`}
                         style={{
-                          left: `${20 + i * 10}%`,
-                          bottom: `${10 + (i % 3) * 10}px`,
-                          animationDelay: `${i * 0.2}s`,
-                          animationDuration: "1.5s",
+                          left: `${15 + i * 8}%`,
+                          bottom: `${8 + (i % 4) * 8}px`,
+                          animationDelay: `${i * (stirrerActive ? 0.1 : 0.2)}s`,
+                          animationDuration: stirrerActive ? "0.8s" : "1.5s",
                         }}
                       ></div>
                     ))}
+
+                    {/* Vortex effect when stirring */}
+                    {stirrerActive && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-white opacity-30 rounded-full animate-spin"></div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
