@@ -1574,6 +1574,7 @@ function VirtualLabApp({
                   setTitrationColorProgress(0);
                   setCompletedSteps(new Set());
                   setHasCalculatedResult(false);
+                  setShowResultsPanel(false);
 
                   // Reset timer to 0:00
                   if (onTimerReset) {
