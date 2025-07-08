@@ -727,7 +727,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   .map((c) => {
                     if (c.id === "hcl") return "HCl";
                     if (c.id === "naoh") return "NaOH";
-                    if (c.id === "phenol") return "C₂���H₁��O₄";
+                    if (c.id === "phenol") return "C₂���H₁₄O₄";
                     return "";
                   })
                   .filter(Boolean)
@@ -742,7 +742,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                       Acid-Indicator Reaction
                     </div>
                     <div className="text-blue-700 font-semibold text-center mt-1">
-                      HCl + Phenolphthalein → Complex (colorless)
+                      HCl + C₂₀H₁₄O₄ → Complex (colorless)
                     </div>
                     <div className="text-blue-600 text-center text-xs mt-1">
                       Acid solution with pH indicator remains colorless

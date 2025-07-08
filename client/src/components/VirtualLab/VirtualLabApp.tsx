@@ -904,12 +904,12 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + Phenolphthalein → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁₄O₄ → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
         reactionTitle = "Acid-Indicator Reaction in Conical Flask";
-        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: HCl + Phenolphthalein → Colorless complex`;
+        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: HCl + C₂₀H₁₄O₄ → Colorless complex`;
       }
 
       const result: Result = {
