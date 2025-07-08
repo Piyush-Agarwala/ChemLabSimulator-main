@@ -1725,49 +1725,6 @@ function VirtualLabApp({
             </WorkBench>
           </div>
 
-          {/* Measurements Panel - Show when titration is active */}
-          {experimentTitle.includes("Acid-Base") && isTitrating && (
-            <MeasurementsPanel
-              measurements={measurements}
-              onCalculateEndpoint={() => {
-                // Calculate endpoint and add to results
-                const endpointResult: Result = {
-                  id: `endpoint_${Date.now()}`,
-                  type: "success",
-                  title: "Endpoint Calculation Complete",
-                  description: `Calculated endpoint at pH ${measurements.ph.toFixed(2)} with ${measurements.volume.toFixed(1)}mL volume`,
-                  timestamp: new Date().toLocaleTimeString(),
-                  calculation: {
-                    reaction: "HCl + NaOH → NaCl + H₂O (endpoint reached)",
-                    reactionType: "Endpoint Calculation",
-                    volumeAdded: measurements.volume,
-                    totalVolume: measurements.volume + 25,
-                    concentration: `${measurements.molarity.toFixed(4)} M`,
-                    molarity: measurements.molarity,
-                    ph: measurements.ph,
-                    balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
-                  },
-                };
-                setResults((prev) => [...prev, endpointResult]);
-                setToastMessage("🎯 Endpoint calculation added to results!");
-                setTimeout(() => setToastMessage(null), 3000);
-              }}
-              onReset={() => {
-                setMeasurements({
-                  volume: 0,
-                  concentration: 0,
-                  ph: 7,
-                  molarity: 0,
-                  moles: 0,
-                  temperature: 25,
-                });
-                setToastMessage("📊 Measurements reset");
-                setTimeout(() => setToastMessage(null), 2000);
-              }}
-              isVisible={true}
-            />
-          )}
-
           {/* Results Panel - When present */}
           {results.length > 0 && (
             <div className="border-t border-gray-200 bg-white/90 backdrop-blur-sm">
