@@ -923,11 +923,22 @@ function VirtualLabApp({
         description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "HCl + C₂₀H₁₄O₄ → Complex",
-          reactionType: "Acid-Indicator Interaction",
-          balancedEquation:
-            "HCl(aq) + C₂₀H₁₄O₄ → HCl-C₂₀H₁₄O₄ complex (colorless)",
-          products: ["HCl-C₂₀H₁₄O₄ complex (colorless)"],
+          reaction: hasIndicator
+            ? "HCl + NaOH → NaCl + H₂O (with C₂₀H₁₄O₄)"
+            : "HCl + NaOH → NaCl + H₂O",
+          reactionType: hasIndicator
+            ? "Acid-Base Titration with Indicator"
+            : "Acid-Base Neutralization",
+          balancedEquation: hasIndicator
+            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂₀H₁₄O₄ endpoint indicator]"
+            : "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+          products: hasIndicator
+            ? [
+                "Sodium Chloride (NaCl)",
+                "Water (H₂O)",
+                "Color change at endpoint",
+              ]
+            : ["Sodium Chloride (NaCl)", "Water (H₂O)"],
           yield: 95,
           volumeAdded: limitingAmount,
           totalVolume: totalVolume,
