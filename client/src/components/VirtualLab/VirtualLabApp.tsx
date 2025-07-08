@@ -363,7 +363,17 @@ function VirtualLabApp({
         {
           id: "conical_flask",
           name: "250mL Conical Flask",
-          icon: <FlaskConical size={36} />,
+          icon: (
+            <img
+              src="https://images.pexels.com/photos/8539753/pexels-photo-8539753.jpeg"
+              alt="Conical Flask"
+              className="w-9 h-9 object-cover rounded border-2 border-blue-400 shadow-sm"
+              style={{
+                filter: "brightness(1.2) contrast(1.1)",
+                clipPath: "inset(5% 15% 5% 15%)",
+              }}
+            />
+          ),
         },
         { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
       ];
