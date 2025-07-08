@@ -1180,102 +1180,89 @@ function VirtualLabApp({
                 />
               )}
 
-              {/* Concentration Measurement Panel - For Experiments 2 & 3 */}
-              {(experimentTitle.includes("Acid-Base") ||
-                experimentTitle.includes("Equilibrium")) && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 text-sm flex items-center">
-                      <FlaskConical className="w-4 h-4 mr-2 text-blue-600" />
-                      Live Measurements
-                    </h3>
-                    {isRunning && (
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    )}
-                  </div>
+              {/* Chemical Formulas Panel */}
+              <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex items-center mb-3">
+                  <h3 className="font-semibold text-gray-900 text-sm flex items-center">
+                    <FlaskConical className="w-4 h-4 mr-2 text-blue-600" />
+                    Chemical Formulas
+                  </h3>
+                </div>
 
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 gap-2">
-                      <div className="bg-blue-50 p-2 rounded">
-                        <div className="text-xs text-blue-600 font-medium">
-                          Volume
-                        </div>
-                        <div className="text-sm font-bold text-blue-900">
-                          {measurements.volume.toFixed(1)} mL
-                        </div>
+                <div className="space-y-3">
+                  {/* Hydrochloric Acid */}
+                  <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-sm font-semibold text-yellow-800">
+                        Hydrochloric Acid
                       </div>
-                      <div className="bg-purple-50 p-2 rounded">
-                        <div className="text-xs text-purple-600 font-medium">
-                          pH
-                        </div>
-                        <div className="text-sm font-bold text-purple-900">
-                          {measurements.ph.toFixed(2)}
-                        </div>
-                      </div>
-                      <div className="bg-green-50 p-2 rounded">
-                        <div className="text-xs text-green-600 font-medium">
-                          Molarity
-                        </div>
-                        <div className="text-sm font-bold text-green-900">
-                          {measurements.molarity.toFixed(3)} M
-                        </div>
-                      </div>
-                      <div className="bg-orange-50 p-2 rounded">
-                        <div className="text-xs text-orange-600 font-medium">
-                          Moles
-                        </div>
-                        <div className="text-sm font-bold text-orange-900">
-                          {measurements.moles.toFixed(4)} mol
-                        </div>
+                      <div className="px-2 py-1 bg-yellow-600 text-white text-xs rounded font-bold">
+                        Strong Acid
                       </div>
                     </div>
+                    <div className="text-lg font-bold text-yellow-900 mb-1">
+                      HCl
+                    </div>
+                    <div className="text-xs text-yellow-700">
+                      <div>Concentration: 0.1M</div>
+                      <div>pH &lt; 7 (Acidic)</div>
+                    </div>
+                  </div>
 
-                    {experimentTitle.includes("Equilibrium") && (
-                      <div className="bg-indigo-50 p-2 rounded">
-                        <div className="text-xs text-indigo-600 font-medium">
-                          Temperature
-                        </div>
-                        <div className="text-sm font-bold text-indigo-900">
-                          {measurements.temperature}°C
-                        </div>
+                  {/* Sodium Hydroxide */}
+                  <div className="bg-blue-50 p-3 rounded border border-blue-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-sm font-semibold text-blue-800">
+                        Sodium Hydroxide
                       </div>
-                    )}
-
-                    {experimentTitle.includes("Acid-Base") &&
-                      measurements.volume > 0 && (
-                        <div className="bg-gray-50 p-2 rounded border-t border-gray-200">
-                          <div className="text-xs text-gray-600 font-medium mb-1">
-                            Titration Status
-                          </div>
-                          <div className="text-xs">
-                            <span className="text-gray-600">Endpoint: </span>
-                            <span className="font-medium text-gray-900">
-                              {measurements.ph > 8.5
-                                ? "Reached"
-                                : "Not reached"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                    {experimentTitle.includes("Equilibrium") && (
-                      <div className="bg-gray-50 p-2 rounded border-t border-gray-200">
-                        <div className="text-xs text-gray-600 font-medium mb-1">
-                          Equilibrium
-                        </div>
-                        <div className="text-xs">
-                          <span className="text-gray-600">Color: </span>
-                          <span className="font-medium text-gray-900">
-                            {measurements.ph < 7
-                              ? "Blue (acidic)"
-                              : "Pink (basic)"}
-                          </span>
-                        </div>
+                      <div className="px-2 py-1 bg-blue-600 text-white text-xs rounded font-bold">
+                        Strong Base
                       </div>
-                    )}
+                    </div>
+                    <div className="text-lg font-bold text-blue-900 mb-1">
+                      NaOH
+                    </div>
+                    <div className="text-xs text-blue-700">
+                      <div>Concentration: 0.1M</div>
+                      <div>pH &gt; 7 (Basic)</div>
+                    </div>
+                  </div>
+
+                  {/* Phenolphthalein */}
+                  <div className="bg-pink-50 p-3 rounded border border-pink-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-sm font-semibold text-pink-800">
+                        Phenolphthalein
+                      </div>
+                      <div className="px-2 py-1 bg-pink-600 text-white text-xs rounded font-bold">
+                        Indicator
+                      </div>
+                    </div>
+                    <div className="text-lg font-bold text-pink-900 mb-1">
+                      C₂₀H₁₄O₄
+                    </div>
+                    <div className="text-xs text-pink-700">
+                      <div>Colorless in acid</div>
+                      <div>Pink in base</div>
+                    </div>
+                  </div>
+
+                  {/* Neutralization Reaction */}
+                  <div className="bg-green-50 p-3 rounded border border-green-200">
+                    <div className="text-sm font-semibold text-green-800 mb-2">
+                      Neutralization Reaction
+                    </div>
+                    <div className="text-sm font-bold text-green-900 mb-1">
+                      NaOH + HCl → NaCl + H₂O
+                    </div>
+                    <div className="text-xs text-green-700">
+                      <div className="flex items-center justify-between">
+                        <span>Base + Acid → Salt + Water</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         ) : (
