@@ -230,7 +230,7 @@ export const ChemicalFormulas: React.FC<ChemicalFormulasProps> = ({
         {/* Chemical Compounds */}
         <div className="space-y-3 mb-6">
           <h3 className="font-medium text-gray-900 text-sm flex items-center">
-            <Flask className="w-4 h-4 mr-2 text-green-600" />
+            <FlaskConical className="w-4 h-4 mr-2 text-green-600" />
             Chemical Compounds
           </h3>
           <div className="grid gap-2">
