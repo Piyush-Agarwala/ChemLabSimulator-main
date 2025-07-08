@@ -504,19 +504,20 @@ function VirtualLabApp({
         let finalY = y;
 
         if (experimentTitle.includes("Acid-Base")) {
-          const centerX = 400; // Fixed X position for alignment
+          const centerX = 450; // Better center position for alignment
           const equipmentOrder = [
             "magnetic_stirrer",
             "conical_flask",
             "burette",
           ];
-          const startY = 300; // Base Y position
-          const spacing = 120; // Vertical spacing between equipment
+          const centerY = 250; // Center Y position for the middle element (conical flask)
+          const spacing = 140; // Increased spacing between equipment
 
           if (equipmentOrder.includes(id)) {
             finalX = centerX;
             const orderIndex = equipmentOrder.indexOf(id);
-            finalY = startY - orderIndex * spacing; // Magnetic stirrer at bottom, burette at top
+            // Center the conical flask, position others above and below
+            finalY = centerY + (1 - orderIndex) * spacing; // burette=top, conical=center, stirrer=bottom
           } else {
             // For other equipment, ensure they stay within bounds
             const minX = 50;
