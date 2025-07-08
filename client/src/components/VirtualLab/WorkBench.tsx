@@ -270,11 +270,26 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+
+    // Add visual feedback for drop zone
+    const target = e.currentTarget as HTMLElement;
+    target.style.backgroundColor = "rgba(59, 130, 246, 0.02)";
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    // Remove visual feedback
+    const target = e.currentTarget as HTMLElement;
+    target.style.backgroundColor = "";
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    // Try to get equipment data first, then fallback to text/plain
+
+    // Remove visual feedback
+    const target = e.currentTarget as HTMLElement;
+    target.style.backgroundColor = "";
+
+    // Get equipment data
     const equipmentId = e.dataTransfer.getData("equipment");
     const id = equipmentId || e.dataTransfer.getData("text/plain");
 
@@ -282,7 +297,12 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      onDrop(id, x, y);
+
+      // Ensure minimum distance from edges for better positioning
+      const adjustedX = Math.max(80, Math.min(rect.width - 80, x));
+      const adjustedY = Math.max(80, Math.min(rect.height - 80, y));
+
+      onDrop(id, adjustedX, adjustedY);
     }
   };
 
