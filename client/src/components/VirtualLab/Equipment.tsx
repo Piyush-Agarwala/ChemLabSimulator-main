@@ -170,177 +170,67 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       return (
         <div className="relative">
-          {/* Enhanced Conical Flask Illustration */}
-          <svg
-            width="80"
-            height="100"
-            viewBox="0 0 80 100"
-            className="drop-shadow-lg"
-          >
-            {/* Flask body - conical shape */}
-            <path
-              d="M30 20 L30 35 L15 75 L65 75 L50 35 L50 20 Z"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
-            />
-            {/* Flask neck */}
-            <rect
-              x="35"
-              y="10"
-              width="10"
-              height="15"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
-              rx="1"
-            />
-            {/* Flask opening */}
-            <ellipse
-              cx="40"
-              cy="10"
-              rx="5"
-              ry="2"
-              fill="none"
-              stroke="#2563eb"
-              strokeWidth="2"
+          {/* Real Conical Flask Image */}
+          <div className="relative w-20 h-24">
+            <img
+              src="https://images.pexels.com/photos/8539753/pexels-photo-8539753.jpeg"
+              alt="Laboratory Conical Flask"
+              className="w-full h-full object-cover rounded-lg shadow-lg"
+              style={{
+                filter: "brightness(1.2) contrast(1.1)",
+                clipPath: "inset(5% 15% 5% 15%)",
+              }}
             />
 
-            {/* Solution in conical flask */}
+            {/* Solution overlay in flask */}
             {chemicals.length > 0 && (
-              <path
-                d={`M${20 + chemicals.length} ${75 - getSolutionHeight() * 0.5} L${60 - chemicals.length} ${75 - getSolutionHeight() * 0.5} L65 75 L15 75 Z`}
-                fill={getMixedColor()}
-                opacity="0.8"
-                className="transition-all duration-500"
-              />
-            )}
+              <div
+                className="absolute bottom-2 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                style={{
+                  backgroundColor: getMixedColor(),
+                  height: `${getSolutionHeight() * 0.7}%`,
+                  width: "70%",
+                  opacity: 0.8,
+                  minHeight: "6px",
+                  borderRadius: "0 0 8px 8px",
+                  clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)",
+                }}
+              >
+                {/* Liquid surface shimmer */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
 
-            {/* Phenolphthalein indicator effect */}
-            {hasPhenolphthalein && (
-              <g>
-                {/* Indicator color change visualization */}
-                {hasNaOH && (
-                  <path
-                    d={`M${22} ${75 - getSolutionHeight() * 0.5} L${58} ${75 - getSolutionHeight() * 0.5} L63 75 L17 75 Z`}
-                    fill="#FF1493"
-                    opacity="0.6"
-                    className="animate-pulse transition-all duration-1000"
-                  />
+                {/* Phenolphthalein indicator effect */}
+                {hasPhenolphthalein && hasNaOH && (
+                  <div className="absolute inset-0 bg-pink-400 opacity-60 animate-pulse rounded-b-lg"></div>
                 )}
 
-                {/* Indicator drops animation */}
-                {[...Array(3)].map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={35 + i * 5}
-                    cy={70 - getSolutionHeight() * 0.3}
-                    r="1"
-                    fill="#FFB6C1"
-                    className="animate-bounce opacity-80"
-                    style={{
-                      animationDelay: `${i * 0.2}s`,
-                      animationDuration: "2s",
-                    }}
-                  />
-                ))}
-              </g>
+                {/* Bubbling animation for reactions */}
+                {isNeutralizationReaction && (
+                  <div className="absolute inset-0">
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-1 h-1 bg-white opacity-80 rounded-full animate-bounce"
+                        style={{
+                          left: `${20 + i * 10}%`,
+                          bottom: `${10 + (i % 3) * 10}px`,
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: "1.5s",
+                        }}
+                      ></div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
 
-            {/* Special neutralization reaction effects */}
-            {isNeutralizationReaction && (
-              <g>
-                {/* Heat visualization */}
-                <circle
-                  cx="40"
-                  cy="55"
-                  r="3"
-                  fill="rgba(255, 165, 0, 0.6)"
-                  className="animate-pulse"
-                />
-                <circle
-                  cx="35"
-                  cy="60"
-                  r="2"
-                  fill="rgba(255, 165, 0, 0.4)"
-                  className="animate-pulse"
-                  style={{ animationDelay: "0.5s" }}
-                />
-                <circle
-                  cx="45"
-                  cy="60"
-                  r="2"
-                  fill="rgba(255, 165, 0, 0.4)"
-                  className="animate-pulse"
-                  style={{ animationDelay: "1s" }}
-                />
-
-                {/* Vigorous bubbling for neutralization */}
-                {[...Array(8)].map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={25 + i * 7}
-                    cy={70 - (i % 3) * 5}
-                    r="1.5"
-                    fill="rgba(255, 255, 255, 0.9)"
-                    className="animate-bounce"
-                    style={{
-                      animationDelay: `${i * 0.2}s`,
-                      animationDuration: "1s",
-                    }}
-                  />
-                ))}
-              </g>
-            )}
-
-            {/* Regular bubbling for other reactions */}
-            {chemicals.length > 1 && !isNeutralizationReaction && (
-              <g>
-                {[...Array(4)].map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={25 + i * 10}
-                    cy={65 - (i % 2) * 5}
-                    r="1"
-                    fill="rgba(255, 255, 255, 0.7)"
-                    className="animate-bounce"
-                    style={{
-                      animationDelay: `${i * 0.4}s`,
-                      animationDuration: "2s",
-                    }}
-                  />
-                ))}
-              </g>
-            )}
-
-            {/* Volume markings */}
-            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
-              <line x1="67" y1="50" x2="70" y2="50" />
-              <text x="71" y="53" fontSize="5">
-                250
-              </text>
-              <line x1="67" y1="60" x2="70" y2="60" />
-              <text x="71" y="63" fontSize="5">
-                150
-              </text>
-              <line x1="67" y1="70" x2="70" y2="70" />
-              <text x="71" y="73" fontSize="5">
-                50
-              </text>
-            </g>
-
-            {/* Flask label */}
-            <text
-              x="40"
-              y="90"
-              textAnchor="middle"
-              fontSize="7"
-              fill="#374151"
-              fontWeight="bold"
-            >
-              Conical Flask
-            </text>
-          </svg>
+            {/* Volume markings overlay */}
+            <div className="absolute right-0 top-6 text-xs text-gray-700 font-bold">
+              <div className="mb-1">250</div>
+              <div className="mb-1">150</div>
+              <div className="mb-1">50</div>
+            </div>
+          </div>
 
           {/* Special reaction indicator */}
           {isNeutralizationReaction && (
