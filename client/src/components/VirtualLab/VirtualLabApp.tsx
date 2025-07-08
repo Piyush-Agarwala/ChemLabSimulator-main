@@ -215,7 +215,7 @@ function VirtualLabApp({
         {
           id: "phenol",
           name: "Phenolphthalein",
-          formula: "C₂₀H₁₄O₄",
+          formula: "C₂₀H₁���O₄",
           color: "#FFB6C1",
           concentration: "Indicator",
           volume: 10,
@@ -1166,8 +1166,51 @@ function VirtualLabApp({
           if (isTitrating) {
             setIsTitrating(false);
             setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
+
+            // Automatically open Results Panel by adding a comprehensive titration result
+            const titrationResult: Result = {
+              id: Date.now().toString(),
+              type: "success",
+              title: "Acid-Base Titration Complete",
+              description:
+                "Endpoint reached - Solution turned completely pink. Titration analysis available.",
+              timestamp: new Date().toLocaleTimeString(),
+              calculation: {
+                reaction:
+                  "HCl + NaOH → NaCl + H₂O (with phenolphthalein endpoint)",
+                reactionType: "Acid-Base Titration Complete",
+                balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+                products: [
+                  "Sodium Chloride (NaCl)",
+                  "Water (H₂O)",
+                  "Pink endpoint reached",
+                ],
+                volumeAdded: 25.0, // Typical titration volume
+                totalVolume: 50.0,
+                concentration: "0.1000 M HCl determined",
+                molarity: 0.1,
+                moles: 0.0025,
+                ph: 8.3, // Slightly basic at endpoint
+                yield: 100,
+                mechanism: [
+                  "1. Initial: HCl (colorless) + phenolphthalein (colorless in acid)",
+                  "2. NaOH addition: Gradual neutralization occurs",
+                  "3. Near endpoint: pH rises rapidly",
+                  "4. Endpoint: Phenolphthalein turns pink (pH > 8.2)",
+                  "5. Result: Equivalent moles of acid and base reacted",
+                ],
+                thermodynamics: {
+                  deltaH: -57.3,
+                  deltaG: -79.9,
+                  equilibriumConstant: 1.0e14,
+                },
+              },
+            };
+
+            setResults((prev) => [...prev, titrationResult]);
+
             setToastMessage(
-              "🎯 Endpoint reached! Titration completed automatically.",
+              "🎯 Endpoint reached! Results Panel opened automatically.",
             );
             setTimeout(() => setToastMessage(null), 4000);
           }
