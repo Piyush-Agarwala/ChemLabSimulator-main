@@ -499,18 +499,42 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
-        // Allow free positioning for all equipment - users can place where they want
+        // Auto-align titration equipment in vertical line for Acid-Base experiment
         let finalX = x;
         let finalY = y;
 
-        // Ensure equipment stays within reasonable bounds of the workspace
-        const minX = 50;
-        const maxX = 700;
-        const minY = 50;
-        const maxY = 400;
+        if (experimentTitle.includes("Acid-Base")) {
+          const centerX = 400; // Fixed X position for alignment
+          const equipmentOrder = [
+            "magnetic_stirrer",
+            "conical_flask",
+            "burette",
+          ];
+          const startY = 300; // Base Y position
+          const spacing = 120; // Vertical spacing between equipment
 
-        finalX = Math.max(minX, Math.min(maxX, x));
-        finalY = Math.max(minY, Math.min(maxY, y));
+          if (equipmentOrder.includes(id)) {
+            finalX = centerX;
+            const orderIndex = equipmentOrder.indexOf(id);
+            finalY = startY - orderIndex * spacing; // Magnetic stirrer at bottom, burette at top
+          } else {
+            // For other equipment, ensure they stay within bounds
+            const minX = 50;
+            const maxX = 700;
+            const minY = 50;
+            const maxY = 400;
+            finalX = Math.max(minX, Math.min(maxX, x));
+            finalY = Math.max(minY, Math.min(maxY, y));
+          }
+        } else {
+          // For other experiments, ensure equipment stays within reasonable bounds
+          const minX = 50;
+          const maxX = 700;
+          const minY = 50;
+          const maxY = 400;
+          finalX = Math.max(minX, Math.min(maxX, x));
+          finalY = Math.max(minY, Math.min(maxY, y));
+        }
 
         if (existing) {
           return prev.map((pos) =>
