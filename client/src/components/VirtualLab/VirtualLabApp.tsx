@@ -908,8 +908,12 @@ function VirtualLabApp({
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
-        reactionTitle = "Acid-Indicator Reaction in Conical Flask";
-        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: HCl + C₂₀H₁₄O₄ → Colorless complex`;
+        reactionTitle = hasIndicator
+          ? "Titration with Indicator in Conical Flask"
+          : "Neutralization in Conical Flask";
+        reactionDescription = hasIndicator
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O₄ endpoint indicator)`
+          : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
       const result: Result = {
