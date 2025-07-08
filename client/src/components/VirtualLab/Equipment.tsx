@@ -187,9 +187,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F9073a52a13c24cf6b1e5817b6c0ffeeb?format=webp&width=800"
               alt="Laboratory Conical Flask"
-              className="w-full h-full object-contain rounded-lg shadow-lg bg-white"
+              className="w-full h-full object-contain shadow-2xl"
               style={{
                 filter: "brightness(1.0) contrast(1.0)",
+                background: "transparent",
               }}
             />
 
