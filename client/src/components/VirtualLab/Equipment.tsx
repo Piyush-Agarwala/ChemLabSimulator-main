@@ -302,16 +302,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }}
             />
 
-            {/* Solution overlay in burette */}
+            {/* Solution overlay in burette - better centered */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.6}%`,
-                  width: "30%",
+                  width: "25%",
                   opacity: 0.9,
-                  minHeight: "10px",
+                  minHeight: "12px",
                 }}
               >
                 {/* Liquid surface shimmer */}
