@@ -516,6 +516,19 @@ function VirtualLabApp({
     }
   }, [undoHistory]);
 
+  // Keyboard shortcut for undo (Ctrl+Z)
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
+        event.preventDefault();
+        handleUndo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleUndo]);
+
   const handleEquipmentDrop = useCallback(
     (id: string, x: number, y: number) => {
       // Save current state before making changes
