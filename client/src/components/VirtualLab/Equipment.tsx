@@ -328,8 +328,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
               <div className="mb-5">10</div>
             </div>
 
-            {/* NaOH information overlay */}
-            {hasNaOH && (
+            {/* NaOH information overlay - hide when NaOH has been added to conical flask */}
+            {hasNaOH && !hasNaOHInFlask && (
               <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-blue-500 rounded-lg px-3 py-2 text-sm shadow-lg whitespace-nowrap">
                 <div className="text-blue-800 font-bold text-center">
                   0.1M NaOH
