@@ -185,7 +185,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {/* Real Conical Flask Image */}
           <div className="relative w-20 h-24">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F9073a52a13c24cf6b1e5817b6c0ffeeb?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2Fdedd42141c6148f299398271c3825dde?format=webp&width=800"
               alt="Laboratory Conical Flask"
               className="w-full h-full object-contain shadow-2xl"
               style={{
