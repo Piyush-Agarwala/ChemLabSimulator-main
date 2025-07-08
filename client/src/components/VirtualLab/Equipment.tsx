@@ -298,7 +298,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {/* Real Burette Image */}
           <div className="relative w-16 h-32">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F34490e039f07440eace9cc9afdabb8c1?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F224943c9a04e454aaaaa93cf5b67da42?format=webp&width=800"
               alt="Laboratory Burette"
               className="w-full h-full object-contain shadow-2xl"
               style={{
