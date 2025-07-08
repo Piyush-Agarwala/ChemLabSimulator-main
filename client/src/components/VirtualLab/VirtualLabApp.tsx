@@ -211,7 +211,7 @@ function VirtualLabApp({
           id: "water",
           name: "Distilled Water",
           formula: "H��O",
-          color: "#87CEEB",
+          color: "transparent",
           concentration: "Pure",
           volume: 100,
         },
