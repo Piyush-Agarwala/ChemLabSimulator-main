@@ -363,26 +363,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               </div>
             )}
 
-            {/* Lab Bench Surface - More prominent */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-amber-200 via-amber-150 to-amber-100 border-t-2 border-amber-300">
-              <div className="absolute inset-0 opacity-40 bg-gradient-to-r from-amber-300 to-amber-200"></div>
-              {/* Enhanced lab bench texture */}
-              <div
-                className="absolute inset-0 opacity-25"
-                style={{
-                  backgroundImage: `repeating-linear-gradient(
-                  90deg,
-                  transparent,
-                  transparent 3px,
-                  rgba(0,0,0,0.1) 3px,
-                  rgba(0,0,0,0.1) 6px
-                )`,
-                }}
-              ></div>
-              {/* Lab bench edge highlight */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 opacity-60"></div>
-            </div>
-
             {/* Helpful hints for Aspirin Synthesis */}
             {experimentTitle.includes("Aspirin") && (
               <div className="absolute top-6 left-6 bg-blue-100 border-2 border-blue-300 rounded-lg p-4 max-w-sm z-20">
