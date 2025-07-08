@@ -298,12 +298,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
           {/* Real Burette Image */}
           <div className="relative w-16 h-32">
             <img
-              src="https://images.pexels.com/photos/7722929/pexels-photo-7722929.jpeg"
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F34490e039f07440eace9cc9afdabb8c1?format=webp&width=800"
               alt="Laboratory Burette"
-              className="w-full h-full object-cover rounded-lg shadow-lg"
+              className="w-full h-full object-contain rounded-lg shadow-lg bg-white"
               style={{
-                filter: "brightness(1.1) contrast(1.2)",
-                clipPath: "inset(20% 30% 10% 30%)",
+                filter: "brightness(1.0) contrast(1.0)",
               }}
             />
 
