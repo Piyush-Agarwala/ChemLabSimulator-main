@@ -1,5 +1,5 @@
 import React from "react";
-import { Flask, ArrowRight, Beaker } from "lucide-react";
+import { FlaskConical, ArrowRight, TestTube } from "lucide-react";
 
 interface ChemicalFormula {
   name: string;
