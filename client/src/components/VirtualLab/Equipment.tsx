@@ -171,6 +171,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return "#FF69B4"; // Bright pink
     }
 
+    // HCl + Phenolphthalein combination (acidic solution)
+    if (
+      chemicalIds.includes("hcl") &&
+      chemicalIds.includes("phenol") &&
+      !chemicalIds.includes("naoh")
+    ) {
+      return "#ADD8E6"; // Light blue for HCl + Phenolphthalein in acidic solution
+    }
+
     // Default color mixing
     let r = 0,
       g = 0,
@@ -729,14 +738,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
               {chemicals.some((c) => c.id === "hcl") &&
                 chemicals.some((c) => c.id === "naoh") && (
                   <div className="bg-green-50 border border-green-200 rounded px-2 py-1 mt-2">
-                    <div className="text-green-800 font-bold text-center text-xs">
-                      Neutralization Reaction
+                    <div className="text-blue-800 font-bold text-center text-xs">
+                      Acid-Indicator Reaction
                     </div>
-                    <div className="text-green-700 font-semibold text-center mt-1">
-                      NaOH + HCl → NaCl + H₂O
+                    <div className="text-blue-700 font-semibold text-center mt-1">
+                      HCl + C₂₀H₁₄O₄ → Complex (colorless)
                     </div>
-                    <div className="text-green-600 text-center text-xs mt-1">
-                      Sodium hydroxide + Hydrochloric acid → Salt + Water
+                    <div className="text-blue-600 text-center text-xs mt-1">
+                      Acid solution with pH indicator remains colorless
                     </div>
                   </div>
                 )}

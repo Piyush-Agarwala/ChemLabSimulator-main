@@ -18,6 +18,7 @@ import {
   Thermometer,
   Droplets,
   Erlenmeyer,
+  Undo2,
 } from "lucide-react";
 import type { ExperimentStep } from "@shared/schema";
 
@@ -69,6 +70,8 @@ interface VirtualLabProps {
   totalSteps: number;
   experimentTitle: string;
   allSteps: ExperimentStep[];
+  onTimerStart?: () => void;
+  onTimerStop?: () => void;
 }
 
 function VirtualLabApp({
@@ -79,10 +82,13 @@ function VirtualLabApp({
   totalSteps,
   experimentTitle,
   allSteps,
+  onTimerStart,
+  onTimerStop,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
   >([]);
+  const [undoHistory, setUndoHistory] = useState<EquipmentPosition[][]>([]);
   const [selectedChemical, setSelectedChemical] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
@@ -134,7 +140,7 @@ function VirtualLabApp({
         {
           id: "salicylic_acid",
           name: "Salicylic Acid",
-          formula: "C₇H₆O₃",
+          formula: "C₇H₆O���",
           color: "#F8F8FF",
           concentration: "2.0 g",
           volume: 25,
@@ -381,7 +387,6 @@ function VirtualLabApp({
             />
           ),
         },
-        { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
         {
           id: "magnetic_stirrer",
           name: "Magnetic Stirrer",
@@ -496,8 +501,43 @@ function VirtualLabApp({
     },
   ];
 
+  // Undo functionality
+  const saveStateToHistory = useCallback(() => {
+    setUndoHistory((prev) => {
+      const newHistory = [...prev, equipmentPositions];
+      // Keep only last 10 states to prevent memory issues
+      return newHistory.slice(-10);
+    });
+  }, [equipmentPositions]);
+
+  const handleUndo = useCallback(() => {
+    if (undoHistory.length > 0) {
+      const previousState = undoHistory[undoHistory.length - 1];
+      setEquipmentPositions(previousState);
+      setUndoHistory((prev) => prev.slice(0, -1));
+      setToastMessage("↩️ Last action undone");
+      setTimeout(() => setToastMessage(null), 2000);
+    }
+  }, [undoHistory]);
+
+  // Keyboard shortcut for undo (Ctrl+Z)
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
+        event.preventDefault();
+        handleUndo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleUndo]);
+
   const handleEquipmentDrop = useCallback(
     (id: string, x: number, y: number) => {
+      // Save current state before making changes
+      saveStateToHistory();
+
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
@@ -678,7 +718,12 @@ function VirtualLabApp({
         return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
-    [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
+    [
+      experimentTitle,
+      currentGuidedStep,
+      aspirinGuidedSteps,
+      saveStateToHistory,
+    ],
   );
 
   const calculateChemicalProperties = (
@@ -723,6 +768,9 @@ function VirtualLabApp({
   ) => {
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
+
+    // Save current state before making changes
+    saveStateToHistory();
 
     // Enhanced phenolphthalein handling for conical flask (proper placement)
     if (chemicalId === "phenol" && equipmentId === "conical_flask") {
@@ -904,13 +952,17 @@ function VirtualLabApp({
             ? "NaOH"
             : "none";
 
-      let reactionTitle = "Acid-Base Neutralization Detected";
-      let reactionDescription = "NaOH + HCl → NaCl + H₂O";
+      let reactionTitle = "Acid-Indicator Interaction Detected";
+      let reactionDescription = "HCl + C₂₀H₁���O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
-        reactionTitle = "Neutralization Reaction in Conical Flask";
-        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: NaOH + HCl → NaCl + H₂O`;
+        reactionTitle = hasIndicator
+          ? "Titration with Indicator in Conical Flask"
+          : "Neutralization in Conical Flask";
+        reactionDescription = hasIndicator
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O�� endpoint indicator)`
+          : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
       const result: Result = {
@@ -920,10 +972,22 @@ function VirtualLabApp({
         description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "NaOH + HCl → NaCl + H₂O",
-          reactionType: "Acid-Base Neutralization",
-          balancedEquation: "NaOH(aq) + HCl(aq) → NaCl(aq) + H₂O(l)",
-          products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
+          reaction: hasIndicator
+            ? "HCl + NaOH → NaCl + H₂O (with C₂₀H₁₄O₄)"
+            : "HCl + NaOH → NaCl + H₂O",
+          reactionType: hasIndicator
+            ? "Acid-Base Titration with Indicator"
+            : "Acid-Base Neutralization",
+          balancedEquation: hasIndicator
+            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂₀H₁₄O₄ endpoint indicator]"
+            : "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+          products: hasIndicator
+            ? [
+                "Sodium Chloride (NaCl)",
+                "Water (H₂O)",
+                "Color change at endpoint",
+              ]
+            : ["Sodium Chloride (NaCl)", "Water (H₂O)"],
           yield: 95,
           volumeAdded: limitingAmount,
           totalVolume: totalVolume,
@@ -947,7 +1011,9 @@ function VirtualLabApp({
 
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
-        setToastMessage(`🧪 Neutralization complete! NaOH + HCl → NaCl + H₂O`);
+        setToastMessage(
+          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ → Colorless complex`,
+        );
         setTimeout(() => setToastMessage(null), 4000);
       }
     }
@@ -955,6 +1021,9 @@ function VirtualLabApp({
 
   const handleStartExperiment = () => {
     setIsRunning(true);
+    if (onTimerStart) {
+      onTimerStart();
+    }
     onStepComplete();
   };
 
@@ -1031,7 +1100,7 @@ function VirtualLabApp({
 
     if (!stirrer || !conicalFlask) {
       setToastMessage(
-        "���️ Please place both magnetic stirrer and conical flask!",
+        "�����️ Please place both magnetic stirrer and conical flask!",
       );
       setTimeout(() => setToastMessage(null), 3000);
       return;
@@ -1267,10 +1336,16 @@ function VirtualLabApp({
               <Controls
                 isRunning={isRunning}
                 onStart={handleStartExperiment}
-                onStop={() => setIsRunning(false)}
+                onStop={() => {
+                  setIsRunning(false);
+                  if (onTimerStop) {
+                    onTimerStop();
+                  }
+                }}
                 onReset={() => {
                   // Reset all experiment state to initial values
                   setEquipmentPositions([]);
+                  setUndoHistory([]);
                   setResults([]);
                   setIsRunning(false);
                   setCurrentStep(stepNumber);
@@ -1296,6 +1371,21 @@ function VirtualLabApp({
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
+
+              {/* Undo Button */}
+              <button
+                onClick={handleUndo}
+                disabled={undoHistory.length === 0}
+                className={`flex items-center space-x-1 px-3 py-1 ml-4 rounded text-xs font-medium transition-colors ${
+                  undoHistory.length === 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                }`}
+                title="Undo last drag & drop action"
+              >
+                <Undo2 size={14} />
+                <span>Undo ({undoHistory.length})</span>
+              </button>
 
               {/* Titration Control Buttons for Acid-Base Experiment */}
               {experimentTitle.includes("Acid-Base") && (

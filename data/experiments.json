@@ -93,7 +93,6 @@
     "equipment": [
       "50mL Burette",
       "250mL Conical Flask",
-      "25mL Pipette",
       "Pipette Filler",
       "White Tile",
       "Phenolphthalein Indicator",
@@ -111,7 +110,7 @@
       {
         "id": 2,
         "title": "Prepare Sample",
-        "description": "Using a pipette, transfer exactly 25.0mL of the unknown HCl solution into a clean conical flask.",
+        "description": "Transfer exactly 25.0mL of the unknown HCl solution into a clean conical flask.",
         "duration": "5 minutes",
         "completed": false
       },
