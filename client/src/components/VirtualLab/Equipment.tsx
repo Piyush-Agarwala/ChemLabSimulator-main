@@ -727,7 +727,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   .map((c) => {
                     if (c.id === "hcl") return "HCl";
                     if (c.id === "naoh") return "NaOH";
-                    if (c.id === "phenol") return "C₂���H₁₄O₄";
+                    if (c.id === "phenol") return "C₂���H₁��O₄";
                     return "";
                   })
                   .filter(Boolean)
@@ -738,14 +738,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
               {chemicals.some((c) => c.id === "hcl") &&
                 chemicals.some((c) => c.id === "naoh") && (
                   <div className="bg-green-50 border border-green-200 rounded px-2 py-1 mt-2">
-                    <div className="text-green-800 font-bold text-center text-xs">
-                      Neutralization Reaction
+                    <div className="text-blue-800 font-bold text-center text-xs">
+                      Acid-Indicator Reaction
                     </div>
-                    <div className="text-green-700 font-semibold text-center mt-1">
-                      NaOH + HCl → NaCl + H₂O
+                    <div className="text-blue-700 font-semibold text-center mt-1">
+                      HCl + Phenolphthalein → Complex (colorless)
                     </div>
-                    <div className="text-green-600 text-center text-xs mt-1">
-                      Sodium hydroxide + Hydrochloric acid → Salt + Water
+                    <div className="text-blue-600 text-center text-xs mt-1">
+                      Acid solution with pH indicator remains colorless
                     </div>
                   </div>
                 )}

@@ -903,13 +903,13 @@ function VirtualLabApp({
             ? "NaOH"
             : "none";
 
-      let reactionTitle = "Acid-Base Neutralization Detected";
-      let reactionDescription = "NaOH + HCl → NaCl + H₂O";
+      let reactionTitle = "Acid-Indicator Interaction Detected";
+      let reactionDescription = "HCl + Phenolphthalein → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
-        reactionTitle = "Neutralization Reaction in Conical Flask";
-        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: NaOH + HCl → NaCl + H₂O`;
+        reactionTitle = "Acid-Indicator Reaction in Conical Flask";
+        reactionDescription = `${limitingAmount.toFixed(1)}mL reaction: HCl + Phenolphthalein → Colorless complex`;
       }
 
       const result: Result = {
@@ -919,10 +919,11 @@ function VirtualLabApp({
         description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "NaOH + HCl → NaCl + H₂O",
-          reactionType: "Acid-Base Neutralization",
-          balancedEquation: "NaOH(aq) + HCl(aq) → NaCl(aq) + H₂O(l)",
-          products: ["Sodium Chloride (NaCl)", "Water (H₂O)"],
+          reaction: "HCl + Phenolphthalein → Complex",
+          reactionType: "Acid-Indicator Interaction",
+          balancedEquation:
+            "HCl(aq) + Phenolphthalein → HCl-Phenolphthalein complex (colorless)",
+          products: ["HCl-Phenolphthalein complex (colorless)"],
           yield: 95,
           volumeAdded: limitingAmount,
           totalVolume: totalVolume,
@@ -946,7 +947,9 @@ function VirtualLabApp({
 
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
-        setToastMessage(`🧪 Neutralization complete! NaOH + HCl → NaCl + H₂O`);
+        setToastMessage(
+          `🧪 Acid-indicator reaction complete! HCl + Phenolphthalein → Colorless complex`,
+        );
         setTimeout(() => setToastMessage(null), 4000);
       }
     }

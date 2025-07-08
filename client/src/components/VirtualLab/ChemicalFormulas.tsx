@@ -103,9 +103,10 @@ export const ChemicalFormulas: React.FC<ChemicalFormulasProps> = ({
         ],
         reactions: [
           {
-            equation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
-            name: "Acid-Base Neutralization",
-            type: "Neutralization Reaction",
+            equation:
+              "HCl(aq) + Phenolphthalein → HCl-Phenolphthalein complex (colorless)",
+            name: "Acid-Indicator Interaction",
+            type: "Indicator Reaction",
             conditions: [
               "Room temperature",
               "Aqueous solution",
