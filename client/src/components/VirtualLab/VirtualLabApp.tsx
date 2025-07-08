@@ -514,21 +514,25 @@ function VirtualLabApp({
 
         // Only auto-align on first placement if not repositioning
         if (!existing && experimentTitle.includes("Acid-Base")) {
+          // Equipment order from top to bottom as shown in the image:
+          // 1. Burette (top)
+          // 2. Conical Flask (middle)
+          // 3. Magnetic Stirrer (bottom)
           const equipmentOrder = [
-            "magnetic_stirrer",
-            "conical_flask",
             "burette",
+            "conical_flask",
+            "magnetic_stirrer",
           ];
           const centerX = 450;
-          const centerY = 250;
-          const spacing = 140;
+          const baseY = 150; // Starting Y position for burette at top
+          const spacing = 140; // Vertical spacing between equipment
 
           if (equipmentOrder.includes(id)) {
             // Check if this is close to center area (auto-align zone)
-            if (Math.abs(x - centerX) < 150 && Math.abs(y - centerY) < 200) {
+            if (Math.abs(x - centerX) < 150 && Math.abs(y - 250) < 200) {
               finalX = centerX;
               const orderIndex = equipmentOrder.indexOf(id);
-              finalY = centerY + (1 - orderIndex) * spacing;
+              finalY = baseY + orderIndex * spacing;
             }
           }
         }
