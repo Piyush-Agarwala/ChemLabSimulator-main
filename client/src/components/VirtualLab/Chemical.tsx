@@ -104,6 +104,25 @@ export const Chemical: React.FC<ChemicalProps> = ({
               {concentration}
             </div>
           )}
+
+          {/* Special usage hints for titration chemicals */}
+          {selected && id === "phenol" && (
+            <div className="text-xs text-pink-600 font-medium bg-pink-50 px-2 py-1 rounded mt-1">
+              💡 Add to acid solution in conical flask
+            </div>
+          )}
+
+          {selected && id === "naoh" && (
+            <div className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded mt-1">
+              💡 Load into burette for titration
+            </div>
+          )}
+
+          {selected && id === "hcl" && (
+            <div className="text-xs text-yellow-600 font-medium bg-yellow-50 px-2 py-1 rounded mt-1">
+              💡 Add to conical flask first
+            </div>
+          )}
         </div>
 
         {selected && (
@@ -150,12 +169,24 @@ export const Chemical: React.FC<ChemicalProps> = ({
         </div>
       )}
 
-      {/* Drag instruction with animation */}
+      {/* Enhanced drag instruction with specific targets */}
       <div
         className={`text-xs text-center mt-2 transition-all ${selected ? "opacity-100 animate-pulse" : "opacity-0"}`}
       >
         <div className="flex items-center justify-center space-x-1">
-          <span className="text-purple-600 font-medium">Drag to equipment</span>
+          {id === "phenol" && (
+            <span className="text-purple-600 font-medium">
+              Drag to conical flask
+            </span>
+          )}
+          {id === "naoh" && (
+            <span className="text-purple-600 font-medium">Drag to burette</span>
+          )}
+          {!["phenol", "naoh"].includes(id) && (
+            <span className="text-purple-600 font-medium">
+              Drag to equipment
+            </span>
+          )}
           <span className="text-purple-500 animate-bounce">→</span>
         </div>
       </div>

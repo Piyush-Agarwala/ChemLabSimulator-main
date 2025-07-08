@@ -103,6 +103,12 @@ function VirtualLabApp({
     drops: Array<{ id: string; x: number; y: number; color: string }>;
   }>({ active: false, chemicalId: "", drops: [] });
 
+  // Titration-specific state
+  const [isTitrating, setIsTitrating] = useState(false);
+  const [isStirring, setIsStirring] = useState(false);
+  const [titrationDropCount, setTitrationDropCount] = useState(0);
+  const [stirrerActive, setStirerActive] = useState(false);
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
@@ -349,70 +355,80 @@ function VirtualLabApp({
           id: "burette",
           name: "50mL Burette",
           icon: (
-            <svg
-              width="36"
-              height="36"
-              viewBox="0 0 36 36"
-              fill="none"
-              className="text-blue-600"
-            >
-              {/* Burette body - narrow vertical tube */}
-              <rect
-                x="16"
-                y="4"
-                width="4"
-                height="24"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="rgba(59, 130, 246, 0.1)"
-              />
-              {/* Burette top opening */}
-              <rect
-                x="14"
-                y="3"
-                width="8"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(59, 130, 246, 0.2)"
-              />
-              {/* Volume markings */}
-              <g stroke="currentColor" strokeWidth="1">
-                <line x1="12" y1="8" x2="14" y2="8" />
-                <line x1="12" y1="12" x2="14" y2="12" />
-                <line x1="12" y1="16" x2="14" y2="16" />
-                <line x1="12" y1="20" x2="14" y2="20" />
-                <line x1="12" y1="24" x2="14" y2="24" />
-              </g>
-              {/* Burette stopcock/tap */}
-              <rect
-                x="15"
-                y="28"
-                width="6"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(107, 114, 128, 0.8)"
-              />
-              {/* Burette tip */}
-              <path
-                d="M17 31 L18 33 L19 31 Z"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(59, 130, 246, 0.3)"
-              />
-            </svg>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F2ad8cf1ef1394deabc2721f0caee85ef?format=webp&width=800"
+              alt="Burette"
+              className="w-9 h-9 object-contain rounded border-2 border-blue-400 shadow-sm bg-white"
+              style={{
+                filter: "brightness(1.0) contrast(1.0)",
+              }}
+            />
           ),
         },
         {
           id: "conical_flask",
           name: "250mL Conical Flask",
-          icon: <FlaskConical size={36} />,
+          icon: (
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F18f408c6f29d4176ac4ae731a3650daa?format=webp&width=800"
+              alt="Conical Flask"
+              className="w-9 h-9 object-contain rounded border-2 border-blue-400 shadow-sm bg-white"
+              style={{
+                filter: "brightness(1.0) contrast(1.0)",
+              }}
+            />
+          ),
         },
         { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
+        {
+          id: "magnetic_stirrer",
+          name: "Magnetic Stirrer",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-gray-600"
+            >
+              {/* Stirrer base */}
+              <rect
+                x="4"
+                y="20"
+                width="28"
+                height="12"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(107, 114, 128, 0.1)"
+              />
+              {/* Control knobs */}
+              <circle cx="10" cy="26" r="2" fill="currentColor" />
+              <circle cx="26" cy="26" r="2" fill="currentColor" />
+              {/* Stirring bar */}
+              <rect
+                x="14"
+                y="14"
+                width="8"
+                height="2"
+                rx="1"
+                fill="#ef4444"
+                className="animate-spin"
+                style={{ transformOrigin: "18px 15px" }}
+              />
+              {/* Base label */}
+              <text
+                x="18"
+                y="30"
+                textAnchor="middle"
+                fontSize="4"
+                fill="currentColor"
+              >
+                STIRRER
+              </text>
+            </svg>
+          ),
+        },
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
@@ -483,25 +499,79 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
-        // For conical flask in Acid-Base experiment, center it in the workspace
+        // Flexible positioning with smart defaults for first-time placement
         let finalX = x;
         let finalY = y;
-        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
-          // Center the conical flask in the workspace
-          finalX = 500; // Center horizontally (better centered for workspace)
-          finalY = 250; // Center vertically (positioned well within workspace)
+
+        // Ensure equipment stays within reasonable bounds
+        const minX = 60;
+        const maxX = 800;
+        const minY = 60;
+        const maxY = 450;
+
+        finalX = Math.max(minX, Math.min(maxX, x));
+        finalY = Math.max(minY, Math.min(maxY, y));
+
+        // Only auto-align on first placement if not repositioning
+        if (!existing && experimentTitle.includes("Acid-Base")) {
+          const equipmentOrder = [
+            "magnetic_stirrer",
+            "conical_flask",
+            "burette",
+          ];
+          const centerX = 450;
+          const centerY = 250;
+          const spacing = 140;
+
+          if (equipmentOrder.includes(id)) {
+            // Check if this is close to center area (auto-align zone)
+            if (Math.abs(x - centerX) < 150 && Math.abs(y - centerY) < 200) {
+              finalX = centerX;
+              const orderIndex = equipmentOrder.indexOf(id);
+              finalY = centerY + (1 - orderIndex) * spacing;
+            }
+          }
         }
 
-        // For burette in Acid-Base experiment, position it above the conical flask
-        if (id === "burette" && experimentTitle.includes("Acid-Base")) {
-          const conicalFlask = prev.find((pos) => pos.id === "conical_flask");
-          if (conicalFlask) {
-            finalX = conicalFlask.x; // Same horizontal position as conical flask
-            finalY = conicalFlask.y - 180; // Position 180px above the conical flask for proper gap
-          } else {
-            // If conical flask not placed yet, use default position that anticipates flask placement
-            finalX = 500;
-            finalY = 70; // Above the expected conical flask position
+        // Check for overlapping with other equipment
+        const isOverlapping = (
+          newX: number,
+          newY: number,
+          excludeId: string,
+        ) => {
+          return prev.some((pos) => {
+            if (pos.id === excludeId) return false;
+            const distance = Math.sqrt(
+              Math.pow(pos.x - newX, 2) + Math.pow(pos.y - newY, 2),
+            );
+            return distance < 120; // Minimum distance between equipment
+          });
+        };
+
+        // Adjust position if overlapping
+        if (isOverlapping(finalX, finalY, id)) {
+          // Try to find a nearby non-overlapping position
+          for (let offset = 30; offset <= 150; offset += 30) {
+            const testPositions = [
+              { x: finalX + offset, y: finalY },
+              { x: finalX - offset, y: finalY },
+              { x: finalX, y: finalY + offset },
+              { x: finalX, y: finalY - offset },
+              { x: finalX + offset, y: finalY + offset },
+              { x: finalX - offset, y: finalY - offset },
+            ];
+
+            for (const testPos of testPositions) {
+              const testX = Math.max(minX, Math.min(maxX, testPos.x));
+              const testY = Math.max(minY, Math.min(maxY, testPos.y));
+
+              if (!isOverlapping(testX, testY, id)) {
+                finalX = testX;
+                finalY = testY;
+                break;
+              }
+            }
+            if (!isOverlapping(finalX, finalY, id)) break;
           }
         }
 
@@ -521,27 +591,8 @@ function VirtualLabApp({
           }
         }
 
-        // Auto-adjust burette position when conical flask is placed
-        const newPositions = [
-          ...prev,
-          { id, x: finalX, y: finalY, chemicals: [] },
-        ];
-
-        // If a conical flask was just placed and there's already a burette, reposition the burette
-        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
-          const buretteIndex = newPositions.findIndex(
-            (pos) => pos.id === "burette",
-          );
-          if (buretteIndex !== -1) {
-            newPositions[buretteIndex] = {
-              ...newPositions[buretteIndex],
-              x: finalX, // Same position as conical flask
-              y: finalY - 180, // 180px above conical flask for proper gap
-            };
-          }
-        }
-
-        return newPositions;
+        // Add equipment at user-specified position
+        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
@@ -590,7 +641,63 @@ function VirtualLabApp({
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
 
-    // Add phenolphthalein to burette when dropped
+    // Enhanced phenolphthalein handling for conical flask (proper placement)
+    if (chemicalId === "phenol" && equipmentId === "conical_flask") {
+      setToastMessage(
+        `✨ Added ${amount}mL of Phenolphthalein indicator to conical flask`,
+      );
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add phenolphthalein to conical flask - this is the correct usage for titration
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
+      );
+      return;
+    }
+
+    // Enhanced NaOH handling for burette (proper placement)
+    if (chemicalId === "naoh" && equipmentId === "burette") {
+      setToastMessage(`🧪 Filled burette with ${amount}mL of NaOH solution`);
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add NaOH to burette - this is the correct setup for acid-base titration
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
+      );
+      return;
+    }
+
+    // Legacy phenolphthalein to burette support (though not typical)
     if (chemicalId === "phenol" && equipmentId === "burette") {
       setToastMessage(`Added ${amount}mL of ${chemical.name} to burette`);
       setTimeout(() => setToastMessage(null), 3000);
@@ -766,6 +873,139 @@ function VirtualLabApp({
   const handleStartExperiment = () => {
     setIsRunning(true);
     onStepComplete();
+  };
+
+  // Titration control functions
+  const handleStartTitration = () => {
+    const burette = equipmentPositions.find((pos) => pos.id === "burette");
+    const conicalFlask = equipmentPositions.find(
+      (pos) => pos.id === "conical_flask",
+    );
+
+    if (!burette || !conicalFlask) {
+      setToastMessage("⚠️ Please place both burette and conical flask first!");
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    const hasNaOH = burette.chemicals.some((c) => c.id === "naoh");
+    if (!hasNaOH) {
+      setToastMessage("⚠️ Please add NaOH to the burette first!");
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    setIsTitrating(true);
+    setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+    setTimeout(() => setToastMessage(null), 3000);
+
+    // Start dropwise animation
+    startDropwiseAnimation(burette, conicalFlask);
+  };
+
+  const handleStopTitration = () => {
+    setIsTitrating(false);
+    setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
+    setToastMessage("⏸️ Titration stopped");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  const handleStartStirring = () => {
+    const stirrer = equipmentPositions.find(
+      (pos) => pos.id === "magnetic_stirrer",
+    );
+    const conicalFlask = equipmentPositions.find(
+      (pos) => pos.id === "conical_flask",
+    );
+
+    if (!stirrer || !conicalFlask) {
+      setToastMessage(
+        "���️ Please place both magnetic stirrer and conical flask!",
+      );
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    setIsStirring(true);
+    setStirerActive(true);
+    setToastMessage("🌀 Magnetic stirrer activated!");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  const handleStopStirring = () => {
+    setIsStirring(false);
+    setStirerActive(false);
+    setToastMessage("⏹️ Stirring stopped");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  // Dropwise animation system
+  const startDropwiseAnimation = (burette: any, conicalFlask: any) => {
+    const interval = setInterval(() => {
+      if (!isTitrating) {
+        clearInterval(interval);
+        return;
+      }
+
+      const dropId = `drop_${Date.now()}_${Math.random()}`;
+      const newDrop = {
+        id: dropId,
+        x: burette.x, // Start from burette position
+        y: burette.y + 50, // Start below burette tip
+        color: "#87CEEB", // NaOH color
+      };
+
+      setDropwiseAnimation((prev) => ({
+        active: true,
+        chemicalId: "naoh",
+        drops: [...prev.drops, newDrop],
+      }));
+
+      // Simulate adding small amount to conical flask
+      setTitrationDropCount((prev) => prev + 1);
+
+      // Every 10 drops, add 0.1mL to conical flask
+      if (titrationDropCount % 10 === 0) {
+        setEquipmentPositions((prev) =>
+          prev.map((pos) => {
+            if (pos.id === "conical_flask") {
+              const existingNaOH = pos.chemicals.find((c) => c.id === "naoh");
+              if (existingNaOH) {
+                return {
+                  ...pos,
+                  chemicals: pos.chemicals.map((c) =>
+                    c.id === "naoh" ? { ...c, amount: c.amount + 0.1 } : c,
+                  ),
+                };
+              } else {
+                return {
+                  ...pos,
+                  chemicals: [
+                    ...pos.chemicals,
+                    {
+                      id: "naoh",
+                      name: "Sodium Hydroxide",
+                      color: "#87CEEB",
+                      amount: 0.1,
+                      concentration: "0.1 M",
+                    },
+                  ],
+                };
+              }
+            }
+            return pos;
+          }),
+        );
+      }
+
+      // Remove drop after animation
+      setTimeout(() => {
+        setDropwiseAnimation((prev) => ({
+          ...prev,
+          drops: prev.drops.filter((drop) => drop.id !== dropId),
+        }));
+      }, 1500);
+    }, 800); // Drop every 800ms
   };
 
   const handleClearResults = () => {
@@ -1009,12 +1249,94 @@ function VirtualLabApp({
                 onStart={handleStartExperiment}
                 onStop={() => setIsRunning(false)}
                 onReset={() => {
+                  // Reset all experiment state to initial values
                   setEquipmentPositions([]);
                   setResults([]);
                   setIsRunning(false);
-                  setCurrentStep(1);
+                  setCurrentStep(stepNumber);
+                  setSelectedChemical(null);
+                  setMeasurements({
+                    volume: 0,
+                    concentration: 0,
+                    ph: 7,
+                    molarity: 0,
+                    moles: 0,
+                    temperature: 25,
+                  });
+                  setToastMessage(null);
+                  setCurrentGuidedStep(1);
+                  setDropwiseAnimation({
+                    active: false,
+                    chemicalId: "",
+                    drops: [],
+                  });
+
+                  // Show reset confirmation
+                  setToastMessage("�� Experiment reset successfully!");
+                  setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
+
+              {/* Titration Control Buttons for Acid-Base Experiment */}
+              {experimentTitle.includes("Acid-Base") && (
+                <div className="flex items-center space-x-2 ml-4 border-l border-gray-300 pl-4">
+                  <button
+                    onClick={
+                      isTitrating ? handleStopTitration : handleStartTitration
+                    }
+                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      isTitrating
+                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                    }`}
+                  >
+                    <Droplets size={14} />
+                    <span>
+                      {isTitrating ? "Stop Titration" : "Start Titration"}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={
+                      isStirring ? handleStopStirring : handleStartStirring
+                    }
+                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      isStirring
+                        ? "bg-red-500 hover:bg-red-600 text-white"
+                        : "bg-green-500 hover:bg-green-600 text-white"
+                    }`}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="currentColor"
+                    >
+                      <circle
+                        cx="7"
+                        cy="7"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        fill="none"
+                      />
+                      <path
+                        d="M5 7 L9 7"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      />
+                      <path
+                        d="M7 5 L7 9"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      />
+                    </svg>
+                    <span>
+                      {isStirring ? "Stop Stirring" : "Start Stirring"}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-3 mt-2 overflow-x-auto pb-2">
@@ -1045,6 +1367,8 @@ function VirtualLabApp({
               experimentTitle={experimentTitle}
               currentGuidedStep={currentGuidedStep}
               dropwiseAnimation={dropwiseAnimation}
+              isTitrating={isTitrating}
+              stirringActive={isStirring}
             >
               {equipmentPositions.map((pos) => {
                 const equipment = experimentEquipment.find(
@@ -1060,6 +1384,7 @@ function VirtualLabApp({
                     position={pos}
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
+                    stirrerActive={stirrerActive}
                   />
                 ) : null;
               })}

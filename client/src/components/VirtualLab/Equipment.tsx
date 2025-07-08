@@ -25,6 +25,7 @@ interface EquipmentProps {
     equipmentId: string,
     amount: number,
   ) => void;
+  stirrerActive?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -35,18 +36,60 @@ export const Equipment: React.FC<EquipmentProps> = ({
   position,
   chemicals = [],
   onChemicalDrop,
+  stirrerActive = false,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
+    e.dataTransfer.effectAllowed = "move";
+
+    // Store current position for smooth transitions
+    if (position) {
+      e.dataTransfer.setData("currentX", position.x.toString());
+      e.dataTransfer.setData("currentY", position.y.toString());
+    }
+
+    // Add visual feedback during drag
+    const target = e.currentTarget as HTMLElement;
+    target.style.opacity = "0.6";
+    target.style.transform = isOnWorkbench
+      ? "translate(-50%, -50%) scale(0.95)"
+      : "scale(0.95)";
+    target.style.zIndex = "9999";
+    target.style.transition = "all 0.2s ease";
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Clean up drag styling
+    const target = e.currentTarget as HTMLElement;
+    target.style.opacity = "";
+    target.style.transform = isOnWorkbench ? "translate(-50%, -50%)" : "";
+    target.style.zIndex = isOnWorkbench ? "10" : "";
+    target.style.transition = "";
   };
 
   const handleChemicalDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragOver(true);
+
+    // Check if this is a valid drop combination
+    const chemicalData = e.dataTransfer.getData("chemical");
+    if (chemicalData) {
+      const chemical = JSON.parse(chemicalData);
+      const isValidDrop =
+        (chemical.id === "phenol" && id === "conical_flask") ||
+        (chemical.id === "naoh" && id === "burette") ||
+        (isContainer && !["phenol", "naoh"].includes(chemical.id)) ||
+        (["phenol", "naoh"].includes(chemical.id) && isContainer);
+
+      if (isValidDrop) {
+        setIsDragOver(true);
+      }
+    } else {
+      setIsDragOver(true);
+    }
   };
 
   const handleChemicalDragLeave = (e: React.DragEvent) => {
@@ -149,155 +192,94 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "conical_flask" && isOnWorkbench) {
       const hasHCl = chemicals.some((c) => c.id === "hcl");
       const hasNaOH = chemicals.some((c) => c.id === "naoh");
+      const hasPhenolphthalein = chemicals.some((c) => c.id === "phenol");
       const isNeutralizationReaction = hasHCl && hasNaOH;
 
       return (
         <div className="relative">
-          {/* Enhanced Conical Flask Illustration */}
-          <svg
-            width="80"
-            height="100"
-            viewBox="0 0 80 100"
-            className="drop-shadow-lg"
-          >
-            {/* Flask body - conical shape */}
-            <path
-              d="M30 20 L30 35 L15 75 L65 75 L50 35 L50 20 Z"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
-            />
-            {/* Flask neck */}
-            <rect
-              x="35"
-              y="10"
-              width="10"
-              height="15"
-              fill="rgba(59, 130, 246, 0.1)"
-              stroke="#2563eb"
-              strokeWidth="2"
-              rx="1"
-            />
-            {/* Flask opening */}
-            <ellipse
-              cx="40"
-              cy="10"
-              rx="5"
-              ry="2"
-              fill="none"
-              stroke="#2563eb"
-              strokeWidth="2"
+          {/* Real Conical Flask Image - 2.5x larger */}
+          <div className="relative w-50 h-60">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F18f408c6f29d4176ac4ae731a3650daa?format=webp&width=800"
+              alt="Laboratory Conical Flask"
+              className="w-full h-full object-contain"
+              style={{
+                filter:
+                  "brightness(1.0) contrast(1.0) drop-shadow(0 8px 16px rgba(0,0,0,0.2))",
+                background: "transparent",
+              }}
             />
 
-            {/* Solution in conical flask */}
+            {/* Solution overlay in flask */}
             {chemicals.length > 0 && (
-              <path
-                d={`M${20 + chemicals.length} ${75 - getSolutionHeight() * 0.5} L${60 - chemicals.length} ${75 - getSolutionHeight() * 0.5} L65 75 L15 75 Z`}
-                fill={getMixedColor()}
-                opacity="0.8"
-                className="transition-all duration-500"
-              />
+              <div
+                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                style={{
+                  backgroundColor: getMixedColor(),
+                  height: `${getSolutionHeight() * 0.7}%`,
+                  width: "70%",
+                  opacity: 0.8,
+                  minHeight: "15px",
+                  borderRadius: "0 0 20px 20px",
+                  clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)",
+                }}
+              >
+                {/* Liquid surface shimmer */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
+
+                {/* Phenolphthalein indicator effect */}
+                {hasPhenolphthalein && hasNaOH && (
+                  <div className="absolute inset-0 bg-pink-400 opacity-60 animate-pulse rounded-b-lg"></div>
+                )}
+
+                {/* Enhanced bubbling animation for reactions and stirring */}
+                {(isNeutralizationReaction || stirrerActive) && (
+                  <div className="absolute inset-0">
+                    {[...Array(stirrerActive ? 10 : 6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`absolute w-1 h-1 bg-white opacity-80 rounded-full ${
+                          stirrerActive ? "animate-pulse" : "animate-bounce"
+                        }`}
+                        style={{
+                          left: `${15 + i * 8}%`,
+                          bottom: `${8 + (i % 4) * 8}px`,
+                          animationDelay: `${i * (stirrerActive ? 0.1 : 0.2)}s`,
+                          animationDuration: stirrerActive ? "0.8s" : "1.5s",
+                        }}
+                      ></div>
+                    ))}
+
+                    {/* Vortex effect when stirring */}
+                    {stirrerActive && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-white opacity-30 rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
 
-            {/* Special neutralization reaction effects */}
-            {isNeutralizationReaction && (
-              <g>
-                {/* Heat visualization */}
-                <circle
-                  cx="40"
-                  cy="55"
-                  r="3"
-                  fill="rgba(255, 165, 0, 0.6)"
-                  className="animate-pulse"
-                />
-                <circle
-                  cx="35"
-                  cy="60"
-                  r="2"
-                  fill="rgba(255, 165, 0, 0.4)"
-                  className="animate-pulse"
-                  style={{ animationDelay: "0.5s" }}
-                />
-                <circle
-                  cx="45"
-                  cy="60"
-                  r="2"
-                  fill="rgba(255, 165, 0, 0.4)"
-                  className="animate-pulse"
-                  style={{ animationDelay: "1s" }}
-                />
-
-                {/* Vigorous bubbling for neutralization */}
-                {[...Array(8)].map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={25 + i * 7}
-                    cy={70 - (i % 3) * 5}
-                    r="1.5"
-                    fill="rgba(255, 255, 255, 0.9)"
-                    className="animate-bounce"
-                    style={{
-                      animationDelay: `${i * 0.2}s`,
-                      animationDuration: "1s",
-                    }}
-                  />
-                ))}
-              </g>
-            )}
-
-            {/* Regular bubbling for other reactions */}
-            {chemicals.length > 1 && !isNeutralizationReaction && (
-              <g>
-                {[...Array(4)].map((_, i) => (
-                  <circle
-                    key={i}
-                    cx={25 + i * 10}
-                    cy={65 - (i % 2) * 5}
-                    r="1"
-                    fill="rgba(255, 255, 255, 0.7)"
-                    className="animate-bounce"
-                    style={{
-                      animationDelay: `${i * 0.4}s`,
-                      animationDuration: "2s",
-                    }}
-                  />
-                ))}
-              </g>
-            )}
-
-            {/* Volume markings */}
-            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
-              <line x1="67" y1="50" x2="70" y2="50" />
-              <text x="71" y="53" fontSize="5">
-                250
-              </text>
-              <line x1="67" y1="60" x2="70" y2="60" />
-              <text x="71" y="63" fontSize="5">
-                150
-              </text>
-              <line x1="67" y1="70" x2="70" y2="70" />
-              <text x="71" y="73" fontSize="5">
-                50
-              </text>
-            </g>
-
-            {/* Flask label */}
-            <text
-              x="40"
-              y="90"
-              textAnchor="middle"
-              fontSize="7"
-              fill="#374151"
-              fontWeight="bold"
-            >
-              Conical Flask
-            </text>
-          </svg>
+            {/* Volume markings overlay */}
+            <div className="absolute right-0 top-6 text-xs text-gray-700 font-bold">
+              <div className="mb-1">250</div>
+              <div className="mb-1">150</div>
+              <div className="mb-1">50</div>
+            </div>
+          </div>
 
           {/* Special reaction indicator */}
           {isNeutralizationReaction && (
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
               Neutralizing!
+            </div>
+          )}
+
+          {/* Phenolphthalein indicator status */}
+          {hasPhenolphthalein && !isNeutralizationReaction && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+              Indicator Added!
             </div>
           )}
 
@@ -333,46 +315,80 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "burette" && isOnWorkbench) {
+      const hasNaOH = chemicals.some((c) => c.id === "naoh");
+      const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
+
       return (
         <div className="relative">
-          {/* Burette specific rendering */}
-          <div className="w-6 h-20 bg-gradient-to-b from-transparent to-blue-100 border-2 border-blue-400 rounded-b-lg relative">
-            {/* Solution in burette */}
+          {/* Real Burette Image - 2.5x larger */}
+          <div className="relative w-40 h-80">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F2ad8cf1ef1394deabc2721f0caee85ef?format=webp&width=800"
+              alt="Laboratory Burette"
+              className="w-full h-full object-contain"
+              style={{
+                filter:
+                  "brightness(1.0) contrast(1.0) drop-shadow(0 8px 16px rgba(0,0,0,0.2))",
+                background: "transparent",
+              }}
+            />
+
+            {/* Solution overlay in burette */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-0 left-0 right-0 rounded-b-lg transition-all duration-500"
+                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  opacity: 0.8,
+                  height: `${getSolutionHeight() * 0.6}%`,
+                  width: "30%",
+                  opacity: 0.9,
+                  minHeight: "10px",
                 }}
               >
-                {/* Liquid surface animation */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 animate-pulse"></div>
+                {/* Liquid surface shimmer */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
               </div>
             )}
 
-            {/* Volume markings */}
-            <div className="absolute -right-8 top-2 text-xs text-gray-600">
-              50
-            </div>
-            <div className="absolute -right-8 top-8 text-xs text-gray-600">
-              40
-            </div>
-            <div className="absolute -right-8 top-14 text-xs text-gray-600">
-              30
+            {/* Volume markings overlay */}
+            <div className="absolute left-0 top-10 text-sm text-gray-700 font-bold">
+              <div className="mb-5">50</div>
+              <div className="mb-5">40</div>
+              <div className="mb-5">30</div>
+              <div className="mb-5">20</div>
+              <div className="mb-5">10</div>
             </div>
 
-            {/* Burette tap */}
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-              <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-            </div>
+            {/* NaOH information overlay */}
+            {hasNaOH && (
+              <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-blue-500 rounded-lg px-3 py-2 text-sm shadow-lg whitespace-nowrap">
+                <div className="text-blue-800 font-bold text-center">
+                  0.1M NaOH
+                </div>
+                <div className="text-blue-600 text-center text-sm">
+                  Sodium Hydroxide
+                </div>
+                <div className="text-gray-600 text-center text-sm">
+                  {naohAmount.toFixed(1)} mL
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* NaOH ready indicator */}
+          {hasNaOH && (
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold animate-pulse">
+              Titrant Ready!
+            </div>
+          )}
 
           {/* Drop animation when chemicals are added */}
           {isDropping && (
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
+              <div
+                className="w-1 h-1 rounded-full animate-bounce"
+                style={{ backgroundColor: getMixedColor() }}
+              ></div>
             </div>
           )}
         </div>
@@ -498,6 +514,112 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
+    if (id === "magnetic_stirrer" && isOnWorkbench) {
+      return (
+        <div className="relative">
+          {/* Magnetic Stirrer Visualization - 2.5x larger */}
+          <div className="relative w-60 h-40">
+            <svg
+              width="240"
+              height="160"
+              viewBox="0 0 96 64"
+              className="drop-shadow-lg"
+            >
+              {/* Stirrer base */}
+              <rect
+                x="8"
+                y="32"
+                width="80"
+                height="24"
+                rx="4"
+                stroke="#6b7280"
+                strokeWidth="2"
+                fill="rgba(107, 114, 128, 0.2)"
+              />
+
+              {/* Control panel */}
+              <rect
+                x="12"
+                y="36"
+                width="20"
+                height="16"
+                rx="2"
+                fill="#374151"
+              />
+
+              {/* Speed control knob */}
+              <circle
+                cx="22"
+                cy="44"
+                r="6"
+                stroke="#6b7280"
+                strokeWidth="1"
+                fill="#9ca3af"
+              />
+              <circle cx="22" cy="44" r="3" fill="#374151" />
+
+              {/* Power indicator */}
+              <circle
+                cx="70"
+                cy="40"
+                r="2"
+                fill={stirrerActive ? "#10b981" : "#ef4444"}
+                className={stirrerActive ? "animate-pulse" : ""}
+              />
+
+              {/* Stirrer top surface */}
+              <rect
+                x="16"
+                y="20"
+                width="64"
+                height="16"
+                rx="2"
+                stroke="#6b7280"
+                strokeWidth="1"
+                fill="rgba(229, 231, 235, 0.8)"
+              />
+
+              {/* Stirring bar (only visible when stirring) */}
+              {stirrerActive && (
+                <rect
+                  x="44"
+                  y="26"
+                  width="8"
+                  height="2"
+                  rx="1"
+                  fill="#ef4444"
+                  className="animate-spin"
+                  style={{
+                    transformOrigin: "48px 27px",
+                    animationDuration: "0.5s",
+                  }}
+                />
+              )}
+
+              {/* Brand label */}
+              <text
+                x="48"
+                y="52"
+                textAnchor="middle"
+                fontSize="8"
+                fill="#374151"
+                fontWeight="bold"
+              >
+                MAGNETIC STIRRER
+              </text>
+            </svg>
+
+            {/* Status indicator */}
+            {stirrerActive && (
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+                Stirring Active
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="relative">
         {icon}
@@ -557,14 +679,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
     <div
       draggable
       onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-grab active:cursor-grabbing border-2 relative ${
+      className={`transition-all duration-200 cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? "border-blue-400 bg-blue-50"
-          : "border-gray-200 hover:border-blue-400"
-      } ${isContainer && isDragOver ? "border-green-500 bg-green-50 scale-105" : ""} ${
+          ? "bg-transparent border-0 p-0"
+          : "flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400"
+      } ${isContainer && isDragOver && !isOnWorkbench ? "border-green-500 bg-green-50 scale-105" : ""} ${
         isDropping ? "animate-pulse" : ""
       }`}
       style={{
@@ -573,20 +696,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
         top: isOnWorkbench && position ? position.y : "auto",
         zIndex: isOnWorkbench ? 10 : "auto",
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
+        transition: isOnWorkbench ? "left 0.3s ease, top 0.3s ease" : "none",
       }}
     >
-      {/* Enhanced drop zone indicator */}
-      {isContainer && isOnWorkbench && (
-        <div
-          className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
-            isDragOver ? "bg-green-500 scale-125 shadow-lg" : "bg-blue-500"
-          }`}
-        >
-          <Droplet size={14} className="text-white" />
-          {isDragOver && (
-            <div className="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
-          )}
-        </div>
+      {/* Subtle drop zone indicator for chemicals */}
+      {isContainer && isOnWorkbench && isDragOver && (
+        <div className="absolute top-0 left-0 w-2 h-2 rounded-full bg-green-400 animate-pulse opacity-75"></div>
       )}
 
       {/* Drop hint text */}
@@ -596,30 +711,33 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </div>
       )}
 
-      {/* Drag over animation */}
-      {isDragOver && (
+      {/* Drag over animation - only for equipment selection bar */}
+      {isDragOver && !isOnWorkbench && (
         <div className="absolute inset-0 border-4 border-green-400 rounded-lg animate-pulse bg-green-100 opacity-50"></div>
       )}
 
       <div
-        className={`mb-3 transition-all duration-200 relative ${
-          isOnWorkbench ? "text-blue-700" : "text-blue-600"
+        className={`transition-all duration-200 relative ${
+          isOnWorkbench ? "text-blue-700" : "text-blue-600 mb-3"
         } ${isDragOver ? "scale-110" : ""}`}
       >
         {getEquipmentSpecificRendering()}
       </div>
 
-      <span
-        className={`text-sm font-semibold text-center transition-colors ${
-          isOnWorkbench ? "text-blue-800" : "text-gray-700"
-        } ${isDragOver ? "text-green-700" : ""}`}
-      >
-        {name}
-      </span>
+      {/* Only show equipment name when not on workbench or when dragging over */}
+      {(!isOnWorkbench || isDragOver) && (
+        <span
+          className={`text-sm font-semibold text-center transition-colors ${
+            isOnWorkbench ? "text-gray-800" : "text-gray-700"
+          } ${isDragOver ? "text-green-700" : ""}`}
+        >
+          {name}
+        </span>
+      )}
 
-      {/* Enhanced chemical composition display */}
-      {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+      {/* Enhanced chemical composition display - only show when actively adding chemicals */}
+      {chemicals.length > 0 && isOnWorkbench && isDropping && (
+        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white rounded px-2 py-1 text-xs min-w-max opacity-90">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
@@ -635,7 +753,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   .map((c) => {
                     if (c.id === "hcl") return "HCl";
                     if (c.id === "naoh") return "NaOH";
-                    if (c.id === "phenol") return "C₂₀H₁₄O₄";
+                    if (c.id === "phenol") return "C₂���H₁₄O₄";
                     return "";
                   })
                   .filter(Boolean)
@@ -696,15 +814,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
             className="w-full h-1 rounded-full mt-1"
             style={{ backgroundColor: getMixedColor() }}
           ></div>
-        </div>
-      )}
-
-      {/* Drop success animation */}
-      {isDropping && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium animate-bounce">
-            Added!
-          </div>
         </div>
       )}
     </div>
