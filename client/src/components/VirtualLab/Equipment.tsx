@@ -38,6 +38,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
   chemicals = [],
   onChemicalDrop,
   stirrerActive = false,
+  hasNaOHInFlask = false,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
