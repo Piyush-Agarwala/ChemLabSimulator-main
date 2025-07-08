@@ -1113,18 +1113,60 @@ function VirtualLabApp({
     }
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Start color transition from yellow to light pink over 5 seconds
+    // Automatically add NaOH to conical flask after 5 seconds
+    setTimeout(() => {
+      if (isTitrating) {
+        // Check if NaOH is already in the conical flask
+        const hasNaOHInFlask = conicalFlask.chemicals.some(
+          (c) => c.id === "naoh",
+        );
+
+        if (!hasNaOHInFlask) {
+          // Automatically add NaOH to conical flask
+          setEquipmentPositions((prev) =>
+            prev.map((pos) => {
+              if (pos.id === "conical_flask") {
+                return {
+                  ...pos,
+                  chemicals: [
+                    ...pos.chemicals,
+                    {
+                      id: "naoh",
+                      name: "Sodium Hydroxide",
+                      color: "transparent",
+                      amount: 1.0, // Start with small amount
+                      concentration: "0.1 M",
+                    },
+                  ],
+                };
+              }
+              return pos;
+            }),
+          );
+
+          setToastMessage(
+            "💧 NaOH automatically added to conical flask - Color changing...",
+          );
+          setTimeout(() => setToastMessage(null), 3000);
+        }
+      }
+    }, 5000);
+
+    // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
     setTitrationColorProgress(0);
     const startTime = Date.now();
-    const duration = 5000; // 5 seconds
+    const duration = 10000; // 10 seconds for slow motion effect
 
     const animateColor = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      setTitrationColorProgress(progress);
 
-      // Mark step 5 as completed when color starts turning pink (50% progress)
-      if (progress >= 0.5 && !completedSteps.has(5)) {
+      // Use easing function for smoother transition
+      const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
+      setTitrationColorProgress(easedProgress);
+
+      // Mark step 5 as completed when color starts turning pink (30% progress for slower effect)
+      if (easedProgress >= 0.3 && !completedSteps.has(5)) {
         markStepCompleted(5, "Solution turned pink");
       }
 
