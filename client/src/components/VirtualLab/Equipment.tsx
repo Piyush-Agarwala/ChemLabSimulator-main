@@ -388,46 +388,150 @@ export const Equipment: React.FC<EquipmentProps> = ({
     }
 
     if (id === "burette" && isOnWorkbench) {
+      const hasNaOH = chemicals.some((c) => c.id === "naoh");
+      const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
+
       return (
         <div className="relative">
-          {/* Burette specific rendering */}
-          <div className="w-6 h-20 bg-gradient-to-b from-transparent to-blue-100 border-2 border-blue-400 rounded-b-lg relative">
+          {/* Enhanced Burette Illustration */}
+          <svg
+            width="60"
+            height="120"
+            viewBox="0 0 60 120"
+            className="drop-shadow-lg"
+          >
+            {/* Burette body - narrow vertical tube */}
+            <rect
+              x="25"
+              y="10"
+              width="10"
+              height="80"
+              rx="2"
+              stroke="#2563eb"
+              strokeWidth="2"
+              fill="rgba(59, 130, 246, 0.1)"
+            />
+
+            {/* Burette top opening */}
+            <ellipse
+              cx="30"
+              cy="10"
+              rx="8"
+              ry="3"
+              stroke="#2563eb"
+              strokeWidth="2"
+              fill="rgba(59, 130, 246, 0.2)"
+            />
+
             {/* Solution in burette */}
             {chemicals.length > 0 && (
-              <div
-                className="absolute bottom-0 left-0 right-0 rounded-b-lg transition-all duration-500"
-                style={{
-                  backgroundColor: getMixedColor(),
-                  height: `${getSolutionHeight()}%`,
-                  opacity: 0.8,
-                }}
-              >
-                {/* Liquid surface animation */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 animate-pulse"></div>
-              </div>
+              <rect
+                x="26"
+                y={90 - getSolutionHeight() * 0.8}
+                width="8"
+                height={getSolutionHeight() * 0.8}
+                rx="1"
+                fill={getMixedColor()}
+                opacity="0.8"
+                className="transition-all duration-500"
+              />
             )}
 
-            {/* Volume markings */}
-            <div className="absolute -right-8 top-2 text-xs text-gray-600">
-              50
-            </div>
-            <div className="absolute -right-8 top-8 text-xs text-gray-600">
-              40
-            </div>
-            <div className="absolute -right-8 top-14 text-xs text-gray-600">
-              30
-            </div>
+            {/* Volume markings with better spacing */}
+            <g stroke="#6b7280" strokeWidth="1" fill="#6b7280">
+              <line x1="20" y1="20" x2="23" y2="20" />
+              <text x="15" y="23" fontSize="6">
+                50
+              </text>
+              <line x1="20" y1="35" x2="23" y2="35" />
+              <text x="15" y="38" fontSize="6">
+                40
+              </text>
+              <line x1="20" y1="50" x2="23" y2="50" />
+              <text x="15" y="53" fontSize="6">
+                30
+              </text>
+              <line x1="20" y1="65" x2="23" y2="65" />
+              <text x="15" y="68" fontSize="6">
+                20
+              </text>
+              <line x1="20" y1="80" x2="23" y2="80" />
+              <text x="15" y="83" fontSize="6">
+                10
+              </text>
+            </g>
 
-            {/* Burette tap */}
-            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-              <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+            {/* Burette stopcock/tap */}
+            <rect
+              x="27"
+              y="92"
+              width="6"
+              height="4"
+              rx="1"
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="rgba(107, 114, 128, 0.8)"
+            />
+
+            {/* Burette tip with enhanced design */}
+            <path
+              d="M29 96 L30 100 L31 96 Z"
+              stroke="#6b7280"
+              strokeWidth="1"
+              fill="rgba(59, 130, 246, 0.3)"
+            />
+
+            {/* NaOH specific effects */}
+            {hasNaOH && (
+              <g>
+                {/* Solution level indicator */}
+                <line
+                  x1="35"
+                  y1={90 - getSolutionHeight() * 0.8}
+                  x2="38"
+                  y2={90 - getSolutionHeight() * 0.8}
+                  stroke="#059669"
+                  strokeWidth="2"
+                />
+                <text
+                  x="40"
+                  y={93 - getSolutionHeight() * 0.8}
+                  fontSize="5"
+                  fill="#059669"
+                  fontWeight="bold"
+                >
+                  {naohAmount.toFixed(1)}mL
+                </text>
+
+                {/* NaOH label */}
+                <text
+                  x="30"
+                  y="108"
+                  textAnchor="middle"
+                  fontSize="6"
+                  fill="#059669"
+                  fontWeight="bold"
+                >
+                  0.1M NaOH
+                </text>
+              </g>
+            )}
+          </svg>
+
+          {/* NaOH ready indicator */}
+          {hasNaOH && (
+            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+              Titrant Ready!
             </div>
-          </div>
+          )}
 
           {/* Drop animation when chemicals are added */}
           {isDropping && (
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-              <div className="w-1 h-1 bg-blue-400 rounded-full animate-bounce"></div>
+              <div
+                className="w-1 h-1 rounded-full animate-bounce"
+                style={{ backgroundColor: getMixedColor() }}
+              ></div>
             </div>
           )}
         </div>
