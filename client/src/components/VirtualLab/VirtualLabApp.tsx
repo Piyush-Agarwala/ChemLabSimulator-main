@@ -1203,11 +1203,14 @@ function VirtualLabApp({
                   ))}
                 </div>
               ) : (
-                <ExperimentSteps
-                  currentStep={currentStep}
-                  steps={experimentSteps}
-                  onStepClick={handleStepClick}
-                />
+                <div className="space-y-4">
+                  <ExperimentSteps
+                    currentStep={currentStep}
+                    steps={experimentSteps}
+                    onStepClick={handleStepClick}
+                  />
+                  <ChemicalFormulas experimentTitle={experimentTitle} />
+                </div>
               )}
             </div>
           </div>
