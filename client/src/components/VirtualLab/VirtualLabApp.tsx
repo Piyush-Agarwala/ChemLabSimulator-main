@@ -5,6 +5,7 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { MeasurementsPanel } from "./MeasurementsPanel";
 import { ChemicalFormulas } from "./ChemicalFormulas";
 import {
   FlaskConical,
