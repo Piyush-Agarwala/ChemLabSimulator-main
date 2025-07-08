@@ -503,16 +503,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   {naohAmount.toFixed(1)}mL
                 </text>
 
-                {/* NaOH label */}
+                {/* NaOH label with formula */}
                 <text
                   x="30"
-                  y="108"
+                  y="105"
                   textAnchor="middle"
-                  fontSize="6"
+                  fontSize="5"
                   fill="#059669"
                   fontWeight="bold"
                 >
                   0.1M NaOH
+                </text>
+                <text
+                  x="30"
+                  y="113"
+                  textAnchor="middle"
+                  fontSize="4"
+                  fill="#047857"
+                  fontWeight="normal"
+                >
+                  (Sodium Hydroxide)
                 </text>
               </g>
             )}
