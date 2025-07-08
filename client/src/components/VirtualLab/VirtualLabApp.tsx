@@ -71,6 +71,7 @@ interface VirtualLabProps {
   experimentTitle: string;
   allSteps: ExperimentStep[];
   onTimerStart?: () => void;
+  onTimerStop?: () => void;
 }
 
 function VirtualLabApp({
@@ -82,6 +83,7 @@ function VirtualLabApp({
   experimentTitle,
   allSteps,
   onTimerStart,
+  onTimerStop,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -1334,7 +1336,12 @@ function VirtualLabApp({
               <Controls
                 isRunning={isRunning}
                 onStart={handleStartExperiment}
-                onStop={() => setIsRunning(false)}
+                onStop={() => {
+                  setIsRunning(false);
+                  if (onTimerStop) {
+                    onTimerStop();
+                  }
+                }}
                 onReset={() => {
                   // Reset all experiment state to initial values
                   setEquipmentPositions([]);
