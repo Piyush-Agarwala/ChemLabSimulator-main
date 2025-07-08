@@ -26,6 +26,8 @@ interface EquipmentProps {
     amount: number,
   ) => void;
   stirrerActive?: boolean;
+  hasNaOHInFlask?: boolean;
+  titrationColorProgress?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
@@ -37,6 +39,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
   chemicals = [],
   onChemicalDrop,
   stirrerActive = false,
+  hasNaOHInFlask = false,
+  titrationColorProgress = 0,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
@@ -138,9 +142,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Enhanced color mixing for chemical reactions
     const chemicalIds = chemicals.map((c) => c.id).sort();
 
-    // Specific reaction colors
+    // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
+        // Color transition from yellow to light pink during titration
+        if (titrationColorProgress > 0) {
+          const startColor = { r: 255, g: 225, b: 53 }; // Yellow #FFE135
+          const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
+
+          const r = Math.round(
+            startColor.r + (endColor.r - startColor.r) * titrationColorProgress,
+          );
+          const g = Math.round(
+            startColor.g + (endColor.g - startColor.g) * titrationColorProgress,
+          );
+          const b = Math.round(
+            startColor.b + (endColor.b - startColor.b) * titrationColorProgress,
+          );
+
+          return `rgb(${r}, ${g}, ${b})`;
+        }
         return "#FFB6C1"; // Pink when phenolphthalein is added to basic solution
       }
       return "#E8F5E8"; // Light green for neutralization
@@ -286,13 +307,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
       const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
 
       return (
-        <div className="relative">
-          {/* Real Burette Image - 2.5x larger */}
-          <div className="relative w-40 h-80">
+        <div className="relative flex items-center justify-center">
+          {/* Real Burette Image - Better aligned */}
+          <div className="relative w-32 h-72 flex items-center justify-center">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F2ad8cf1ef1394deabc2721f0caee85ef?format=webp&width=800"
               alt="Laboratory Burette"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain object-center"
               style={{
                 filter:
                   "brightness(1.0) contrast(1.0) drop-shadow(0 8px 16px rgba(0,0,0,0.2))",
@@ -300,16 +321,16 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }}
             />
 
-            {/* Solution overlay in burette */}
+            {/* Solution overlay in burette - better centered */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.6}%`,
-                  width: "30%",
+                  width: "25%",
                   opacity: 0.9,
-                  minHeight: "10px",
+                  minHeight: "12px",
                 }}
               >
                 {/* Liquid surface shimmer */}
@@ -317,37 +338,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </div>
             )}
 
-            {/* Volume markings overlay */}
-            <div className="absolute left-0 top-10 text-sm text-gray-700 font-bold">
-              <div className="mb-5">50</div>
-              <div className="mb-5">40</div>
-              <div className="mb-5">30</div>
-              <div className="mb-5">20</div>
-              <div className="mb-5">10</div>
+            {/* Volume markings overlay - better positioned */}
+            <div className="absolute -left-6 top-12 text-xs text-gray-700 font-bold">
+              <div className="mb-6">50</div>
+              <div className="mb-6">40</div>
+              <div className="mb-6">30</div>
+              <div className="mb-6">20</div>
+              <div className="mb-6">10</div>
             </div>
-
-            {/* NaOH information overlay */}
-            {hasNaOH && (
-              <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-blue-500 rounded-lg px-3 py-2 text-sm shadow-lg whitespace-nowrap">
-                <div className="text-blue-800 font-bold text-center">
-                  0.1M NaOH
-                </div>
-                <div className="text-blue-600 text-center text-sm">
-                  Sodium Hydroxide
-                </div>
-                <div className="text-gray-600 text-center text-sm">
-                  {naohAmount.toFixed(1)} mL
-                </div>
-              </div>
-            )}
           </div>
-
-          {/* NaOH ready indicator - removed blinking */}
-          {hasNaOH && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold">
-              Titrant Ready!
-            </div>
-          )}
 
           {/* Drop animation when chemicals are added */}
           {isDropping && (

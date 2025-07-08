@@ -108,6 +108,7 @@ function VirtualLabApp({
   const [isStirring, setIsStirring] = useState(false);
   const [titrationDropCount, setTitrationDropCount] = useState(0);
   const [stirrerActive, setStirerActive] = useState(false);
+  const [titrationColorProgress, setTitrationColorProgress] = useState(0);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -962,6 +963,9 @@ function VirtualLabApp({
     const conicalFlask = equipmentPositions.find(
       (pos) => pos.id === "conical_flask",
     );
+    const stirrer = equipmentPositions.find(
+      (pos) => pos.id === "magnetic_stirrer",
+    );
 
     if (!burette || !conicalFlask) {
       setToastMessage("⚠️ Please place both burette and conical flask first!");
@@ -977,8 +981,33 @@ function VirtualLabApp({
     }
 
     setIsTitrating(true);
-    setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+
+    // Auto-start magnetic stirrer if available
+    if (stirrer && !isStirring) {
+      setIsStirring(true);
+      setStirerActive(true);
+      setToastMessage("🧪 Starting titration with automatic stirring!");
+    } else {
+      setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+    }
     setTimeout(() => setToastMessage(null), 3000);
+
+    // Start color transition from yellow to light pink over 5 seconds
+    setTitrationColorProgress(0);
+    const startTime = Date.now();
+    const duration = 5000; // 5 seconds
+
+    const animateColor = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setTitrationColorProgress(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateColor);
+      }
+    };
+
+    requestAnimationFrame(animateColor);
 
     // Start dropwise animation
     startDropwiseAnimation(burette, conicalFlask);
@@ -1358,6 +1387,12 @@ function VirtualLabApp({
                 const equipment = experimentEquipment.find(
                   (eq) => eq.id === pos.id,
                 );
+                const conicalFlask = equipmentPositions.find(
+                  (eq) => eq.id === "conical_flask",
+                );
+                const hasNaOHInFlask =
+                  conicalFlask?.chemicals?.some((c) => c.id === "naoh") ||
+                  false;
                 return equipment ? (
                   <Equipment
                     key={pos.id}
@@ -1369,6 +1404,8 @@ function VirtualLabApp({
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
                     stirrerActive={stirrerActive}
+                    hasNaOHInFlask={hasNaOHInFlask}
+                    titrationColorProgress={titrationColorProgress}
                   />
                 ) : null;
               })}
