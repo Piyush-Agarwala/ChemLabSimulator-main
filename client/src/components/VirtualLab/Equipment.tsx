@@ -488,6 +488,112 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
+    if (id === "magnetic_stirrer" && isOnWorkbench) {
+      return (
+        <div className="relative">
+          {/* Magnetic Stirrer Visualization */}
+          <div className="relative w-24 h-16">
+            <svg
+              width="96"
+              height="64"
+              viewBox="0 0 96 64"
+              className="drop-shadow-lg"
+            >
+              {/* Stirrer base */}
+              <rect
+                x="8"
+                y="32"
+                width="80"
+                height="24"
+                rx="4"
+                stroke="#6b7280"
+                strokeWidth="2"
+                fill="rgba(107, 114, 128, 0.2)"
+              />
+
+              {/* Control panel */}
+              <rect
+                x="12"
+                y="36"
+                width="20"
+                height="16"
+                rx="2"
+                fill="#374151"
+              />
+
+              {/* Speed control knob */}
+              <circle
+                cx="22"
+                cy="44"
+                r="6"
+                stroke="#6b7280"
+                strokeWidth="1"
+                fill="#9ca3af"
+              />
+              <circle cx="22" cy="44" r="3" fill="#374151" />
+
+              {/* Power indicator */}
+              <circle
+                cx="70"
+                cy="40"
+                r="2"
+                fill={stirrerActive ? "#10b981" : "#ef4444"}
+                className={stirrerActive ? "animate-pulse" : ""}
+              />
+
+              {/* Stirrer top surface */}
+              <rect
+                x="16"
+                y="20"
+                width="64"
+                height="16"
+                rx="2"
+                stroke="#6b7280"
+                strokeWidth="1"
+                fill="rgba(229, 231, 235, 0.8)"
+              />
+
+              {/* Stirring bar (only visible when stirring) */}
+              {stirrerActive && (
+                <rect
+                  x="44"
+                  y="26"
+                  width="8"
+                  height="2"
+                  rx="1"
+                  fill="#ef4444"
+                  className="animate-spin"
+                  style={{
+                    transformOrigin: "48px 27px",
+                    animationDuration: "0.5s",
+                  }}
+                />
+              )}
+
+              {/* Brand label */}
+              <text
+                x="48"
+                y="52"
+                textAnchor="middle"
+                fontSize="8"
+                fill="#374151"
+                fontWeight="bold"
+              >
+                MAGNETIC STIRRER
+              </text>
+            </svg>
+
+            {/* Status indicator */}
+            {stirrerActive && (
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+                Stirring Active
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="relative">
         {icon}
