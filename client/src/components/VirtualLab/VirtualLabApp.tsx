@@ -349,62 +349,15 @@ function VirtualLabApp({
           id: "burette",
           name: "50mL Burette",
           icon: (
-            <svg
-              width="36"
-              height="36"
-              viewBox="0 0 36 36"
-              fill="none"
-              className="text-blue-600"
-            >
-              {/* Burette body - narrow vertical tube */}
-              <rect
-                x="16"
-                y="4"
-                width="4"
-                height="24"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="rgba(59, 130, 246, 0.1)"
-              />
-              {/* Burette top opening */}
-              <rect
-                x="14"
-                y="3"
-                width="8"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(59, 130, 246, 0.2)"
-              />
-              {/* Volume markings */}
-              <g stroke="currentColor" strokeWidth="1">
-                <line x1="12" y1="8" x2="14" y2="8" />
-                <line x1="12" y1="12" x2="14" y2="12" />
-                <line x1="12" y1="16" x2="14" y2="16" />
-                <line x1="12" y1="20" x2="14" y2="20" />
-                <line x1="12" y1="24" x2="14" y2="24" />
-              </g>
-              {/* Burette stopcock/tap */}
-              <rect
-                x="15"
-                y="28"
-                width="6"
-                height="3"
-                rx="1"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(107, 114, 128, 0.8)"
-              />
-              {/* Burette tip */}
-              <path
-                d="M17 31 L18 33 L19 31 Z"
-                stroke="currentColor"
-                strokeWidth="1"
-                fill="rgba(59, 130, 246, 0.3)"
-              />
-            </svg>
+            <img
+              src="https://images.pexels.com/photos/7722929/pexels-photo-7722929.jpeg"
+              alt="Burette"
+              className="w-9 h-9 object-cover rounded border-2 border-blue-400 shadow-sm"
+              style={{
+                filter: "brightness(1.1) contrast(1.2)",
+                clipPath: "inset(20% 30% 10% 30%)",
+              }}
+            />
           ),
         },
         {
