@@ -85,6 +85,7 @@ function VirtualLabApp({
   allSteps,
   onTimerStart,
   onTimerStop,
+  onTimerReset,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -1015,7 +1016,7 @@ function VirtualLabApp({
             ? "Acid-Base Titration with Indicator"
             : "Acid-Base Neutralization",
           balancedEquation: hasIndicator
-            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂₀H₁₄O₄ endpoint indicator]"
+            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂���H₁₄O₄ endpoint indicator]"
             : "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
           products: hasIndicator
             ? [
