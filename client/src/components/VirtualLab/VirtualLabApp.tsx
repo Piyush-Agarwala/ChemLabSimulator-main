@@ -1201,6 +1201,9 @@ function VirtualLabApp({
                       )}
                     </div>
                   ))}
+
+                  {/* Chemical Formulas Section */}
+                  <ChemicalFormulas experimentTitle={experimentTitle} />
                 </div>
               ) : (
                 <div className="space-y-4">
