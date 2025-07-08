@@ -374,6 +374,55 @@ function VirtualLabApp({
           ),
         },
         { id: "pipette", name: "25mL Pipette", icon: <Droplets size={36} /> },
+        {
+          id: "magnetic_stirrer",
+          name: "Magnetic Stirrer",
+          icon: (
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 36 36"
+              fill="none"
+              className="text-gray-600"
+            >
+              {/* Stirrer base */}
+              <rect
+                x="4"
+                y="20"
+                width="28"
+                height="12"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="rgba(107, 114, 128, 0.1)"
+              />
+              {/* Control knobs */}
+              <circle cx="10" cy="26" r="2" fill="currentColor" />
+              <circle cx="26" cy="26" r="2" fill="currentColor" />
+              {/* Stirring bar */}
+              <rect
+                x="14"
+                y="14"
+                width="8"
+                height="2"
+                rx="1"
+                fill="#ef4444"
+                className="animate-spin"
+                style={{ transformOrigin: "18px 15px" }}
+              />
+              {/* Base label */}
+              <text
+                x="18"
+                y="30"
+                textAnchor="middle"
+                fontSize="4"
+                fill="currentColor"
+              >
+                STIRRER
+              </text>
+            </svg>
+          ),
+        },
       ];
     } else if (experimentTitle.includes("Equilibrium")) {
       return [
