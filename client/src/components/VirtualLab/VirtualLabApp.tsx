@@ -108,6 +108,7 @@ function VirtualLabApp({
   const [isStirring, setIsStirring] = useState(false);
   const [titrationDropCount, setTitrationDropCount] = useState(0);
   const [stirrerActive, setStirerActive] = useState(false);
+  const [titrationColorProgress, setTitrationColorProgress] = useState(0);
 
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
@@ -928,7 +929,7 @@ function VirtualLabApp({
           ph: 7.0,
           molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
           mechanism: [
-            "1. HCl dissociates: HCl → H⁺ + Cl⁻",
+            "1. HCl dissociates: HCl → H�� + Cl⁻",
             "2. NaOH dissociates: NaOH ��� Na⁺ + OH��",
             "3. Neutralization: H⁺ + OH⁻ → H₂O",
             "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
