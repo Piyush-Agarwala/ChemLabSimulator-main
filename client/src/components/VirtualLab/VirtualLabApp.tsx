@@ -555,18 +555,16 @@ function VirtualLabApp({
               Math.abs(x - 450) < 150 && Math.abs(y - 250) < 200;
 
             if (shouldSnapToFormation || (!existing && inCenterArea)) {
-              // Define the fixed formation positions
-              const formationSpacing = 140;
+              // Define the fixed formation positions - exact layout from image
+              const formationX = formationCenterX || 450; // Center X position
+              const buretteY = 120; // Burette at top
+              const flaskY = 280; // Flask in middle
+              const stirrerY = 420; // Stirrer at bottom
+
               const formationPositions = {
-                burette: {
-                  x: formationCenterX,
-                  y: formationCenterY - formationSpacing,
-                },
-                conical_flask: { x: formationCenterX, y: formationCenterY },
-                magnetic_stirrer: {
-                  x: formationCenterX,
-                  y: formationCenterY + formationSpacing,
-                },
+                burette: { x: formationX, y: buretteY },
+                conical_flask: { x: formationX, y: flaskY },
+                magnetic_stirrer: { x: formationX, y: stirrerY },
               };
 
               // Snap to formation position
