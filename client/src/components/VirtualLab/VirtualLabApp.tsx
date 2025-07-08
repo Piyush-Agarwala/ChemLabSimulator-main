@@ -499,42 +499,38 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
-        // Auto-align titration equipment in vertical line for Acid-Base experiment
+        // Flexible positioning with smart defaults for first-time placement
         let finalX = x;
         let finalY = y;
 
-        if (experimentTitle.includes("Acid-Base")) {
-          const centerX = 450; // Better center position for alignment
+        // Ensure equipment stays within reasonable bounds
+        const minX = 60;
+        const maxX = 800;
+        const minY = 60;
+        const maxY = 450;
+
+        finalX = Math.max(minX, Math.min(maxX, x));
+        finalY = Math.max(minY, Math.min(maxY, y));
+
+        // Only auto-align on first placement if not repositioning
+        if (!existing && experimentTitle.includes("Acid-Base")) {
           const equipmentOrder = [
             "magnetic_stirrer",
             "conical_flask",
             "burette",
           ];
-          const centerY = 250; // Center Y position for the middle element (conical flask)
-          const spacing = 140; // Increased spacing between equipment
+          const centerX = 450;
+          const centerY = 250;
+          const spacing = 140;
 
           if (equipmentOrder.includes(id)) {
-            finalX = centerX;
-            const orderIndex = equipmentOrder.indexOf(id);
-            // Center the conical flask, position others above and below
-            finalY = centerY + (1 - orderIndex) * spacing; // burette=top, conical=center, stirrer=bottom
-          } else {
-            // For other equipment, ensure they stay within bounds
-            const minX = 50;
-            const maxX = 700;
-            const minY = 50;
-            const maxY = 400;
-            finalX = Math.max(minX, Math.min(maxX, x));
-            finalY = Math.max(minY, Math.min(maxY, y));
+            // Check if this is close to center area (auto-align zone)
+            if (Math.abs(x - centerX) < 150 && Math.abs(y - centerY) < 200) {
+              finalX = centerX;
+              const orderIndex = equipmentOrder.indexOf(id);
+              finalY = centerY + (1 - orderIndex) * spacing;
+            }
           }
-        } else {
-          // For other experiments, ensure equipment stays within reasonable bounds
-          const minX = 50;
-          const maxX = 700;
-          const minY = 50;
-          const maxY = 400;
-          finalX = Math.max(minX, Math.min(maxX, x));
-          finalY = Math.max(minY, Math.min(maxY, y));
         }
 
         if (existing) {
