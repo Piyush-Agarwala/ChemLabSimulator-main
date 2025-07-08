@@ -963,6 +963,9 @@ function VirtualLabApp({
     const conicalFlask = equipmentPositions.find(
       (pos) => pos.id === "conical_flask",
     );
+    const stirrer = equipmentPositions.find(
+      (pos) => pos.id === "magnetic_stirrer",
+    );
 
     if (!burette || !conicalFlask) {
       setToastMessage("⚠️ Please place both burette and conical flask first!");
@@ -978,7 +981,15 @@ function VirtualLabApp({
     }
 
     setIsTitrating(true);
-    setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+
+    // Auto-start magnetic stirrer if available
+    if (stirrer && !isStirring) {
+      setIsStirring(true);
+      setStirerActive(true);
+      setToastMessage("🧪 Starting titration with automatic stirring!");
+    } else {
+      setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+    }
     setTimeout(() => setToastMessage(null), 3000);
 
     // Start color transition from yellow to light pink over 5 seconds
