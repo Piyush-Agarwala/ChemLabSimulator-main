@@ -929,7 +929,7 @@ function VirtualLabApp({
           ph: 7.0,
           molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
           mechanism: [
-            "1. HCl dissociates: HCl → H�� + Cl⁻",
+            "1. HCl dissociates: HCl → H⁺ + Cl⁻",
             "2. NaOH dissociates: NaOH ��� Na⁺ + OH��",
             "3. Neutralization: H⁺ + OH⁻ → H₂O",
             "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
@@ -980,6 +980,23 @@ function VirtualLabApp({
     setIsTitrating(true);
     setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
     setTimeout(() => setToastMessage(null), 3000);
+
+    // Start color transition from yellow to light pink over 5 seconds
+    setTitrationColorProgress(0);
+    const startTime = Date.now();
+    const duration = 5000; // 5 seconds
+
+    const animateColor = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setTitrationColorProgress(progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateColor);
+      }
+    };
+
+    requestAnimationFrame(animateColor);
 
     // Start dropwise animation
     startDropwiseAnimation(burette, conicalFlask);
