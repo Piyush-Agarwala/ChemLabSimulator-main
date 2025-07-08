@@ -1080,7 +1080,7 @@ function VirtualLabApp({
 
     if (!stirrer || !conicalFlask) {
       setToastMessage(
-        "������️ Please place both magnetic stirrer and conical flask!",
+        "�����️ Please place both magnetic stirrer and conical flask!",
       );
       setTimeout(() => setToastMessage(null), 3000);
       return;
@@ -1320,6 +1320,7 @@ function VirtualLabApp({
                 onReset={() => {
                   // Reset all experiment state to initial values
                   setEquipmentPositions([]);
+                  setUndoHistory([]);
                   setResults([]);
                   setIsRunning(false);
                   setCurrentStep(stepNumber);
