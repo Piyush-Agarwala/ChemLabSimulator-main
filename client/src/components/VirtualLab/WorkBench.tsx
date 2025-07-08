@@ -15,7 +15,7 @@ interface WorkBenchProps {
     drops: Array<{ id: string; x: number; y: number; color: string }>;
   };
   isTitrating?: boolean;
-  isStirring?: boolean;
+  stirringActive?: boolean;
 }
 
 interface Step {
