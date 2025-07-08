@@ -70,6 +70,7 @@ interface VirtualLabProps {
   totalSteps: number;
   experimentTitle: string;
   allSteps: ExperimentStep[];
+  onTimerStart?: () => void;
 }
 
 function VirtualLabApp({
@@ -80,6 +81,7 @@ function VirtualLabApp({
   totalSteps,
   experimentTitle,
   allSteps,
+  onTimerStart,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -957,7 +959,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O₄ endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O�� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
@@ -1017,6 +1019,9 @@ function VirtualLabApp({
 
   const handleStartExperiment = () => {
     setIsRunning(true);
+    if (onTimerStart) {
+      onTimerStart();
+    }
     onStepComplete();
   };
 
