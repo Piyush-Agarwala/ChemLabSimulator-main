@@ -1080,7 +1080,7 @@ function VirtualLabApp({
 
     if (!stirrer || !conicalFlask) {
       setToastMessage(
-        "�����️ Please place both magnetic stirrer and conical flask!",
+        "������️ Please place both magnetic stirrer and conical flask!",
       );
       setTimeout(() => setToastMessage(null), 3000);
       return;
@@ -1345,6 +1345,21 @@ function VirtualLabApp({
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
+
+              {/* Undo Button */}
+              <button
+                onClick={handleUndo}
+                disabled={undoHistory.length === 0}
+                className={`flex items-center space-x-1 px-3 py-1 ml-4 rounded text-xs font-medium transition-colors ${
+                  undoHistory.length === 0
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                }`}
+                title="Undo last drag & drop action"
+              >
+                <Undo2 size={14} />
+                <span>Undo ({undoHistory.length})</span>
+              </button>
 
               {/* Titration Control Buttons for Acid-Base Experiment */}
               {experimentTitle.includes("Acid-Base") && (
