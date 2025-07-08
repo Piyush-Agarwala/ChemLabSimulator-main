@@ -46,7 +46,23 @@ export const Equipment: React.FC<EquipmentProps> = ({
   const handleChemicalDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsDragOver(true);
+
+    // Check if this is a valid drop combination
+    const chemicalData = e.dataTransfer.getData("chemical");
+    if (chemicalData) {
+      const chemical = JSON.parse(chemicalData);
+      const isValidDrop =
+        (chemical.id === "phenol" && id === "conical_flask") ||
+        (chemical.id === "naoh" && id === "burette") ||
+        (isContainer && !["phenol", "naoh"].includes(chemical.id)) ||
+        (["phenol", "naoh"].includes(chemical.id) && isContainer);
+
+      if (isValidDrop) {
+        setIsDragOver(true);
+      }
+    } else {
+      setIsDragOver(true);
+    }
   };
 
   const handleChemicalDragLeave = (e: React.DragEvent) => {
