@@ -336,7 +336,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="relative w-full overflow-hidden"
+            className="relative w-full overflow-hidden border-2 border-dashed border-blue-200 rounded-lg"
             style={{
               height: "calc(75vh - 160px)", // Adjusted for top/bottom bars
               minHeight: "500px",
@@ -347,6 +347,23 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               backgroundSize: "25px 25px",
             }}
           >
+            {/* Placement guidance text */}
+            {React.Children.count(children) === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center text-gray-500 bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
+                  <div className="text-lg font-medium mb-2">
+                    🧪 Virtual Lab Workspace
+                  </div>
+                  <div className="text-sm">
+                    Drag equipment from above to set up your experiment
+                  </div>
+                  <div className="text-xs mt-1 text-blue-600">
+                    💡 Place burette and conical flask anywhere you like!
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Lab Bench Surface - More prominent */}
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-amber-200 via-amber-150 to-amber-100 border-t-2 border-amber-300">
               <div className="absolute inset-0 opacity-40 bg-gradient-to-r from-amber-300 to-amber-200"></div>
