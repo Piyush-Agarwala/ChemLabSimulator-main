@@ -1101,6 +1101,9 @@ function VirtualLabApp({
 
     setIsTitrating(true);
 
+    // Show Results Panel immediately when titration starts
+    setShowResultsPanel(true);
+
     // Mark step 4 as completed: Start titration button pressed
     markStepCompleted(4, "Titration started");
 
@@ -1228,7 +1231,7 @@ function VirtualLabApp({
               timestamp: new Date().toLocaleTimeString(),
               calculation: {
                 reaction:
-                  "HCl + NaOH → NaCl + H₂O (with phenolphthalein endpoint)",
+                  "HCl + NaOH �� NaCl + H₂O (with phenolphthalein endpoint)",
                 reactionType: "Acid-Base Titration Complete",
                 balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
                 products: [
