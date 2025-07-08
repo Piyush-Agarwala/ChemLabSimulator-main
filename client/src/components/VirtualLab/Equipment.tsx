@@ -142,9 +142,26 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Enhanced color mixing for chemical reactions
     const chemicalIds = chemicals.map((c) => c.id).sort();
 
-    // Specific reaction colors
+    // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
+        // Color transition from yellow to light pink during titration
+        if (titrationColorProgress > 0) {
+          const startColor = { r: 255, g: 225, b: 53 }; // Yellow #FFE135
+          const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
+
+          const r = Math.round(
+            startColor.r + (endColor.r - startColor.r) * titrationColorProgress,
+          );
+          const g = Math.round(
+            startColor.g + (endColor.g - startColor.g) * titrationColorProgress,
+          );
+          const b = Math.round(
+            startColor.b + (endColor.b - startColor.b) * titrationColorProgress,
+          );
+
+          return `rgb(${r}, ${g}, ${b})`;
+        }
         return "#FFB6C1"; // Pink when phenolphthalein is added to basic solution
       }
       return "#E8F5E8"; // Light green for neutralization
