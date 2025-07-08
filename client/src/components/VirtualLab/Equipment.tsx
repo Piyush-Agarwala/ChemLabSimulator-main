@@ -307,8 +307,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       return (
         <div className="relative">
-          {/* Real Burette Image - 3x larger */}
-          <div className="relative w-48 h-96">
+          {/* Real Burette Image - 2.5x larger */}
+          <div className="relative w-40 h-80">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F2ad8cf1ef1394deabc2721f0caee85ef?format=webp&width=800"
               alt="Laboratory Burette"
