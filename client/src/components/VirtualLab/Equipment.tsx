@@ -323,17 +323,17 @@ export const Equipment: React.FC<EquipmentProps> = ({
             {/* Solution overlay in burette */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
+                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 rounded-b-lg transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.6}%`,
                   width: "30%",
                   opacity: 0.9,
-                  minHeight: "12px",
+                  minHeight: "10px",
                 }}
               >
                 {/* Liquid surface shimmer */}
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-white opacity-40 animate-pulse"></div>
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
               </div>
             )}
 
