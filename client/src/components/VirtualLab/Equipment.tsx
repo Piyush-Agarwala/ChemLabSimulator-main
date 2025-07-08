@@ -799,15 +799,6 @@ export const Equipment: React.FC<EquipmentProps> = ({
           ></div>
         </div>
       )}
-
-      {/* Drop success animation */}
-      {isDropping && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium animate-bounce">
-            Added!
-          </div>
-        </div>
-      )}
     </div>
   );
 };
