@@ -1213,6 +1213,67 @@ function VirtualLabApp({
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
+
+              {/* Titration Control Buttons for Acid-Base Experiment */}
+              {experimentTitle.includes("Acid-Base") && (
+                <div className="flex items-center space-x-2 ml-4 border-l border-gray-300 pl-4">
+                  <button
+                    onClick={
+                      isTitrating ? handleStopTitration : handleStartTitration
+                    }
+                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      isTitrating
+                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                    }`}
+                  >
+                    <Droplets size={14} />
+                    <span>
+                      {isTitrating ? "Stop Titration" : "Start Titration"}
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={
+                      isStirring ? handleStopStirring : handleStartStirring
+                    }
+                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      isStirring
+                        ? "bg-red-500 hover:bg-red-600 text-white"
+                        : "bg-green-500 hover:bg-green-600 text-white"
+                    }`}
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="currentColor"
+                    >
+                      <circle
+                        cx="7"
+                        cy="7"
+                        r="5"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                        fill="none"
+                      />
+                      <path
+                        d="M5 7 L9 7"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      />
+                      <path
+                        d="M7 5 L7 9"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      />
+                    </svg>
+                    <span>
+                      {isStirring ? "Stop Stirring" : "Start Stirring"}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-3 mt-2 overflow-x-auto pb-2">
