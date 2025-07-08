@@ -205,15 +205,15 @@ export const ChemicalFormulas: React.FC<ChemicalFormulasProps> = ({
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "reactant":
-        return <Flask className="w-3 h-3" />;
+        return <FlaskConical className="w-3 h-3" />;
       case "product":
-        return <Beaker className="w-3 h-3" />;
+        return <TestTube className="w-3 h-3" />;
       case "catalyst":
         return <span className="text-xs font-bold">⚡</span>;
       case "solvent":
         return <span className="text-xs">💧</span>;
       default:
-        return <Flask className="w-3 h-3" />;
+        return <FlaskConical className="w-3 h-3" />;
     }
   };
 
