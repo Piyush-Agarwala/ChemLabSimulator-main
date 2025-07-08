@@ -512,27 +512,8 @@ function VirtualLabApp({
           }
         }
 
-        // Auto-adjust burette position when conical flask is placed
-        const newPositions = [
-          ...prev,
-          { id, x: finalX, y: finalY, chemicals: [] },
-        ];
-
-        // If a conical flask was just placed and there's already a burette, reposition the burette
-        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
-          const buretteIndex = newPositions.findIndex(
-            (pos) => pos.id === "burette",
-          );
-          if (buretteIndex !== -1) {
-            newPositions[buretteIndex] = {
-              ...newPositions[buretteIndex],
-              x: finalX, // Same position as conical flask
-              y: finalY - 180, // 180px above conical flask for proper gap
-            };
-          }
-        }
-
-        return newPositions;
+        // Add equipment at user-specified position
+        return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
     [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
