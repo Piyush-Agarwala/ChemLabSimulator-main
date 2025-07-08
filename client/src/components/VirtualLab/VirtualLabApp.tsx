@@ -752,6 +752,9 @@ function VirtualLabApp({
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
 
+    // Save current state before making changes
+    saveStateToHistory();
+
     // Enhanced phenolphthalein handling for conical flask (proper placement)
     if (chemicalId === "phenol" && equipmentId === "conical_flask") {
       setToastMessage(
