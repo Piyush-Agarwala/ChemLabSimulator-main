@@ -171,6 +171,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
       return "#FF69B4"; // Bright pink
     }
 
+    // HCl + Phenolphthalein combination (acidic solution)
+    if (
+      chemicalIds.includes("hcl") &&
+      chemicalIds.includes("phenol") &&
+      !chemicalIds.includes("naoh")
+    ) {
+      return "#ADD8E6"; // Light blue for HCl + Phenolphthalein in acidic solution
+    }
+
     // Default color mixing
     let r = 0,
       g = 0,
