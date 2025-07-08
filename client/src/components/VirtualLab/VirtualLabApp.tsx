@@ -1113,44 +1113,32 @@ function VirtualLabApp({
     }
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Automatically add NaOH to conical flask after 5 seconds
-    setTimeout(() => {
-      if (isTitrating) {
-        // Check if NaOH is already in the conical flask
-        const hasNaOHInFlask = conicalFlask.chemicals.some(
-          (c) => c.id === "naoh",
-        );
+    // Immediately add NaOH to conical flask when titration starts
+    const hasNaOHInFlask = conicalFlask.chemicals.some((c) => c.id === "naoh");
 
-        if (!hasNaOHInFlask) {
-          // Automatically add NaOH to conical flask
-          setEquipmentPositions((prev) =>
-            prev.map((pos) => {
-              if (pos.id === "conical_flask") {
-                return {
-                  ...pos,
-                  chemicals: [
-                    ...pos.chemicals,
-                    {
-                      id: "naoh",
-                      name: "Sodium Hydroxide",
-                      color: "transparent",
-                      amount: 1.0, // Start with small amount
-                      concentration: "0.1 M",
-                    },
-                  ],
-                };
-              }
-              return pos;
-            }),
-          );
-
-          setToastMessage(
-            "💧 NaOH automatically added to conical flask - Color changing...",
-          );
-          setTimeout(() => setToastMessage(null), 3000);
-        }
-      }
-    }, 5000);
+    if (!hasNaOHInFlask) {
+      // Automatically add NaOH to conical flask
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === "conical_flask") {
+            return {
+              ...pos,
+              chemicals: [
+                ...pos.chemicals,
+                {
+                  id: "naoh",
+                  name: "Sodium Hydroxide",
+                  color: "transparent",
+                  amount: 1.0, // Start with small amount
+                  concentration: "0.1 M",
+                },
+              ],
+            };
+          }
+          return pos;
+        }),
+      );
+    }
 
     // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
     setTitrationColorProgress(0);
