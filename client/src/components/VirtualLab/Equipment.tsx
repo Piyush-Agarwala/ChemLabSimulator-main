@@ -27,6 +27,7 @@ interface EquipmentProps {
   ) => void;
   stirrerActive?: boolean;
   hasNaOHInFlask?: boolean;
+  titrationColorProgress?: number;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
