@@ -49,6 +49,13 @@ export default function Experiment() {
     }
   }, [progress]);
 
+  // Auto-start timer when experiment loads
+  useEffect(() => {
+    if (experiment && !isRunning) {
+      setIsRunning(true);
+    }
+  }, [experiment]);
+
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isRunning) {
