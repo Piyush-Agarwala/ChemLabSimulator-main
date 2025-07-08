@@ -150,12 +150,24 @@ export const Chemical: React.FC<ChemicalProps> = ({
         </div>
       )}
 
-      {/* Drag instruction with animation */}
+      {/* Enhanced drag instruction with specific targets */}
       <div
         className={`text-xs text-center mt-2 transition-all ${selected ? "opacity-100 animate-pulse" : "opacity-0"}`}
       >
         <div className="flex items-center justify-center space-x-1">
-          <span className="text-purple-600 font-medium">Drag to equipment</span>
+          {id === "phenol" && (
+            <span className="text-purple-600 font-medium">
+              Drag to conical flask
+            </span>
+          )}
+          {id === "naoh" && (
+            <span className="text-purple-600 font-medium">Drag to burette</span>
+          )}
+          {!["phenol", "naoh"].includes(id) && (
+            <span className="text-purple-600 font-medium">
+              Drag to equipment
+            </span>
+          )}
           <span className="text-purple-500 animate-bounce">→</span>
         </div>
       </div>
