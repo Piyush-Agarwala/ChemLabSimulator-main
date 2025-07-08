@@ -299,9 +299,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F34490e039f07440eace9cc9afdabb8c1?format=webp&width=800"
               alt="Laboratory Burette"
-              className="w-full h-full object-contain rounded-lg shadow-lg bg-white"
+              className="w-full h-full object-contain shadow-2xl"
               style={{
                 filter: "brightness(1.0) contrast(1.0)",
+                background: "transparent",
               }}
             />
 
