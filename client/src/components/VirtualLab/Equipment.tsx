@@ -575,9 +575,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </text>
             </svg>
 
-            {/* Status indicator */}
+            {/* Status indicator - removed blinking */}
             {stirrerActive && (
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 Stirring Active
               </div>
             )}
