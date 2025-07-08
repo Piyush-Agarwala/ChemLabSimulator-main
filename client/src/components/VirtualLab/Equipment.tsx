@@ -601,9 +601,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </span>
       )}
 
-      {/* Enhanced chemical composition display */}
-      {chemicals.length > 0 && isOnWorkbench && (
-        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white border-2 border-gray-300 rounded-lg px-3 py-2 text-xs shadow-lg min-w-max">
+      {/* Enhanced chemical composition display - only show on hover or when chemicals are being added */}
+      {chemicals.length > 0 && isOnWorkbench && (isDropping || isDragOver) && (
+        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-xl min-w-max opacity-90">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
