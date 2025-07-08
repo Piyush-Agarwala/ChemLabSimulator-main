@@ -255,6 +255,7 @@ export default function Experiment() {
                 allSteps={experiment.stepDetails}
                 onTimerStart={() => setIsRunning(true)}
                 onTimerStop={() => setIsRunning(false)}
+                onTimerReset={resetTimer}
               />
             </CardContent>
           </Card>
