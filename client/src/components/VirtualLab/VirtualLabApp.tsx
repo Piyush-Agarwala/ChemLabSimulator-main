@@ -1422,8 +1422,22 @@ function VirtualLabApp({
                     drops: [],
                   });
 
+                  // Reset titration-specific state
+                  setIsTitrating(false);
+                  setIsStirring(false);
+                  setStirerActive(false);
+                  setTitrationDropCount(0);
+                  setTitrationColorProgress(0);
+                  setCompletedSteps(new Set());
+                  setHasCalculatedResult(false);
+
+                  // Reset timer to 0:00
+                  if (onTimerReset) {
+                    onTimerReset();
+                  }
+
                   // Show reset confirmation
-                  setToastMessage("�� Experiment reset successfully!");
+                  setToastMessage("🔄 Experiment reset successfully!");
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
