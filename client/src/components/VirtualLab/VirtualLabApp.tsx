@@ -103,6 +103,12 @@ function VirtualLabApp({
     drops: Array<{ id: string; x: number; y: number; color: string }>;
   }>({ active: false, chemicalId: "", drops: [] });
 
+  // Titration-specific state
+  const [isTitrating, setIsTitrating] = useState(false);
+  const [isStirring, setIsStirring] = useState(false);
+  const [titrationDropCount, setTitrationDropCount] = useState(0);
+  const [stirrerActive, setStirerActive] = useState(false);
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
