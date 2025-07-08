@@ -667,10 +667,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
       onDragOver={isContainer ? handleChemicalDragOver : undefined}
       onDragLeave={isContainer ? handleChemicalDragLeave : undefined}
       onDrop={isContainer ? handleChemicalDrop : undefined}
-      className={`flex flex-col items-center transition-all duration-200 cursor-grab active:cursor-grabbing relative ${
+      className={`transition-all duration-200 cursor-grab active:cursor-grabbing relative ${
         isOnWorkbench
-          ? "bg-transparent border-0 p-0 shadow-xl"
-          : "p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400"
+          ? "bg-transparent border-0 p-0"
+          : "flex flex-col items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg border-2 border-gray-200 hover:border-blue-400"
       } ${isContainer && isDragOver && !isOnWorkbench ? "border-green-500 bg-green-50 scale-105" : ""} ${
         isDropping ? "animate-pulse" : ""
       }`}
