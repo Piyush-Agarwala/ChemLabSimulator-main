@@ -342,9 +342,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
             )}
           </div>
 
-          {/* NaOH ready indicator */}
+          {/* NaOH ready indicator - removed blinking */}
           {hasNaOH && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold animate-pulse">
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold">
               Titrant Ready!
             </div>
           )}
