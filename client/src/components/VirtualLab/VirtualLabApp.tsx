@@ -1304,6 +1304,8 @@ function VirtualLabApp({
               experimentTitle={experimentTitle}
               currentGuidedStep={currentGuidedStep}
               dropwiseAnimation={dropwiseAnimation}
+              isTitrating={isTitrating}
+              isStirring={isStirring}
             >
               {equipmentPositions.map((pos) => {
                 const equipment = experimentEquipment.find(
