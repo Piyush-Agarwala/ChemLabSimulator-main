@@ -590,7 +590,63 @@ function VirtualLabApp({
     const chemical = experimentChemicals.find((c) => c.id === chemicalId);
     if (!chemical) return;
 
-    // Add phenolphthalein to burette when dropped
+    // Enhanced phenolphthalein handling for conical flask (proper placement)
+    if (chemicalId === "phenol" && equipmentId === "conical_flask") {
+      setToastMessage(
+        `✨ Added ${amount}mL of Phenolphthalein indicator to conical flask`,
+      );
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add phenolphthalein to conical flask - this is the correct usage for titration
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
+      );
+      return;
+    }
+
+    // Enhanced NaOH handling for burette (proper placement)
+    if (chemicalId === "naoh" && equipmentId === "burette") {
+      setToastMessage(`🧪 Filled burette with ${amount}mL of NaOH solution`);
+      setTimeout(() => setToastMessage(null), 3000);
+
+      // Add NaOH to burette - this is the correct setup for acid-base titration
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === equipmentId) {
+            const newChemicals = [
+              ...pos.chemicals,
+              {
+                id: chemicalId,
+                name: chemical.name,
+                color: chemical.color,
+                amount,
+                concentration: chemical.concentration,
+              },
+            ];
+            return { ...pos, chemicals: newChemicals };
+          }
+          return pos;
+        }),
+      );
+      return;
+    }
+
+    // Legacy phenolphthalein to burette support (though not typical)
     if (chemicalId === "phenol" && equipmentId === "burette") {
       setToastMessage(`Added ${amount}mL of ${chemical.name} to burette`);
       setTimeout(() => setToastMessage(null), 3000);
@@ -606,7 +662,7 @@ function VirtualLabApp({
                 name: chemical.name,
                 color: chemical.color,
                 amount,
-                concentration: chemical.concentration,
+                concentration: chemical.connection,
               },
             ];
             return { ...pos, chemicals: newChemicals };
