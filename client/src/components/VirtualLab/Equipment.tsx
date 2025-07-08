@@ -319,13 +319,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </div>
             )}
 
-            {/* Volume markings overlay */}
-            <div className="absolute left-0 top-10 text-sm text-gray-700 font-bold">
-              <div className="mb-5">50</div>
-              <div className="mb-5">40</div>
-              <div className="mb-5">30</div>
-              <div className="mb-5">20</div>
-              <div className="mb-5">10</div>
+            {/* Volume markings overlay - better positioned */}
+            <div className="absolute -left-6 top-12 text-xs text-gray-700 font-bold">
+              <div className="mb-6">50</div>
+              <div className="mb-6">40</div>
+              <div className="mb-6">30</div>
+              <div className="mb-6">20</div>
+              <div className="mb-6">10</div>
             </div>
           </div>
 
