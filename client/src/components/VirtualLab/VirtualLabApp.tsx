@@ -662,7 +662,7 @@ function VirtualLabApp({
                 name: chemical.name,
                 color: chemical.color,
                 amount,
-                concentration: chemical.connection,
+                concentration: chemical.concentration,
               },
             ];
             return { ...pos, chemicals: newChemicals };
