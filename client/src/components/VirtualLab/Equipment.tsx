@@ -184,8 +184,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
       return (
         <div className="relative">
-          {/* Real Conical Flask Image - 3x larger */}
-          <div className="relative w-60 h-72">
+          {/* Real Conical Flask Image - 2.5x larger */}
+          <div className="relative w-50 h-60">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F18f408c6f29d4176ac4ae731a3650daa?format=webp&width=800"
               alt="Laboratory Conical Flask"
