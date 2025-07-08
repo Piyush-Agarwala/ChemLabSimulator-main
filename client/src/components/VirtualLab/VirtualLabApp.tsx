@@ -1358,6 +1358,12 @@ function VirtualLabApp({
                 const equipment = experimentEquipment.find(
                   (eq) => eq.id === pos.id,
                 );
+                const conicalFlask = equipmentPositions.find(
+                  (eq) => eq.id === "conical_flask",
+                );
+                const hasNaOHInFlask =
+                  conicalFlask?.chemicals?.some((c) => c.id === "naoh") ||
+                  false;
                 return equipment ? (
                   <Equipment
                     key={pos.id}
@@ -1369,6 +1375,7 @@ function VirtualLabApp({
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
                     stirrerActive={stirrerActive}
+                    hasNaOHInFlask={hasNaOHInFlask}
                   />
                 ) : null;
               })}
