@@ -94,20 +94,6 @@ export const ChemicalFormulas: React.FC<ChemicalFormulasProps> = ({
             phase: "(aq)",
           },
           {
-            name: "Sodium Chloride",
-            formula: "NaCl",
-            type: "product" as const,
-            molWeight: 58.44,
-            phase: "(aq)",
-          },
-          {
-            name: "Water",
-            formula: "H₂O",
-            type: "product" as const,
-            molWeight: 18.02,
-            phase: "(l)",
-          },
-          {
             name: "Phenolphthalein",
             formula: "C₂₀H₁₄O₄",
             type: "catalyst" as const,
