@@ -696,6 +696,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
         top: isOnWorkbench && position ? position.y : "auto",
         zIndex: isOnWorkbench ? 10 : "auto",
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
+        transition: isOnWorkbench ? "left 0.3s ease, top 0.3s ease" : "none",
       }}
     >
       {/* Subtle drop zone indicator for chemicals */}
@@ -752,7 +753,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   .map((c) => {
                     if (c.id === "hcl") return "HCl";
                     if (c.id === "naoh") return "NaOH";
-                    if (c.id === "phenol") return "C₂₀H₁₄O₄";
+                    if (c.id === "phenol") return "C₂���H₁₄O₄";
                     return "";
                   })
                   .filter(Boolean)
