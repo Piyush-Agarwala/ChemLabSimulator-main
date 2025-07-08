@@ -72,6 +72,7 @@ interface VirtualLabProps {
   allSteps: ExperimentStep[];
   onTimerStart?: () => void;
   onTimerStop?: () => void;
+  onTimerReset?: () => void;
 }
 
 function VirtualLabApp({
