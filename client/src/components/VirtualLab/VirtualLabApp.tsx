@@ -1087,6 +1087,9 @@ function VirtualLabApp({
 
     setIsTitrating(true);
 
+    // Mark step 4 as completed: Start titration button pressed
+    markStepCompleted(4, "Titration started");
+
     // Auto-start magnetic stirrer if available
     if (stirrer && !isStirring) {
       setIsStirring(true);
