@@ -25,6 +25,7 @@ interface EquipmentProps {
     equipmentId: string,
     amount: number,
   ) => void;
+  stirrerActive?: boolean;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
