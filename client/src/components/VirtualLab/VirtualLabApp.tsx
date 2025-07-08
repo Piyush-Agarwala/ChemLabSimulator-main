@@ -812,6 +812,139 @@ function VirtualLabApp({
     onStepComplete();
   };
 
+  // Titration control functions
+  const handleStartTitration = () => {
+    const burette = equipmentPositions.find((pos) => pos.id === "burette");
+    const conicalFlask = equipmentPositions.find(
+      (pos) => pos.id === "conical_flask",
+    );
+
+    if (!burette || !conicalFlask) {
+      setToastMessage("⚠️ Please place both burette and conical flask first!");
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    const hasNaOH = burette.chemicals.some((c) => c.id === "naoh");
+    if (!hasNaOH) {
+      setToastMessage("⚠️ Please add NaOH to the burette first!");
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    setIsTitrating(true);
+    setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+    setTimeout(() => setToastMessage(null), 3000);
+
+    // Start dropwise animation
+    startDropwiseAnimation(burette, conicalFlask);
+  };
+
+  const handleStopTitration = () => {
+    setIsTitrating(false);
+    setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
+    setToastMessage("⏸️ Titration stopped");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  const handleStartStirring = () => {
+    const stirrer = equipmentPositions.find(
+      (pos) => pos.id === "magnetic_stirrer",
+    );
+    const conicalFlask = equipmentPositions.find(
+      (pos) => pos.id === "conical_flask",
+    );
+
+    if (!stirrer || !conicalFlask) {
+      setToastMessage(
+        "⚠️ Please place both magnetic stirrer and conical flask!",
+      );
+      setTimeout(() => setToastMessage(null), 3000);
+      return;
+    }
+
+    setIsStirring(true);
+    setStirerActive(true);
+    setToastMessage("🌀 Magnetic stirrer activated!");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  const handleStopStirring = () => {
+    setIsStirring(false);
+    setStirerActive(false);
+    setToastMessage("⏹️ Stirring stopped");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  // Dropwise animation system
+  const startDropwiseAnimation = (burette: any, conicalFlask: any) => {
+    const interval = setInterval(() => {
+      if (!isTitrating) {
+        clearInterval(interval);
+        return;
+      }
+
+      const dropId = `drop_${Date.now()}_${Math.random()}`;
+      const newDrop = {
+        id: dropId,
+        x: burette.x, // Start from burette position
+        y: burette.y + 50, // Start below burette tip
+        color: "#87CEEB", // NaOH color
+      };
+
+      setDropwiseAnimation((prev) => ({
+        active: true,
+        chemicalId: "naoh",
+        drops: [...prev.drops, newDrop],
+      }));
+
+      // Simulate adding small amount to conical flask
+      setTitrationDropCount((prev) => prev + 1);
+
+      // Every 10 drops, add 0.1mL to conical flask
+      if (titrationDropCount % 10 === 0) {
+        setEquipmentPositions((prev) =>
+          prev.map((pos) => {
+            if (pos.id === "conical_flask") {
+              const existingNaOH = pos.chemicals.find((c) => c.id === "naoh");
+              if (existingNaOH) {
+                return {
+                  ...pos,
+                  chemicals: pos.chemicals.map((c) =>
+                    c.id === "naoh" ? { ...c, amount: c.amount + 0.1 } : c,
+                  ),
+                };
+              } else {
+                return {
+                  ...pos,
+                  chemicals: [
+                    ...pos.chemicals,
+                    {
+                      id: "naoh",
+                      name: "Sodium Hydroxide",
+                      color: "#87CEEB",
+                      amount: 0.1,
+                      concentration: "0.1 M",
+                    },
+                  ],
+                };
+              }
+            }
+            return pos;
+          }),
+        );
+      }
+
+      // Remove drop after animation
+      setTimeout(() => {
+        setDropwiseAnimation((prev) => ({
+          ...prev,
+          drops: prev.drops.filter((drop) => drop.id !== dropId),
+        }));
+      }, 1500);
+    }, 800); // Drop every 800ms
+  };
+
   const handleClearResults = () => {
     setResults([]);
   };
@@ -1076,7 +1209,7 @@ function VirtualLabApp({
                   });
 
                   // Show reset confirmation
-                  setToastMessage("🔄 Experiment reset successfully!");
+                  setToastMessage("�� Experiment reset successfully!");
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
