@@ -157,7 +157,7 @@ function VirtualLabApp({
           id: "distilled_water",
           name: "Distilled Water",
           formula: "H₂O",
-          color: "#87CEEB",
+          color: "transparent",
           concentration: "Pure",
           volume: 100,
         },
@@ -929,7 +929,7 @@ function VirtualLabApp({
           molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
           mechanism: [
             "1. HCl dissociates: HCl → H⁺ + Cl⁻",
-            "2. NaOH dissociates: NaOH → Na⁺ + OH��",
+            "2. NaOH dissociates: NaOH ��� Na⁺ + OH��",
             "3. Neutralization: H⁺ + OH⁻ → H₂O",
             "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
           ],
