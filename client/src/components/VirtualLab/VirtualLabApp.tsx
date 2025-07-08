@@ -370,7 +370,7 @@ function VirtualLabApp({
           name: "250mL Conical Flask",
           icon: (
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2Fdedd42141c6148f299398271c3825dde?format=webp&width=800"
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F18f408c6f29d4176ac4ae731a3650daa?format=webp&width=800"
               alt="Conical Flask"
               className="w-9 h-9 object-contain rounded border-2 border-blue-400 shadow-sm bg-white"
               style={{
