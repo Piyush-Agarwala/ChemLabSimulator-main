@@ -35,6 +35,8 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   experimentTitle,
   currentGuidedStep = 1,
   dropwiseAnimation = { active: false, chemicalId: "", drops: [] },
+  isTitrating = false,
+  isStirring = false,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [temperature, setTemperature] = useState(22);
@@ -360,7 +362,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
                     Drag equipment from above to set up your experiment
                   </div>
                   <div className="text-xs mt-1 text-blue-600">
-                    💡 Place burette and conical flask anywhere you like!
+                    ��� Place burette and conical flask anywhere you like!
                   </div>
                 </div>
               </div>
