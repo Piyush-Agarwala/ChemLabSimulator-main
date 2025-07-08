@@ -198,20 +198,20 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Acid-Base")) {
       return [
         {
-          id: "hcl",
-          name: "Hydrochloric Acid",
-          formula: "HCl",
-          color: "#FFE135",
-          concentration: "0.1 M",
-          volume: 25,
-        },
-        {
           id: "naoh",
           name: "Sodium Hydroxide",
           formula: "NaOH",
           color: "transparent",
           concentration: "0.1 M",
           volume: 50,
+        },
+        {
+          id: "hcl",
+          name: "Hydrochloric Acid",
+          formula: "HCl",
+          color: "#FFE135",
+          concentration: "0.1 M",
+          volume: 25,
         },
         {
           id: "phenol",
