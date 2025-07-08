@@ -104,6 +104,25 @@ export const Chemical: React.FC<ChemicalProps> = ({
               {concentration}
             </div>
           )}
+
+          {/* Special usage hints for titration chemicals */}
+          {selected && id === "phenol" && (
+            <div className="text-xs text-pink-600 font-medium bg-pink-50 px-2 py-1 rounded mt-1">
+              💡 Add to acid solution in conical flask
+            </div>
+          )}
+
+          {selected && id === "naoh" && (
+            <div className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded mt-1">
+              💡 Load into burette for titration
+            </div>
+          )}
+
+          {selected && id === "hcl" && (
+            <div className="text-xs text-yellow-600 font-medium bg-yellow-50 px-2 py-1 rounded mt-1">
+              💡 Add to conical flask first
+            </div>
+          )}
         </div>
 
         {selected && (
