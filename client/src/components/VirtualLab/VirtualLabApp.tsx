@@ -512,32 +512,96 @@ function VirtualLabApp({
         finalX = Math.max(minX, Math.min(maxX, x));
         finalY = Math.max(minY, Math.min(maxY, y));
 
-        // Only auto-align on first placement if not repositioning
-        if (!existing && experimentTitle.includes("Acid-Base")) {
-          // Equipment order from top to bottom as shown in the image:
-          // 1. Burette (top)
-          // 2. Conical Flask (middle)
-          // 3. Magnetic Stirrer (bottom)
-          const equipmentOrder = [
+        // Enhanced auto-snap formation for titration equipment
+        if (experimentTitle.includes("Acid-Base")) {
+          const titrationEquipment = [
             "burette",
             "conical_flask",
             "magnetic_stirrer",
           ];
-          const centerX = 450;
-          const baseY = 150; // Starting Y position for burette at top
-          const spacing = 140; // Vertical spacing between equipment
 
-          if (equipmentOrder.includes(id)) {
-            // Check if this is close to center area (auto-align zone)
-            if (Math.abs(x - centerX) < 150 && Math.abs(y - 250) < 200) {
-              finalX = centerX;
-              const orderIndex = equipmentOrder.indexOf(id);
-              finalY = baseY + orderIndex * spacing;
+          if (titrationEquipment.includes(id)) {
+            // Get positions of other titration equipment already on workbench
+            const otherTitrationEquipment = prev.filter(
+              (pos) => titrationEquipment.includes(pos.id) && pos.id !== id,
+            );
+
+            // Check if dragging near any existing titration equipment
+            const snapDistance = 180; // Distance threshold for auto-snap
+            let shouldSnapToFormation = false;
+            let formationCenterX = finalX;
+            let formationCenterY = finalY;
+
+            // If there are other titration equipment pieces, check proximity
+            if (otherTitrationEquipment.length > 0) {
+              for (const equipment of otherTitrationEquipment) {
+                const distance = Math.sqrt(
+                  Math.pow(equipment.x - finalX, 2) +
+                    Math.pow(equipment.y - finalY, 2),
+                );
+
+                if (distance < snapDistance) {
+                  shouldSnapToFormation = true;
+                  // Use the average position as formation center
+                  formationCenterX = equipment.x;
+                  formationCenterY = equipment.y;
+                  break;
+                }
+              }
+            }
+
+            // Auto-snap to formation when near other equipment or in center area
+            const inCenterArea =
+              Math.abs(x - 450) < 150 && Math.abs(y - 250) < 200;
+
+            if (shouldSnapToFormation || (!existing && inCenterArea)) {
+              // Define the fixed formation positions
+              const formationSpacing = 140;
+              const formationPositions = {
+                burette: {
+                  x: formationCenterX,
+                  y: formationCenterY - formationSpacing,
+                },
+                conical_flask: { x: formationCenterX, y: formationCenterY },
+                magnetic_stirrer: {
+                  x: formationCenterX,
+                  y: formationCenterY + formationSpacing,
+                },
+              };
+
+              // Snap to formation position
+              const snapPosition =
+                formationPositions[id as keyof typeof formationPositions];
+              if (snapPosition) {
+                finalX = Math.max(minX, Math.min(maxX, snapPosition.x));
+                finalY = Math.max(minY, Math.min(maxY, snapPosition.y));
+
+                // Also update positions of other equipment in formation to align properly
+                const updatedPositions = prev.map((pos) => {
+                  if (titrationEquipment.includes(pos.id) && pos.id !== id) {
+                    const alignPosition =
+                      formationPositions[
+                        pos.id as keyof typeof formationPositions
+                      ];
+                    if (alignPosition) {
+                      return {
+                        ...pos,
+                        x: Math.max(minX, Math.min(maxX, alignPosition.x)),
+                        y: Math.max(minY, Math.min(maxY, alignPosition.y)),
+                      };
+                    }
+                  }
+                  return pos;
+                });
+
+                // Update existing equipment positions first
+                prev = updatedPositions;
+              }
             }
           }
         }
 
-        // Check for overlapping with other equipment
+        // Check for overlapping with other equipment (but allow formation)
         const isOverlapping = (
           newX: number,
           newY: number,
@@ -545,6 +609,21 @@ function VirtualLabApp({
         ) => {
           return prev.some((pos) => {
             if (pos.id === excludeId) return false;
+
+            // Allow titration equipment to be close when in formation
+            const isTitrationFormation =
+              experimentTitle.includes("Acid-Base") &&
+              ["burette", "conical_flask", "magnetic_stirrer"].includes(
+                pos.id,
+              ) &&
+              ["burette", "conical_flask", "magnetic_stirrer"].includes(
+                excludeId,
+              );
+
+            if (isTitrationFormation) {
+              return false; // Allow close positioning for formation
+            }
+
             const distance = Math.sqrt(
               Math.pow(pos.x - newX, 2) + Math.pow(pos.y - newY, 2),
             );
@@ -552,7 +631,7 @@ function VirtualLabApp({
           });
         };
 
-        // Adjust position if overlapping
+        // Adjust position if overlapping (but not for formation equipment)
         if (isOverlapping(finalX, finalY, id)) {
           // Try to find a nearby non-overlapping position
           for (let offset = 30; offset <= 150; offset += 30) {
