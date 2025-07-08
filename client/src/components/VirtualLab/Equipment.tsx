@@ -348,14 +348,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
             {/* NaOH information overlay */}
             {hasNaOH && (
-              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border-2 border-blue-500 rounded-lg px-2 py-1 text-xs shadow-lg whitespace-nowrap">
+              <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 bg-white border-2 border-blue-500 rounded-lg px-4 py-2 text-sm shadow-lg whitespace-nowrap">
                 <div className="text-blue-800 font-bold text-center">
                   0.1M NaOH
                 </div>
-                <div className="text-blue-600 text-center text-xs">
+                <div className="text-blue-600 text-center text-sm">
                   Sodium Hydroxide
                 </div>
-                <div className="text-gray-600 text-center text-xs">
+                <div className="text-gray-600 text-center text-sm">
                   {naohAmount.toFixed(1)} mL
                 </div>
               </div>
