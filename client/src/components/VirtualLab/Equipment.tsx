@@ -41,6 +41,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("equipment", id);
+    e.dataTransfer.effectAllowed = "move";
+
+    // Add visual feedback during drag
+    const target = e.currentTarget as HTMLElement;
+    target.style.opacity = "0.7";
+    target.style.transform = "scale(1.05)";
+
+    // Clean up after drag ends
+    setTimeout(() => {
+      target.style.opacity = "";
+      target.style.transform = "";
+    }, 100);
   };
 
   const handleChemicalDragOver = (e: React.DragEvent) => {
