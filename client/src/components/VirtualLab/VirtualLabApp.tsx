@@ -117,6 +117,10 @@ function VirtualLabApp({
   const [stirrerActive, setStirerActive] = useState(false);
   const [titrationColorProgress, setTitrationColorProgress] = useState(0);
 
+  // Step completion tracking for Acid-Base Titration
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [hasCalculatedResult, setHasCalculatedResult] = useState(false);
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
