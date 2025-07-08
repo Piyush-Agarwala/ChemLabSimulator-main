@@ -718,9 +718,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
         </span>
       )}
 
-      {/* Enhanced chemical composition display - only show on hover or when chemicals are being added */}
-      {chemicals.length > 0 && isOnWorkbench && (isDropping || isDragOver) && (
-        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-xs shadow-xl min-w-max opacity-90">
+      {/* Enhanced chemical composition display - only show when actively adding chemicals */}
+      {chemicals.length > 0 && isOnWorkbench && isDropping && (
+        <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white rounded px-2 py-1 text-xs min-w-max opacity-90">
           <div className="text-gray-800 font-medium">
             {chemicals
               .map((chemical) => chemical.name.split(" ")[0])
