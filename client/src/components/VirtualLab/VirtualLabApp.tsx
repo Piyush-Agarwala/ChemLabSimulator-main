@@ -1080,7 +1080,7 @@ function VirtualLabApp({
 
     const hasNaOH = burette.chemicals.some((c) => c.id === "naoh");
     if (!hasNaOH) {
-      setToastMessage("⚠️ Please add NaOH to the burette first!");
+      setToastMessage("⚠��� Please add NaOH to the burette first!");
       setTimeout(() => setToastMessage(null), 3000);
       return;
     }
@@ -1109,6 +1109,11 @@ function VirtualLabApp({
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       setTitrationColorProgress(progress);
+
+      // Mark step 5 as completed when color starts turning pink (50% progress)
+      if (progress >= 0.5 && !completedSteps.has(5)) {
+        markStepCompleted(5, "Solution turned pink");
+      }
 
       if (progress < 1) {
         requestAnimationFrame(animateColor);
