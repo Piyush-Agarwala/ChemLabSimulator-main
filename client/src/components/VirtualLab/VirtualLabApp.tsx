@@ -1146,55 +1146,48 @@ function VirtualLabApp({
       );
     }
 
-    // Open Results Panel after 5 seconds
-    setTimeout(() => {
-      if (isTitrating) {
-        // Add initial titration analysis result after 5 seconds
-        const initialResult: Result = {
-          id: `titration_start_${Date.now()}`,
-          type: "success",
-          title: "Titration Analysis Started",
-          description:
-            "Real-time analysis of acid-base titration in progress. Monitoring color changes and endpoint detection.",
-          timestamp: new Date().toLocaleTimeString(),
-          calculation: {
-            reaction: "HCl + NaOH → NaCl + H₂O (in progress)",
-            reactionType: "Acid-Base Titration - Initial Analysis",
-            balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
-            products: [
-              "Titration in progress",
-              "Monitoring pH changes",
-              "Awaiting endpoint",
-            ],
-            volumeAdded: 5.0, // Initial volume
-            totalVolume: 30.0,
-            concentration: "~0.1 M (calculating...)",
-            molarity: 0.1,
-            moles: 0.0005,
-            ph: 6.5, // Transitioning pH
-            yield: 20, // Initial progress
-            mechanism: [
-              "1. Initial setup: HCl solution prepared with phenolphthalein",
-              "2. NaOH addition started from burette",
-              "3. Gradual neutralization occurring",
-              "4. pH slowly increasing towards endpoint",
-              "5. Monitoring for color change to pink",
-            ],
-            thermodynamics: {
-              deltaH: -57.3,
-              deltaG: -79.9,
-              equilibriumConstant: 1.0e14,
-            },
-          },
-        };
+    // Add initial titration analysis result immediately
+    const initialResult: Result = {
+      id: `titration_start_${Date.now()}`,
+      type: "success",
+      title: "Titration Analysis Started",
+      description:
+        "Real-time analysis of acid-base titration in progress. Monitoring color changes and endpoint detection.",
+      timestamp: new Date().toLocaleTimeString(),
+      calculation: {
+        reaction: "HCl + NaOH → NaCl + H₂O (in progress)",
+        reactionType: "Acid-Base Titration - Initial Analysis",
+        balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+        products: [
+          "Titration in progress",
+          "Monitoring pH changes",
+          "Awaiting endpoint",
+        ],
+        volumeAdded: 5.0, // Initial volume
+        totalVolume: 30.0,
+        concentration: "~0.1 M (calculating...)",
+        molarity: 0.1,
+        moles: 0.0005,
+        ph: 6.5, // Transitioning pH
+        yield: 20, // Initial progress
+        mechanism: [
+          "1. Initial setup: HCl solution prepared with phenolphthalein",
+          "2. NaOH addition started from burette",
+          "3. Gradual neutralization occurring",
+          "4. pH slowly increasing towards endpoint",
+          "5. Monitoring for color change to pink",
+        ],
+        thermodynamics: {
+          deltaH: -57.3,
+          deltaG: -79.9,
+          equilibriumConstant: 1.0e14,
+        },
+      },
+    };
 
-        setResults((prev) => [...prev, initialResult]);
-        setToastMessage(
-          "📊 Analysis Panel opened - Monitoring titration progress",
-        );
-        setTimeout(() => setToastMessage(null), 3000);
-      }
-    }, 5000);
+    setResults((prev) => [...prev, initialResult]);
+    setToastMessage("📊 Analysis Panel opened - Monitoring titration progress");
+    setTimeout(() => setToastMessage(null), 3000);
 
     // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
     setTitrationColorProgress(0);
