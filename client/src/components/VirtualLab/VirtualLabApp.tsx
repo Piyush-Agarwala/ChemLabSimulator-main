@@ -903,6 +903,13 @@ function VirtualLabApp({
           );
           setTimeout(() => setToastMessage(null), 3000);
 
+          // Check for Acid-Base Titration step completion
+          if (experimentTitle.includes("Acid-Base")) {
+            if (chemicalId === "hcl" && equipmentId === "conical_flask") {
+              markStepCompleted(2, "HCl added to conical flask");
+            }
+          }
+
           // Check if this completes a guided step for Aspirin Synthesis
           if (experimentTitle.includes("Aspirin")) {
             const currentStep = aspirinGuidedSteps[currentGuidedStep - 1];
