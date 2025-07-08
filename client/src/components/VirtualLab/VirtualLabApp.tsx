@@ -136,7 +136,7 @@ function VirtualLabApp({
         {
           id: "salicylic_acid",
           name: "Salicylic Acid",
-          formula: "C₇H₆O₃",
+          formula: "C₇H₆O���",
           color: "#F8F8FF",
           concentration: "2.0 g",
           volume: 25,
@@ -701,7 +701,12 @@ function VirtualLabApp({
         return [...prev, { id, x: finalX, y: finalY, chemicals: [] }];
       });
     },
-    [experimentTitle, currentGuidedStep, aspirinGuidedSteps],
+    [
+      experimentTitle,
+      currentGuidedStep,
+      aspirinGuidedSteps,
+      saveStateToHistory,
+    ],
   );
 
   const calculateChemicalProperties = (
