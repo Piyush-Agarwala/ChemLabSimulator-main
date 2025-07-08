@@ -996,7 +996,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O�� endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O��� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
@@ -1043,6 +1043,17 @@ function VirtualLabApp({
       };
 
       setResults((prev) => [...prev, result]);
+
+      // Mark step 6 as completed when result is calculated for Acid-Base Titration
+      if (
+        experimentTitle.includes("Acid-Base") &&
+        hasAcid &&
+        hasBase &&
+        !hasCalculatedResult
+      ) {
+        setHasCalculatedResult(true);
+        markStepCompleted(6, "Result calculated");
+      }
 
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
