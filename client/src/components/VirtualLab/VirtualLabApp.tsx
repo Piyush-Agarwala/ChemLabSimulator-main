@@ -828,6 +828,9 @@ function VirtualLabApp({
       setToastMessage(`🧪 Filled burette with ${amount}mL of NaOH solution`);
       setTimeout(() => setToastMessage(null), 3000);
 
+      // Mark step 1 as completed: NaOH added to burette
+      markStepCompleted(1, "NaOH added to burette");
+
       // Add NaOH to burette - this is the correct setup for acid-base titration
       setEquipmentPositions((prev) =>
         prev.map((pos) => {
