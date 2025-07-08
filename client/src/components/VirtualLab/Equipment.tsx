@@ -288,13 +288,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
       const naohAmount = chemicals.find((c) => c.id === "naoh")?.amount || 0;
 
       return (
-        <div className="relative">
-          {/* Real Burette Image - 2.5x larger */}
-          <div className="relative w-40 h-80">
+        <div className="relative flex items-center justify-center">
+          {/* Real Burette Image - Better aligned */}
+          <div className="relative w-32 h-72 flex items-center justify-center">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F2ad8cf1ef1394deabc2721f0caee85ef?format=webp&width=800"
               alt="Laboratory Burette"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain object-center"
               style={{
                 filter:
                   "brightness(1.0) contrast(1.0) drop-shadow(0 8px 16px rgba(0,0,0,0.2))",
