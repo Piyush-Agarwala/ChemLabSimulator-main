@@ -1394,6 +1394,7 @@ function VirtualLabApp({
                     onChemicalDrop={handleChemicalDrop}
                     stirrerActive={stirrerActive}
                     hasNaOHInFlask={hasNaOHInFlask}
+                    titrationColorProgress={titrationColorProgress}
                   />
                 ) : null;
               })}
