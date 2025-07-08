@@ -533,6 +533,48 @@ function VirtualLabApp({
           }
         }
 
+        // Check for overlapping with other equipment
+        const isOverlapping = (
+          newX: number,
+          newY: number,
+          excludeId: string,
+        ) => {
+          return prev.some((pos) => {
+            if (pos.id === excludeId) return false;
+            const distance = Math.sqrt(
+              Math.pow(pos.x - newX, 2) + Math.pow(pos.y - newY, 2),
+            );
+            return distance < 120; // Minimum distance between equipment
+          });
+        };
+
+        // Adjust position if overlapping
+        if (isOverlapping(finalX, finalY, id)) {
+          // Try to find a nearby non-overlapping position
+          for (let offset = 30; offset <= 150; offset += 30) {
+            const testPositions = [
+              { x: finalX + offset, y: finalY },
+              { x: finalX - offset, y: finalY },
+              { x: finalX, y: finalY + offset },
+              { x: finalX, y: finalY - offset },
+              { x: finalX + offset, y: finalY + offset },
+              { x: finalX - offset, y: finalY - offset },
+            ];
+
+            for (const testPos of testPositions) {
+              const testX = Math.max(minX, Math.min(maxX, testPos.x));
+              const testY = Math.max(minY, Math.min(maxY, testPos.y));
+
+              if (!isOverlapping(testX, testY, id)) {
+                finalX = testX;
+                finalY = testY;
+                break;
+              }
+            }
+            if (!isOverlapping(finalX, finalY, id)) break;
+          }
+        }
+
         if (existing) {
           return prev.map((pos) =>
             pos.id === id ? { ...pos, x: finalX, y: finalY } : pos,
@@ -878,7 +920,7 @@ function VirtualLabApp({
 
     if (!stirrer || !conicalFlask) {
       setToastMessage(
-        "⚠️ Please place both magnetic stirrer and conical flask!",
+        "���️ Please place both magnetic stirrer and conical flask!",
       );
       setTimeout(() => setToastMessage(null), 3000);
       return;
