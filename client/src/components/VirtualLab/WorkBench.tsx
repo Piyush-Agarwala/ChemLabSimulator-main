@@ -453,6 +453,75 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
               </div>
             )}
 
+            {/* Chemical Formulas Panel - Left Side */}
+            <div className="absolute left-4 top-4 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-lg p-4 shadow-lg max-w-xs z-20">
+              <h3 className="text-sm font-bold text-gray-800 mb-3 border-b pb-2">
+                Chemical Formulas
+              </h3>
+
+              {/* HCl */}
+              <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-semibold text-yellow-800">
+                    Hydrochloric Acid
+                  </span>
+                  <span className="text-xs bg-yellow-200 px-2 py-1 rounded">
+                    Strong Acid
+                  </span>
+                </div>
+                <div className="text-lg font-bold text-yellow-700">HCl</div>
+                <div className="text-xs text-yellow-600">
+                  Concentration: 0.1M
+                </div>
+                <div className="text-xs text-yellow-600">
+                  pH &lt; 7 (Acidic)
+                </div>
+              </div>
+
+              {/* NaOH */}
+              <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-semibold text-blue-800">
+                    Sodium Hydroxide
+                  </span>
+                  <span className="text-xs bg-blue-200 px-2 py-1 rounded">
+                    Strong Base
+                  </span>
+                </div>
+                <div className="text-lg font-bold text-blue-700">NaOH</div>
+                <div className="text-xs text-blue-600">Concentration: 0.1M</div>
+                <div className="text-xs text-blue-600">pH &gt; 7 (Basic)</div>
+              </div>
+
+              {/* Phenolphthalein */}
+              <div className="mb-3 p-2 bg-pink-50 border border-pink-200 rounded">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-semibold text-pink-800">
+                    Phenolphthalein
+                  </span>
+                  <span className="text-xs bg-pink-200 px-2 py-1 rounded">
+                    Indicator
+                  </span>
+                </div>
+                <div className="text-lg font-bold text-pink-700">C₂₀H₁₄O₄</div>
+                <div className="text-xs text-pink-600">Colorless in acid</div>
+                <div className="text-xs text-pink-600">Pink in base</div>
+              </div>
+
+              {/* Neutralization Reaction */}
+              <div className="p-2 bg-green-50 border border-green-200 rounded">
+                <div className="text-sm font-semibold text-green-800 mb-2">
+                  Neutralization Reaction
+                </div>
+                <div className="text-sm font-bold text-green-700 text-center bg-white p-2 rounded border">
+                  NaOH + HCl → NaCl + H₂O
+                </div>
+                <div className="text-xs text-green-600 text-center mt-1">
+                  Base + Acid → Salt + Water
+                </div>
+              </div>
+            </div>
+
             {/* Equipment placement area with more generous spacing */}
             <div className="absolute inset-0 p-12">{children}</div>
           </div>
