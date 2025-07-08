@@ -364,12 +364,11 @@ function VirtualLabApp({
           name: "250mL Conical Flask",
           icon: (
             <img
-              src="https://images.pexels.com/photos/8539753/pexels-photo-8539753.jpeg"
+              src="https://cdn.builder.io/api/v1/image/assets%2F5b489eed84cd44f89c5431dbe9fd14d3%2F9073a52a13c24cf6b1e5817b6c0ffeeb?format=webp&width=800"
               alt="Conical Flask"
-              className="w-9 h-9 object-cover rounded border-2 border-blue-400 shadow-sm"
+              className="w-9 h-9 object-contain rounded border-2 border-blue-400 shadow-sm bg-white"
               style={{
-                filter: "brightness(1.2) contrast(1.1)",
-                clipPath: "inset(5% 15% 5% 15%)",
+                filter: "brightness(1.0) contrast(1.0)",
               }}
             />
           ),
