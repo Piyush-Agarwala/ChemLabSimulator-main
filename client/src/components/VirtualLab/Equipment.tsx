@@ -702,8 +702,8 @@ export const Equipment: React.FC<EquipmentProps> = ({
       )}
 
       <div
-        className={`mb-3 transition-all duration-200 relative ${
-          isOnWorkbench ? "text-blue-700" : "text-blue-600"
+        className={`transition-all duration-200 relative ${
+          isOnWorkbench ? "text-blue-700" : "text-blue-600 mb-3"
         } ${isDragOver ? "scale-110" : ""}`}
       >
         {getEquipmentSpecificRendering()}
