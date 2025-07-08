@@ -563,17 +563,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
         transform: isOnWorkbench ? "translate(-50%, -50%)" : "none",
       }}
     >
-      {/* Enhanced drop zone indicator */}
-      {isContainer && isOnWorkbench && (
-        <div
-          className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
-            isDragOver ? "bg-green-500 scale-125 shadow-lg" : "bg-blue-500"
-          }`}
-        >
-          <Droplet size={14} className="text-white" />
-          {isDragOver && (
-            <div className="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
-          )}
+      {/* Enhanced drop zone indicator - only show subtle indicator when dragging chemicals */}
+      {isContainer && isOnWorkbench && isDragOver && (
+        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center bg-green-500 shadow-lg animate-pulse">
+          <Droplet size={10} className="text-white" />
         </div>
       )}
 
