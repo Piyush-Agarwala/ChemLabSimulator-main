@@ -165,6 +165,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
     if (id === "conical_flask" && isOnWorkbench) {
       const hasHCl = chemicals.some((c) => c.id === "hcl");
       const hasNaOH = chemicals.some((c) => c.id === "naoh");
+      const hasPhenolphthalein = chemicals.some((c) => c.id === "phenol");
       const isNeutralizationReaction = hasHCl && hasNaOH;
 
       return (
