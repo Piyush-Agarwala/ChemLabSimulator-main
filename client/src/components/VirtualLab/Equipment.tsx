@@ -269,43 +269,10 @@ export const Equipment: React.FC<EquipmentProps> = ({
             </div>
           </div>
 
-          {/* Special reaction indicator */}
-          {isNeutralizationReaction && (
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
-              Neutralizing!
-            </div>
-          )}
-
-          {/* Phenolphthalein indicator status */}
-          {hasPhenolphthalein && !isNeutralizationReaction && (
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
-              Indicator Added!
-            </div>
-          )}
-
-          {/* Enhanced chemical composition display */}
-          {chemicals.length > 0 && (
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded px-2 py-1 text-xs shadow-lg">
-              <div className="text-gray-800 font-medium text-center">
-                {isNeutralizationReaction
-                  ? "NaOH + HCl"
-                  : chemicals.map((c) => c.name.split(" ")[0]).join(" + ")}
-              </div>
-              {isNeutralizationReaction && (
-                <div className="text-green-600 font-bold text-center text-xs">
-                  → NaCl + H₂O
-                </div>
-              )}
-              <div className="text-gray-600 text-center">
-                {chemicals.reduce((sum, c) => sum + c.amount, 0).toFixed(1)} mL
-              </div>
-            </div>
-          )}
-
-          {/* Drop success animation */}
+          {/* Drop success animation - removed blinking */}
           {isDropping && (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
+              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
                 ✓ Added!
               </div>
             </div>
@@ -375,9 +342,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
             )}
           </div>
 
-          {/* NaOH ready indicator */}
+          {/* NaOH ready indicator - removed blinking */}
           {hasNaOH && (
-            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold animate-pulse">
+            <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-3 py-2 rounded-full text-sm font-bold">
               Titrant Ready!
             </div>
           )}
@@ -558,13 +525,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
               />
               <circle cx="22" cy="44" r="3" fill="#374151" />
 
-              {/* Power indicator */}
+              {/* Power indicator - removed blinking */}
               <circle
                 cx="70"
                 cy="40"
                 r="2"
                 fill={stirrerActive ? "#10b981" : "#ef4444"}
-                className={stirrerActive ? "animate-pulse" : ""}
               />
 
               {/* Stirrer top surface */}
@@ -609,9 +575,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
               </text>
             </svg>
 
-            {/* Status indicator */}
+            {/* Status indicator - removed blinking */}
             {stirrerActive && (
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 Stirring Active
               </div>
             )}
