@@ -200,14 +200,14 @@ export const Equipment: React.FC<EquipmentProps> = ({
             {/* Solution overlay in flask */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-2 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.7}%`,
                   width: "70%",
                   opacity: 0.8,
-                  minHeight: "6px",
-                  borderRadius: "0 0 8px 8px",
+                  minHeight: "18px",
+                  borderRadius: "0 0 24px 24px",
                   clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)",
                 }}
               >
