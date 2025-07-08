@@ -14,6 +14,8 @@ interface WorkBenchProps {
     chemicalId: string;
     drops: Array<{ id: string; x: number; y: number; color: string }>;
   };
+  isTitrating?: boolean;
+  isStirring?: boolean;
 }
 
 interface Step {
