@@ -18,6 +18,7 @@ import {
   Thermometer,
   Droplets,
   Erlenmeyer,
+  Undo2,
 } from "lucide-react";
 import type { ExperimentStep } from "@shared/schema";
 
@@ -905,7 +906,7 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + C₂₀H₁₄O��� → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁���O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
