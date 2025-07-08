@@ -1107,9 +1107,11 @@ function VirtualLabApp({
     if (stirrer && !isStirring) {
       setIsStirring(true);
       setStirerActive(true);
-      setToastMessage("🧪 Starting titration with automatic stirring!");
+      setToastMessage(
+        "🧪 Starting titration with automatic stirring - NaOH added to flask!",
+      );
     } else {
-      setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+      setToastMessage("🧪 Starting titration - NaOH added to conical flask!");
     }
     setTimeout(() => setToastMessage(null), 3000);
 
