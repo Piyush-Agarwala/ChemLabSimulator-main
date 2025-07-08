@@ -497,8 +497,30 @@ function VirtualLabApp({
     },
   ];
 
+  // Undo functionality
+  const saveStateToHistory = useCallback(() => {
+    setUndoHistory((prev) => {
+      const newHistory = [...prev, equipmentPositions];
+      // Keep only last 10 states to prevent memory issues
+      return newHistory.slice(-10);
+    });
+  }, [equipmentPositions]);
+
+  const handleUndo = useCallback(() => {
+    if (undoHistory.length > 0) {
+      const previousState = undoHistory[undoHistory.length - 1];
+      setEquipmentPositions(previousState);
+      setUndoHistory((prev) => prev.slice(0, -1));
+      setToastMessage("↩️ Last action undone");
+      setTimeout(() => setToastMessage(null), 2000);
+    }
+  }, [undoHistory]);
+
   const handleEquipmentDrop = useCallback(
     (id: string, x: number, y: number) => {
+      // Save current state before making changes
+      saveStateToHistory();
+
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
