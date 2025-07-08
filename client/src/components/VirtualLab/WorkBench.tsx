@@ -344,11 +344,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
             style={{
               height: "calc(75vh - 160px)", // Adjusted for top/bottom bars
               minHeight: "500px",
-              backgroundImage: `
-                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px)
-              `,
-              backgroundSize: "25px 25px",
             }}
           >
             {/* Placement guidance text */}
