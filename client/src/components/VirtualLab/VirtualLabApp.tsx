@@ -1033,7 +1033,7 @@ function VirtualLabApp({
         id: dropId,
         x: burette.x, // Start from burette position
         y: burette.y + 50, // Start below burette tip
-        color: "#87CEEB", // NaOH color
+        color: "transparent", // NaOH color
       };
 
       setDropwiseAnimation((prev) => ({
