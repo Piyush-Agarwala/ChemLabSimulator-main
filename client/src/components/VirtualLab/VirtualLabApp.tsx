@@ -1258,6 +1258,7 @@ function VirtualLabApp({
                     position={pos}
                     chemicals={pos.chemicals}
                     onChemicalDrop={handleChemicalDrop}
+                    stirrerActive={stirrerActive}
                   />
                 ) : null;
               })}
