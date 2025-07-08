@@ -5,6 +5,7 @@ import { Chemical } from "./Chemical";
 import { Controls } from "./Controls";
 import { ResultsPanel } from "./ResultsPanel";
 import { ExperimentSteps } from "./ExperimentSteps";
+import { MeasurementsPanel } from "./MeasurementsPanel";
 import { ChemicalFormulas } from "./ChemicalFormulas";
 import {
   FlaskConical,
@@ -72,6 +73,7 @@ interface VirtualLabProps {
   allSteps: ExperimentStep[];
   onTimerStart?: () => void;
   onTimerStop?: () => void;
+  onTimerReset?: () => void;
 }
 
 function VirtualLabApp({
@@ -84,6 +86,7 @@ function VirtualLabApp({
   allSteps,
   onTimerStart,
   onTimerStop,
+  onTimerReset,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
@@ -117,17 +120,40 @@ function VirtualLabApp({
   const [stirrerActive, setStirerActive] = useState(false);
   const [titrationColorProgress, setTitrationColorProgress] = useState(0);
 
+  // Step completion tracking for Acid-Base Titration
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [hasCalculatedResult, setHasCalculatedResult] = useState(false);
+  const [showResultsPanel, setShowResultsPanel] = useState(false);
+
+  // Helper function to mark steps as completed for Acid-Base Titration
+  const markStepCompleted = (stepNumber: number, message: string) => {
+    if (
+      experimentTitle.includes("Acid-Base") &&
+      !completedSteps.has(stepNumber)
+    ) {
+      setCompletedSteps((prev) => new Set([...prev, stepNumber]));
+      setToastMessage(`✅ Step ${stepNumber} completed: ${message}`);
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
     title: stepData.title,
     description: stepData.description,
     duration: parseInt(stepData.duration?.replace(/\D/g, "") || "5"),
-    status: (stepData.id === currentStep
-      ? "active"
-      : stepData.id < currentStep
+    status: (experimentTitle.includes("Acid-Base")
+      ? completedSteps.has(stepData.id)
         ? "completed"
-        : "pending") as "active" | "completed" | "pending",
+        : stepData.id === currentStep
+          ? "active"
+          : "pending"
+      : stepData.id === currentStep
+        ? "active"
+        : stepData.id < currentStep
+          ? "completed"
+          : "pending") as "active" | "completed" | "pending",
     requirements: stepData.safety
       ? [stepData.safety]
       : [`${stepData.title} requirements`],
@@ -173,20 +199,20 @@ function VirtualLabApp({
     } else if (experimentTitle.includes("Acid-Base")) {
       return [
         {
-          id: "hcl",
-          name: "Hydrochloric Acid",
-          formula: "HCl",
-          color: "#FFE135",
-          concentration: "0.1 M",
-          volume: 25,
-        },
-        {
           id: "naoh",
           name: "Sodium Hydroxide",
           formula: "NaOH",
           color: "transparent",
           concentration: "0.1 M",
           volume: 50,
+        },
+        {
+          id: "hcl",
+          name: "Hydrochloric Acid",
+          formula: "HCl",
+          color: "#FFE135",
+          concentration: "0.1 M",
+          volume: 25,
         },
         {
           id: "phenol",
@@ -779,6 +805,9 @@ function VirtualLabApp({
       );
       setTimeout(() => setToastMessage(null), 3000);
 
+      // Mark step 3 as completed: Phenolphthalein added to conical flask
+      markStepCompleted(3, "Phenolphthalein added to conical flask");
+
       // Add phenolphthalein to conical flask - this is the correct usage for titration
       setEquipmentPositions((prev) =>
         prev.map((pos) => {
@@ -805,6 +834,9 @@ function VirtualLabApp({
     if (chemicalId === "naoh" && equipmentId === "burette") {
       setToastMessage(`🧪 Filled burette with ${amount}mL of NaOH solution`);
       setTimeout(() => setToastMessage(null), 3000);
+
+      // Mark step 1 as completed: NaOH added to burette
+      markStepCompleted(1, "NaOH added to burette");
 
       // Add NaOH to burette - this is the correct setup for acid-base titration
       setEquipmentPositions((prev) =>
@@ -874,6 +906,13 @@ function VirtualLabApp({
             `Added ${amount}mL of ${chemical.name} to ${equipmentId}`,
           );
           setTimeout(() => setToastMessage(null), 3000);
+
+          // Check for Acid-Base Titration step completion
+          if (experimentTitle.includes("Acid-Base")) {
+            if (chemicalId === "hcl" && equipmentId === "conical_flask") {
+              markStepCompleted(2, "HCl added to conical flask");
+            }
+          }
 
           // Check if this completes a guided step for Aspirin Synthesis
           if (experimentTitle.includes("Aspirin")) {
@@ -961,7 +1000,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O�� endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O��� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
@@ -979,7 +1018,7 @@ function VirtualLabApp({
             ? "Acid-Base Titration with Indicator"
             : "Acid-Base Neutralization",
           balancedEquation: hasIndicator
-            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂₀H₁₄O₄ endpoint indicator]"
+            ? "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l) [C₂���H₁₄O₄ endpoint indicator]"
             : "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
           products: hasIndicator
             ? [
@@ -1008,6 +1047,17 @@ function VirtualLabApp({
       };
 
       setResults((prev) => [...prev, result]);
+
+      // Mark step 6 as completed when result is calculated for Acid-Base Titration
+      if (
+        experimentTitle.includes("Acid-Base") &&
+        hasAcid &&
+        hasBase &&
+        !hasCalculatedResult
+      ) {
+        setHasCalculatedResult(true);
+        markStepCompleted(6, "Result calculated");
+      }
 
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
@@ -1045,32 +1095,175 @@ function VirtualLabApp({
 
     const hasNaOH = burette.chemicals.some((c) => c.id === "naoh");
     if (!hasNaOH) {
-      setToastMessage("⚠️ Please add NaOH to the burette first!");
+      setToastMessage("⚠��� Please add NaOH to the burette first!");
       setTimeout(() => setToastMessage(null), 3000);
       return;
     }
 
     setIsTitrating(true);
 
+    // Show Results Panel immediately when titration starts
+    setShowResultsPanel(true);
+
+    // Mark step 4 as completed: Start titration button pressed
+    markStepCompleted(4, "Titration started");
+
     // Auto-start magnetic stirrer if available
     if (stirrer && !isStirring) {
       setIsStirring(true);
       setStirerActive(true);
-      setToastMessage("🧪 Starting titration with automatic stirring!");
+      setToastMessage(
+        "🧪 Starting titration with automatic stirring - NaOH added to flask!",
+      );
     } else {
-      setToastMessage("🧪 Starting titration - NaOH dropping from burette!");
+      setToastMessage("🧪 Starting titration - NaOH added to conical flask!");
     }
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Start color transition from yellow to light pink over 5 seconds
+    // Immediately add NaOH to conical flask when titration starts
+    const hasNaOHInFlask = conicalFlask.chemicals.some((c) => c.id === "naoh");
+
+    if (!hasNaOHInFlask) {
+      // Automatically add NaOH to conical flask
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === "conical_flask") {
+            return {
+              ...pos,
+              chemicals: [
+                ...pos.chemicals,
+                {
+                  id: "naoh",
+                  name: "Sodium Hydroxide",
+                  color: "transparent",
+                  amount: 1.0, // Start with small amount
+                  concentration: "0.1 M",
+                },
+              ],
+            };
+          }
+          return pos;
+        }),
+      );
+    }
+
+    // Add initial titration analysis result immediately
+    const initialResult: Result = {
+      id: `titration_start_${Date.now()}`,
+      type: "success",
+      title: "Titration Analysis Started",
+      description:
+        "Real-time analysis of acid-base titration in progress. Monitoring color changes and endpoint detection.",
+      timestamp: new Date().toLocaleTimeString(),
+      calculation: {
+        reaction: "HCl + NaOH → NaCl + H₂O (in progress)",
+        reactionType: "Acid-Base Titration - Initial Analysis",
+        balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+        products: [
+          "Titration in progress",
+          "Monitoring pH changes",
+          "Awaiting endpoint",
+        ],
+        volumeAdded: 5.0, // Initial volume
+        totalVolume: 30.0,
+        concentration: "~0.1 M (calculating...)",
+        molarity: 0.1,
+        moles: 0.0005,
+        ph: 6.5, // Transitioning pH
+        yield: 20, // Initial progress
+        mechanism: [
+          "1. Initial setup: HCl solution prepared with phenolphthalein",
+          "2. NaOH addition started from burette",
+          "3. Gradual neutralization occurring",
+          "4. pH slowly increasing towards endpoint",
+          "5. Monitoring for color change to pink",
+        ],
+        thermodynamics: {
+          deltaH: -57.3,
+          deltaG: -79.9,
+          equilibriumConstant: 1.0e14,
+        },
+      },
+    };
+
+    setResults((prev) => [...prev, initialResult]);
+    setToastMessage("📊 Analysis Panel opened - Monitoring titration progress");
+    setTimeout(() => setToastMessage(null), 3000);
+
+    // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
     setTitrationColorProgress(0);
     const startTime = Date.now();
-    const duration = 5000; // 5 seconds
+    const duration = 10000; // 10 seconds for slow motion effect
 
     const animateColor = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      setTitrationColorProgress(progress);
+
+      // Use easing function for smoother transition
+      const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
+      setTitrationColorProgress(easedProgress);
+
+      // Mark step 5 as completed when color starts turning pink (30% progress for slower effect)
+      if (easedProgress >= 0.3 && !completedSteps.has(5)) {
+        markStepCompleted(5, "Solution turned pink");
+      }
+
+      // Automatically stop titration when color transition is complete (endpoint reached)
+      if (progress >= 1) {
+        setTimeout(() => {
+          if (isTitrating) {
+            setIsTitrating(false);
+            setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
+
+            // Automatically open Results Panel by adding a comprehensive titration result
+            const titrationResult: Result = {
+              id: Date.now().toString(),
+              type: "success",
+              title: "Acid-Base Titration Complete",
+              description:
+                "Endpoint reached - Solution turned completely pink. Titration analysis available.",
+              timestamp: new Date().toLocaleTimeString(),
+              calculation: {
+                reaction:
+                  "HCl + NaOH �� NaCl + H₂O (with phenolphthalein endpoint)",
+                reactionType: "Acid-Base Titration Complete",
+                balancedEquation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+                products: [
+                  "Sodium Chloride (NaCl)",
+                  "Water (H₂O)",
+                  "Pink endpoint reached",
+                ],
+                volumeAdded: 25.0, // Typical titration volume
+                totalVolume: 50.0,
+                concentration: "0.1000 M HCl determined",
+                molarity: 0.1,
+                moles: 0.0025,
+                ph: 8.3, // Slightly basic at endpoint
+                yield: 100,
+                mechanism: [
+                  "1. Initial: HCl (colorless) + phenolphthalein (colorless in acid)",
+                  "2. NaOH addition: Gradual neutralization occurs",
+                  "3. Near endpoint: pH rises rapidly",
+                  "4. Endpoint: Phenolphthalein turns pink (pH > 8.2)",
+                  "5. Result: Equivalent moles of acid and base reacted",
+                ],
+                thermodynamics: {
+                  deltaH: -57.3,
+                  deltaG: -79.9,
+                  equilibriumConstant: 1.0e14,
+                },
+              },
+            };
+
+            setResults((prev) => [...prev, titrationResult]);
+
+            setToastMessage(
+              "🎯 Endpoint reached! Results Panel opened automatically.",
+            );
+            setTimeout(() => setToastMessage(null), 4000);
+          }
+        }, 1000); // Small delay for visual effect
+      }
 
       if (progress < 1) {
         requestAnimationFrame(animateColor);
@@ -1086,7 +1279,15 @@ function VirtualLabApp({
   const handleStopTitration = () => {
     setIsTitrating(false);
     setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
-    setToastMessage("⏸️ Titration stopped");
+
+    // Automatically stop stirring when titration stops
+    if (isStirring) {
+      setIsStirring(false);
+      setStirerActive(false);
+      setToastMessage("⏸️ Titration stopped - Stirring automatically stopped");
+    } else {
+      setToastMessage("⏸️ Titration stopped");
+    }
     setTimeout(() => setToastMessage(null), 2000);
   };
 
@@ -1366,8 +1567,23 @@ function VirtualLabApp({
                     drops: [],
                   });
 
+                  // Reset titration-specific state
+                  setIsTitrating(false);
+                  setIsStirring(false);
+                  setStirerActive(false);
+                  setTitrationDropCount(0);
+                  setTitrationColorProgress(0);
+                  setCompletedSteps(new Set());
+                  setHasCalculatedResult(false);
+                  setShowResultsPanel(false);
+
+                  // Reset timer to 0:00
+                  if (onTimerReset) {
+                    onTimerReset();
+                  }
+
                   // Show reset confirmation
-                  setToastMessage("�� Experiment reset successfully!");
+                  setToastMessage("🔄 Experiment reset successfully!");
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />

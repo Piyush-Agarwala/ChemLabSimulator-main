@@ -73,6 +73,11 @@ export default function Experiment() {
     setIsRunning(!isRunning);
   };
 
+  const resetTimer = () => {
+    setIsRunning(false);
+    setTimer(0);
+  };
+
   const handleCompleteStep = () => {
     updateProgressMutation.mutate({
       experimentId: experimentId,
@@ -250,6 +255,7 @@ export default function Experiment() {
                 allSteps={experiment.stepDetails}
                 onTimerStart={() => setIsRunning(true)}
                 onTimerStop={() => setIsRunning(false)}
+                onTimerReset={resetTimer}
               />
             </CardContent>
           </Card>
