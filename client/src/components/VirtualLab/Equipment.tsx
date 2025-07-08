@@ -45,16 +45,29 @@ export const Equipment: React.FC<EquipmentProps> = ({
     e.dataTransfer.setData("equipment", id);
     e.dataTransfer.effectAllowed = "move";
 
+    // Store current position for smooth transitions
+    if (position) {
+      e.dataTransfer.setData("currentX", position.x.toString());
+      e.dataTransfer.setData("currentY", position.y.toString());
+    }
+
     // Add visual feedback during drag
     const target = e.currentTarget as HTMLElement;
-    target.style.opacity = "0.7";
-    target.style.transform = "scale(1.05)";
+    target.style.opacity = "0.6";
+    target.style.transform = isOnWorkbench
+      ? "translate(-50%, -50%) scale(0.95)"
+      : "scale(0.95)";
+    target.style.zIndex = "9999";
+    target.style.transition = "all 0.2s ease";
+  };
 
-    // Clean up after drag ends
-    setTimeout(() => {
-      target.style.opacity = "";
-      target.style.transform = "";
-    }, 100);
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Clean up drag styling
+    const target = e.currentTarget as HTMLElement;
+    target.style.opacity = "";
+    target.style.transform = isOnWorkbench ? "translate(-50%, -50%)" : "";
+    target.style.zIndex = isOnWorkbench ? "10" : "";
+    target.style.transition = "";
   };
 
   const handleChemicalDragOver = (e: React.DragEvent) => {
