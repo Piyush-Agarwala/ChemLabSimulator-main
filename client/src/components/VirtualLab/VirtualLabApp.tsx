@@ -83,6 +83,7 @@ function VirtualLabApp({
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
   >([]);
+  const [undoHistory, setUndoHistory] = useState<EquipmentPosition[][]>([]);
   const [selectedChemical, setSelectedChemical] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
