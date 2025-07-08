@@ -525,13 +525,12 @@ export const Equipment: React.FC<EquipmentProps> = ({
               />
               <circle cx="22" cy="44" r="3" fill="#374151" />
 
-              {/* Power indicator */}
+              {/* Power indicator - removed blinking */}
               <circle
                 cx="70"
                 cy="40"
                 r="2"
                 fill={stirrerActive ? "#10b981" : "#ef4444"}
-                className={stirrerActive ? "animate-pulse" : ""}
               />
 
               {/* Stirrer top surface */}
