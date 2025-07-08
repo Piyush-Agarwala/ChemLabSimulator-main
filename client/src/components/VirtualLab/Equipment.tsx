@@ -216,6 +216,37 @@ export const Equipment: React.FC<EquipmentProps> = ({
               />
             )}
 
+            {/* Phenolphthalein indicator effect */}
+            {hasPhenolphthalein && (
+              <g>
+                {/* Indicator color change visualization */}
+                {hasNaOH && (
+                  <path
+                    d={`M${22} ${75 - getSolutionHeight() * 0.5} L${58} ${75 - getSolutionHeight() * 0.5} L63 75 L17 75 Z`}
+                    fill="#FF1493"
+                    opacity="0.6"
+                    className="animate-pulse transition-all duration-1000"
+                  />
+                )}
+
+                {/* Indicator drops animation */}
+                {[...Array(3)].map((_, i) => (
+                  <circle
+                    key={i}
+                    cx={35 + i * 5}
+                    cy={70 - getSolutionHeight() * 0.3}
+                    r="1"
+                    fill="#FFB6C1"
+                    className="animate-bounce opacity-80"
+                    style={{
+                      animationDelay: `${i * 0.2}s`,
+                      animationDuration: "2s",
+                    }}
+                  />
+                ))}
+              </g>
+            )}
+
             {/* Special neutralization reaction effects */}
             {isNeutralizationReaction && (
               <g>
