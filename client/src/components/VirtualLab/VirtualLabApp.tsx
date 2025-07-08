@@ -483,27 +483,18 @@ function VirtualLabApp({
       setEquipmentPositions((prev) => {
         const existing = prev.find((pos) => pos.id === id);
 
-        // For conical flask in Acid-Base experiment, center it in the workspace
+        // Allow free positioning for all equipment - users can place where they want
         let finalX = x;
         let finalY = y;
-        if (id === "conical_flask" && experimentTitle.includes("Acid-Base")) {
-          // Center the conical flask in the workspace
-          finalX = 500; // Center horizontally (better centered for workspace)
-          finalY = 250; // Center vertically (positioned well within workspace)
-        }
 
-        // For burette in Acid-Base experiment, position it above the conical flask
-        if (id === "burette" && experimentTitle.includes("Acid-Base")) {
-          const conicalFlask = prev.find((pos) => pos.id === "conical_flask");
-          if (conicalFlask) {
-            finalX = conicalFlask.x; // Same horizontal position as conical flask
-            finalY = conicalFlask.y - 180; // Position 180px above the conical flask for proper gap
-          } else {
-            // If conical flask not placed yet, use default position that anticipates flask placement
-            finalX = 500;
-            finalY = 70; // Above the expected conical flask position
-          }
-        }
+        // Ensure equipment stays within reasonable bounds of the workspace
+        const minX = 50;
+        const maxX = 700;
+        const minY = 50;
+        const maxY = 400;
+
+        finalX = Math.max(minX, Math.min(maxX, x));
+        finalY = Math.max(minY, Math.min(maxY, y));
 
         if (existing) {
           return prev.map((pos) =>
