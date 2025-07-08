@@ -103,8 +103,7 @@ export const ChemicalFormulas: React.FC<ChemicalFormulasProps> = ({
         ],
         reactions: [
           {
-            equation:
-              "HCl(aq) + Phenolphthalein → HCl-Phenolphthalein complex (colorless)",
+            equation: "HCl(aq) + C₂₀H₁₄O₄ → HCl-C₂₀H₁₄O₄ complex (colorless)",
             name: "Acid-Indicator Interaction",
             type: "Indicator Reaction",
             conditions: [

@@ -904,7 +904,7 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + C₂₀H₁₄O₄ → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁₄O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
@@ -919,11 +919,11 @@ function VirtualLabApp({
         description: reactionDescription,
         timestamp: new Date().toLocaleTimeString(),
         calculation: {
-          reaction: "HCl + Phenolphthalein → Complex",
+          reaction: "HCl + C₂₀H₁₄O₄ → Complex",
           reactionType: "Acid-Indicator Interaction",
           balancedEquation:
-            "HCl(aq) + Phenolphthalein → HCl-Phenolphthalein complex (colorless)",
-          products: ["HCl-Phenolphthalein complex (colorless)"],
+            "HCl(aq) + C₂₀H₁₄O₄ → HCl-C₂₀H₁₄O₄ complex (colorless)",
+          products: ["HCl-C₂₀H₁₄O₄ complex (colorless)"],
           yield: 95,
           volumeAdded: limitingAmount,
           totalVolume: totalVolume,
@@ -948,7 +948,7 @@ function VirtualLabApp({
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
         setToastMessage(
-          `🧪 Acid-indicator reaction complete! HCl + Phenolphthalein → Colorless complex`,
+          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ → Colorless complex`,
         );
         setTimeout(() => setToastMessage(null), 4000);
       }

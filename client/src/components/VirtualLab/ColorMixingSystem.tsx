@@ -22,7 +22,7 @@ export const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
     "hcl+phenol": {
       name: "Acid-Indicator Interaction",
       color: "#ADD8E6",
-      description: "HCl + Phenolphthalein → Colorless complex",
+      description: "HCl + C₂₀H₁₄O₄ → Colorless complex",
       indicator: "Indicator remains colorless in acidic solution",
     },
     "agno3+hcl": {
@@ -40,8 +40,15 @@ export const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
     "phenol+naoh": {
       name: "Indicator Color Change",
       color: "#FFB6C1",
-      description: "Phenolphthalein turns pink in basic solution",
+      description: "C₂₀H₁₄O₄ turns pink in basic solution",
       indicator: "Pink color indicates basic pH",
+    },
+    "hcl+naoh+phenol": {
+      name: "Acid-Base Titration with Indicator",
+      color: "#FFB6C1",
+      description:
+        "HCl + NaOH → NaCl + H₂O (with C₂₀H₁₄O₄ indicator showing endpoint)",
+      indicator: "Color changes from colorless to pink at endpoint",
     },
     "bromothymol+hcl": {
       name: "pH Indicator Change",
