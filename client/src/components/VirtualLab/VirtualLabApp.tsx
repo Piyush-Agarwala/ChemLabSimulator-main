@@ -1142,7 +1142,15 @@ function VirtualLabApp({
   const handleStopTitration = () => {
     setIsTitrating(false);
     setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
-    setToastMessage("⏸️ Titration stopped");
+
+    // Automatically stop stirring when titration stops
+    if (isStirring) {
+      setIsStirring(false);
+      setStirerActive(false);
+      setToastMessage("⏸️ Titration stopped - Stirring automatically stopped");
+    } else {
+      setToastMessage("⏸️ Titration stopped");
+    }
     setTimeout(() => setToastMessage(null), 2000);
   };
 
