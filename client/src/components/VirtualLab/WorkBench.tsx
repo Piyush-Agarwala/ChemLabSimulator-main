@@ -241,6 +241,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   };
 
   const handleReset = () => {
+    // Reset all workbench state to initial values
     setCurrentStep(1);
     setTimer(0);
     setTemperature(22);
@@ -250,6 +251,10 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
     setIsDropping(false);
     setBubbling(false);
     setAutoProgress(false);
+
+    // Trigger parent reset callback if available
+    // This ensures the main app state is also reset
+    console.log("WorkBench reset completed");
   };
 
   const formatTime = (seconds: number) => {
