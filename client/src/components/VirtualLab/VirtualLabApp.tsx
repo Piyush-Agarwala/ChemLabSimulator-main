@@ -121,17 +121,35 @@ function VirtualLabApp({
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [hasCalculatedResult, setHasCalculatedResult] = useState(false);
 
+  // Helper function to mark steps as completed for Acid-Base Titration
+  const markStepCompleted = (stepNumber: number, message: string) => {
+    if (
+      experimentTitle.includes("Acid-Base") &&
+      !completedSteps.has(stepNumber)
+    ) {
+      setCompletedSteps((prev) => new Set([...prev, stepNumber]));
+      setToastMessage(`✅ Step ${stepNumber} completed: ${message}`);
+      setTimeout(() => setToastMessage(null), 3000);
+    }
+  };
+
   // Use dynamic experiment steps from allSteps prop
   const experimentSteps = allSteps.map((stepData, index) => ({
     id: stepData.id,
     title: stepData.title,
     description: stepData.description,
     duration: parseInt(stepData.duration?.replace(/\D/g, "") || "5"),
-    status: (stepData.id === currentStep
-      ? "active"
-      : stepData.id < currentStep
+    status: (experimentTitle.includes("Acid-Base")
+      ? completedSteps.has(stepData.id)
         ? "completed"
-        : "pending") as "active" | "completed" | "pending",
+        : stepData.id === currentStep
+          ? "active"
+          : "pending"
+      : stepData.id === currentStep
+        ? "active"
+        : stepData.id < currentStep
+          ? "completed"
+          : "pending") as "active" | "completed" | "pending",
     requirements: stepData.safety
       ? [stepData.safety]
       : [`${stepData.title} requirements`],
