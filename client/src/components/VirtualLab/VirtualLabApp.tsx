@@ -156,6 +156,9 @@ function VirtualLabApp({
       if (onProgressUpdate) {
         onProgressUpdate(progressPercentage, newCompletedSteps.size);
       }
+      if (onStepProgressUpdate) {
+        onStepProgressUpdate(newCompletedSteps.size);
+      }
     }
   };
 
