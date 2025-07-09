@@ -70,6 +70,7 @@ interface VirtualLabProps {
     progressPercentage: number,
     completedSteps: number,
   ) => void;
+  onStepProgressUpdate?: (completedSteps: number) => void;
   isActive: boolean;
   stepNumber: number;
   totalSteps: number;
