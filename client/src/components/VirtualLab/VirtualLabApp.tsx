@@ -1223,10 +1223,10 @@ function VirtualLabApp({
     setToastMessage("📊 Analysis Panel opened - Monitoring titration progress");
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
+    // Start slow color transition from colorless to pink over 5 seconds with volume increase
     setTitrationColorProgress(0);
     const startTime = Date.now();
-    const duration = 10000; // 10 seconds for slow motion effect
+    const duration = 5000; // 5 seconds for color transition
 
     const animateColor = () => {
       const elapsed = Date.now() - startTime;
@@ -1235,6 +1235,18 @@ function VirtualLabApp({
       // Use easing function for smoother transition
       const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
       setTitrationColorProgress(easedProgress);
+
+      // Continuously increase volume during titration (from 5.0 to 25.0 mL)
+      const currentVolume = 5.0 + progress * 20.0; // 5mL initial + up to 20mL added
+
+      // Update measurements with increasing volume and changing pH
+      setMeasurements((prev) => ({
+        ...prev,
+        volume: currentVolume,
+        ph: 6.5 + progress * 2.8, // pH rises from 6.5 to ~9.3
+        molarity: 0.1 - progress * 0.05, // Molarity decreases slightly due to dilution
+        moles: (currentVolume / 1000) * 0.1, // Calculate moles based on volume
+      }));
 
       // Step 5: Identify Endpoint - Mark when color starts turning pink (30% progress for slower effect)
       if (easedProgress >= 0.3 && !completedSteps.has(5)) {
