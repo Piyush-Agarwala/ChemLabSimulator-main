@@ -762,27 +762,9 @@ function VirtualLabApp({
 
         // Check for Acid-Base Titration equipment setup completion
         if (experimentTitle.includes("Acid-Base")) {
-          // Step 1: Set up equipment (when key equipment is placed)
-          const titrationEquipment = [
-            "burette",
-            "conical_flask",
-            "magnetic_stirrer",
-          ];
-          if (titrationEquipment.includes(id)) {
-            // Check how many pieces of titration equipment are now on the workbench
-            const currentTitrationEquipment = prev.filter((pos) =>
-              titrationEquipment.includes(pos.id),
-            ).length;
-
-            // If this is the first piece of equipment, mark step 1 as setup beginning
-            if (currentTitrationEquipment === 0) {
-              markStepCompleted(1, `Equipment setup: ${id} placed`);
-            }
-            // If all 3 pieces are placed, could mark another setup completion step
-            else if (currentTitrationEquipment === 2) {
-              // Will be 3 after this addition
-              markStepCompleted(2, "All titration equipment set up");
-            }
+          // Step 1: Prepare Equipment - when burette is placed (key equipment for this step)
+          if (id === "burette") {
+            markStepCompleted(1, "Burette equipment prepared");
           }
         }
 
@@ -1038,7 +1020,7 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + C₂₀H₁���O����� → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁���O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
