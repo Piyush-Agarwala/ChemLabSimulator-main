@@ -39,6 +39,7 @@ export default function Experiment() {
   const updateProgressMutation = useUpdateProgress();
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [completedStepsCount, setCompletedStepsCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(true);
@@ -79,21 +80,55 @@ export default function Experiment() {
   };
 
   const handleCompleteStep = () => {
-    updateProgressMutation.mutate({
-      experimentId: experimentId,
-      currentStep: Math.min(
-        currentStep + 1,
-        experiment?.stepDetails.length || 0 - 1,
-      ),
-      completed: currentStep === (experiment?.stepDetails.length || 0) - 1,
-      progressPercentage: Math.round(
-        ((currentStep + 2) / (experiment?.stepDetails.length || 1)) * 100,
-      ),
-    });
+    // For Acid-Base Titration, progress is updated through markStepCompleted in VirtualLabApp
+    // For other experiments, keep the current progress update logic
+    if (!experiment?.title.includes("Acid-Base")) {
+      updateProgressMutation.mutate({
+        experimentId: experimentId,
+        currentStep: Math.min(
+          currentStep + 1,
+          experiment?.stepDetails.length || 0 - 1,
+        ),
+        completed: currentStep === (experiment?.stepDetails.length || 0) - 1,
+        progressPercentage: Math.round(
+          ((currentStep + 2) / (experiment?.stepDetails.length || 1)) * 100,
+        ),
+      });
+    }
 
     if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
     }
+  };
+
+  const handleProgressReset = () => {
+    // Reset progress to 0%
+    updateProgressMutation.mutate({
+      experimentId: experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
+    setCurrentStep(0);
+    setCompletedStepsCount(0);
+  };
+
+  const handleProgressUpdate = (
+    progressPercentage: number,
+    completedSteps: number,
+  ) => {
+    // Update progress for Acid-Base Titration when steps are completed
+    updateProgressMutation.mutate({
+      experimentId: experimentId,
+      currentStep: completedSteps,
+      completed: progressPercentage >= 100,
+      progressPercentage: progressPercentage,
+    });
+  };
+
+  const handleStepProgressUpdate = (completedSteps: number) => {
+    // Update the completed steps count for display
+    setCompletedStepsCount(completedSteps);
   };
 
   const handleNextStep = () => {
@@ -156,9 +191,7 @@ export default function Experiment() {
   }
 
   const currentStepData = experiment.stepDetails[currentStep];
-  const progressPercentage = Math.round(
-    ((currentStep + 1) / experiment.stepDetails.length) * 100,
-  );
+  const progressPercentage = progress?.progressPercentage || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -182,17 +215,6 @@ export default function Experiment() {
             {experiment.title}
           </h1>
           <p className="text-gray-600 mb-4">{experiment.description}</p>
-
-          {/* Progress Bar */}
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              Overall Progress
-            </span>
-            <span className="text-sm text-blue-600 font-semibold">
-              {progressPercentage}%
-            </span>
-          </div>
-          <Progress value={progressPercentage} className="h-2" />
         </div>
 
         {/* Main Lab Area - Full Width */}
@@ -227,7 +249,9 @@ export default function Experiment() {
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <span className="text-sm text-gray-600 px-2">
-                      {currentStep + 1} / {experiment.stepDetails.length}
+                      {experiment.title.includes("Acid-Base")
+                        ? `${completedStepsCount} / ${experiment.stepDetails.length}`
+                        : `${currentStep + 1} / ${experiment.stepDetails.length}`}
                     </span>
                     <Button
                       variant="outline"
@@ -248,6 +272,8 @@ export default function Experiment() {
               <VirtualLabApp
                 step={currentStepData}
                 onStepComplete={handleCompleteStep}
+                onProgressUpdate={handleProgressUpdate}
+                onStepProgressUpdate={handleStepProgressUpdate}
                 isActive={isActive}
                 stepNumber={currentStep + 1}
                 totalSteps={experiment.stepDetails.length}
@@ -256,6 +282,7 @@ export default function Experiment() {
                 onTimerStart={() => setIsRunning(true)}
                 onTimerStop={() => setIsRunning(false)}
                 onTimerReset={resetTimer}
+                onProgressReset={handleProgressReset}
               />
             </CardContent>
           </Card>
