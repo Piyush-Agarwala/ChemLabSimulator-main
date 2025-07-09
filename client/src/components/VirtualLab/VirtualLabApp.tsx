@@ -1231,9 +1231,9 @@ function VirtualLabApp({
       const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
       setTitrationColorProgress(easedProgress);
 
-      // Mark step 5 as completed when color starts turning pink (30% progress for slower effect)
+      // Step 5: Identify Endpoint - Mark when color starts turning pink (30% progress for slower effect)
       if (easedProgress >= 0.3 && !completedSteps.has(5)) {
-        markStepCompleted(5, "Solution turned pink");
+        markStepCompleted(5, "Endpoint identified - solution turned pink");
       }
 
       // Automatically stop titration when color transition is complete (endpoint reached)
