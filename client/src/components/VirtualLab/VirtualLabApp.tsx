@@ -1225,10 +1225,10 @@ function VirtualLabApp({
     setToastMessage("📊 Analysis Panel opened - Monitoring titration progress");
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Start slow color transition from colorless to pink over 5 seconds with volume increase
+    // Start enhanced color transition from lighter pink to darker pink over 8 seconds with volume increase
     setTitrationColorProgress(0);
     const startTime = Date.now();
-    const duration = 5000; // 5 seconds for color transition
+    const duration = 8000; // 8 seconds for smoother, more dramatic color transition
 
     const animateColor = () => {
       const elapsed = Date.now() - startTime;
