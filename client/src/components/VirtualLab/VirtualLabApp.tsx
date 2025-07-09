@@ -148,8 +148,9 @@ function VirtualLabApp({
       const newCompletedSteps = new Set(
         Array.from(completedSteps).concat([stepNumber]),
       );
-      // Calculate precise progress for 6-step Acid-Base Titration
-      const progressPercentage = Math.round((newCompletedSteps.size / 6) * 100);
+      const progressPercentage = Math.round(
+        (newCompletedSteps.size / allSteps.length) * 100,
+      );
       if (onProgressUpdate) {
         onProgressUpdate(progressPercentage, newCompletedSteps.size);
       }
