@@ -1238,8 +1238,9 @@ function VirtualLabApp({
       const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
       setTitrationColorProgress(easedProgress);
 
-      // Continuously increase volume during titration (from 5.0 to 25.0 mL)
-      const currentVolume = 5.0 + progress * 20.0; // 5mL initial + up to 20mL added
+      // Continuously increase volume during titration (cumulative across multiple titrations)
+      const volumeIncrease = progress * 20.0; // 20mL added per titration cycle
+      const currentVolume = cumulativeVolume + volumeIncrease;
 
       // Update measurements with increasing volume and changing pH
       setMeasurements((prev) => ({
