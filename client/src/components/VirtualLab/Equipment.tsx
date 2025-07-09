@@ -145,11 +145,11 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
-        // Color transition from yellow to light pink, then to darker pink during over-titration
+        // Color transition from light blue to light pink, then to darker pink during over-titration
         if (titrationColorProgress > 0) {
           if (titrationColorProgress <= 1) {
-            // First stage: Yellow to light pink
-            const startColor = { r: 255, g: 225, b: 53 }; // Yellow #FFE135
+            // First stage: Light blue to light pink
+            const startColor = { r: 135, g: 206, b: 235 }; // Light blue #87CEEB
             const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
 
             const r = Math.round(
