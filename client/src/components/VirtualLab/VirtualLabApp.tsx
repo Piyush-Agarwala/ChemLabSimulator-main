@@ -229,7 +229,7 @@ function VirtualLabApp({
           id: "naoh",
           name: "Sodium Hydroxide",
           formula: "NaOH",
-          color: "transparent",
+          color: "#8B5A9B",
           concentration: "0.1 M",
           volume: 50,
         },
