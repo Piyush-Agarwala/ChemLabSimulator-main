@@ -134,6 +134,13 @@ function VirtualLabApp({
       setCompletedSteps((prev) => new Set([...prev, stepNumber]));
       setToastMessage(`✅ Step ${stepNumber} completed: ${message}`);
       setTimeout(() => setToastMessage(null), 3000);
+
+      // Update progress when step is completed
+      const newCompletedSteps = new Set([...completedSteps, stepNumber]);
+      const progressPercentage = Math.round(
+        (newCompletedSteps.size / allSteps.length) * 100,
+      );
+      onStepComplete();
     }
   };
 
@@ -1074,7 +1081,7 @@ function VirtualLabApp({
     if (onTimerStart) {
       onTimerStart();
     }
-    onStepComplete();
+    // Don't call onStepComplete here - progress should update on individual step completion
   };
 
   // Titration control functions
