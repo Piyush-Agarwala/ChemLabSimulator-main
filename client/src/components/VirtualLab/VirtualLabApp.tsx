@@ -151,7 +151,9 @@ function VirtualLabApp({
       const progressPercentage = Math.round(
         (newCompletedSteps.size / allSteps.length) * 100,
       );
-      onStepComplete();
+      if (onProgressUpdate) {
+        onProgressUpdate(progressPercentage, newCompletedSteps.size);
+      }
     }
   };
 
