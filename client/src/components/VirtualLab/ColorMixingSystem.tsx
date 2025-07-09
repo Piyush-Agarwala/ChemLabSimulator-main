@@ -52,9 +52,9 @@ export const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
     },
     "bromothymol+hcl": {
       name: "pH Indicator Change",
-      color: "#FFFF99",
-      description: "Bromothymol blue turns yellow in acidic solution",
-      indicator: "Yellow color indicates acidic pH",
+      color: "#87CEEB",
+      description: "Bromothymol blue turns light blue in acidic solution",
+      indicator: "Light blue color indicates acidic pH",
     },
   };
 
