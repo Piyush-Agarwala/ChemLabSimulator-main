@@ -111,6 +111,19 @@ export default function Experiment() {
     setCurrentStep(0);
   };
 
+  const handleProgressUpdate = (
+    progressPercentage: number,
+    completedSteps: number,
+  ) => {
+    // Update progress for Acid-Base Titration when steps are completed
+    updateProgressMutation.mutate({
+      experimentId: experimentId,
+      currentStep: completedSteps,
+      completed: progressPercentage >= 100,
+      progressPercentage: progressPercentage,
+    });
+  };
+
   const handleNextStep = () => {
     if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
