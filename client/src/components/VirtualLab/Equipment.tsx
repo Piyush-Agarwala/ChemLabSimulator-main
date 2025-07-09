@@ -145,44 +145,53 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
-        // Color transition from light blue to light pink, then to darker pink during over-titration
+        // Enhanced color transition: lighter pink to darker pink with smooth animation
         if (titrationColorProgress > 0) {
           if (titrationColorProgress <= 1) {
-            // First stage: Light blue to light pink
-            const startColor = { r: 135, g: 206, b: 235 }; // Light blue #87CEEB
+            // First stage: Very light pink to medium pink
+            const startColor = { r: 255, g: 220, b: 230 }; // Very light pink #FFDCE6
             const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
 
+            // Apply smooth easing function for more natural color transition
+            const easedProgress =
+              titrationColorProgress *
+              titrationColorProgress *
+              (3 - 2 * titrationColorProgress);
+
             const r = Math.round(
-              startColor.r +
-                (endColor.r - startColor.r) * titrationColorProgress,
+              startColor.r + (endColor.r - startColor.r) * easedProgress,
             );
             const g = Math.round(
-              startColor.g +
-                (endColor.g - startColor.g) * titrationColorProgress,
+              startColor.g + (endColor.g - startColor.g) * easedProgress,
             );
             const b = Math.round(
-              startColor.b +
-                (endColor.b - startColor.b) * titrationColorProgress,
+              startColor.b + (endColor.b - startColor.b) * easedProgress,
             );
 
             return `rgb(${r}, ${g}, ${b})`;
           } else {
-            // Second stage: Light pink to deeper pink (over-titration)
+            // Second stage: Medium pink to deep pink (over-titration)
             const normalizedProgress = Math.min(
               (titrationColorProgress - 1) / 2,
               1,
             ); // Next 2 units for darker transition
             const startColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
-            const endColor = { r: 220, g: 20, b: 60 }; // Deeper pink/crimson #DC143C
+            const endColor = { r: 199, g: 21, b: 133 }; // Deep pink/magenta #C71585
+
+            // Apply smooth easing for the darker transition as well
+            const easedProgress =
+              normalizedProgress *
+              normalizedProgress *
+              (3 - 2 * normalizedProgress);
 
             const r = Math.round(
-              startColor.r + (endColor.r - startColor.r) * normalizedProgress,
+              startColor.r + (endColor.r - startColor.r) * easedProgress,
             );
             const g = Math.round(
-              startColor.g + (endColor.g - startColor.g) * normalizedProgress,
+              startColor.g + (endColor.g - startColor.g) * easedProgress,
             );
             const b = Math.round(
-              startColor.b + (endColor.b - startColor.b) * normalizedProgress,
+              startColor.b + (endColor.b - startColor.b) * easedProgress,
             );
 
             return `rgb(${r}, ${g}, ${b})`;
@@ -269,7 +278,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             {/* Solution overlay in flask */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-in-out"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.7}%`,
@@ -280,14 +289,46 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   clipPath:
                     "polygon(15% 0%, 85% 0%, 95% 60%, 90% 85%, 85% 95%, 15% 95%, 10% 85%, 5% 60%)",
                   background: `linear-gradient(to bottom, ${getMixedColor()}, ${getMixedColor()}dd)`,
+                  filter: `saturate(${1 + (titrationColorProgress || 0) * 0.5}) brightness(${1 + (titrationColorProgress || 0) * 0.2})`,
+                  transition:
+                    "background-color 1000ms ease-in-out, filter 1000ms ease-in-out",
                 }}
               >
                 {/* Liquid surface shimmer */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
 
-                {/* Phenolphthalein indicator effect */}
+                {/* Enhanced Phenolphthalein indicator effect with titration animation */}
                 {hasPhenolphthalein && hasNaOH && (
-                  <div className="absolute inset-0 bg-pink-400 opacity-60 animate-pulse rounded-b-lg"></div>
+                  <div
+                    className={`absolute inset-0 rounded-b-lg ${
+                      titrationColorProgress > 0 ? "animate-pulse" : ""
+                    }`}
+                    style={{
+                      background:
+                        titrationColorProgress > 0
+                          ? `radial-gradient(circle at center, ${getMixedColor()}80, transparent 70%)`
+                          : "",
+                      opacity: 0.6 + (titrationColorProgress || 0) * 0.3,
+                      animation:
+                        titrationColorProgress > 0
+                          ? "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+                          : "none",
+                    }}
+                  />
+                )}
+
+                {/* Special swirling effect during active titration */}
+                {titrationColorProgress > 0 && titrationColorProgress < 1 && (
+                  <div className="absolute inset-0 rounded-b-lg overflow-hidden">
+                    <div
+                      className="absolute inset-0 animate-spin"
+                      style={{
+                        background: `conic-gradient(from 0deg, transparent, ${getMixedColor()}40, transparent, ${getMixedColor()}20, transparent)`,
+                        animation: "spin 4s linear infinite",
+                        opacity: 0.3,
+                      }}
+                    />
+                  </div>
                 )}
 
                 {/* Enhanced bubbling animation for reactions and stirring */}
@@ -634,12 +675,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
           id !== "erlenmeyer_flask" && (
             <div className="absolute inset-0 flex items-end justify-center">
               <div
-                className="rounded-b-lg transition-all duration-500 opacity-80"
+                className="rounded-b-lg transition-all duration-1000 ease-in-out opacity-80"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight()}%`,
                   width: id === "beaker" ? "70%" : "60%",
                   minHeight: "8px",
+                  filter: `saturate(${1 + (titrationColorProgress || 0) * 0.5}) brightness(${1 + (titrationColorProgress || 0) * 0.2})`,
+                  transition:
+                    "background-color 1000ms ease-in-out, height 500ms ease-in-out, filter 1000ms ease-in-out",
                 }}
               >
                 {/* Enhanced liquid effects */}
