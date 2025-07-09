@@ -85,7 +85,14 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
         endpoint: newTrial.endpoint,
       };
 
-      setTitrationTrials((prev) => [...prev, trial]);
+      setTitrationTrials((prev) => {
+        const newTrials = [...prev, trial];
+        // If this is the first trial being added, trigger step 6 completion
+        if (newTrials.length === 1 && onTrialAdded) {
+          onTrialAdded();
+        }
+        return newTrials;
+      });
       setNewTrial({
         initialReading: "",
         finalReading: "",
