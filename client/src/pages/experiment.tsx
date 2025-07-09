@@ -79,17 +79,21 @@ export default function Experiment() {
   };
 
   const handleCompleteStep = () => {
-    updateProgressMutation.mutate({
-      experimentId: experimentId,
-      currentStep: Math.min(
-        currentStep + 1,
-        experiment?.stepDetails.length || 0 - 1,
-      ),
-      completed: currentStep === (experiment?.stepDetails.length || 0) - 1,
-      progressPercentage: Math.round(
-        ((currentStep + 2) / (experiment?.stepDetails.length || 1)) * 100,
-      ),
-    });
+    // For Acid-Base Titration, progress is updated through markStepCompleted in VirtualLabApp
+    // For other experiments, keep the current progress update logic
+    if (!experiment?.title.includes("Acid-Base")) {
+      updateProgressMutation.mutate({
+        experimentId: experimentId,
+        currentStep: Math.min(
+          currentStep + 1,
+          experiment?.stepDetails.length || 0 - 1,
+        ),
+        completed: currentStep === (experiment?.stepDetails.length || 0) - 1,
+        progressPercentage: Math.round(
+          ((currentStep + 2) / (experiment?.stepDetails.length || 1)) * 100,
+        ),
+      });
+    }
 
     if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
