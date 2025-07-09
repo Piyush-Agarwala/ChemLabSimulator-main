@@ -74,6 +74,7 @@ interface VirtualLabProps {
   onTimerStart?: () => void;
   onTimerStop?: () => void;
   onTimerReset?: () => void;
+  onProgressReset?: () => void;
 }
 
 function VirtualLabApp({
