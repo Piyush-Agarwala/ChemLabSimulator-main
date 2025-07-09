@@ -128,6 +128,8 @@ function VirtualLabApp({
   const [titrationDropCount, setTitrationDropCount] = useState(0);
   const [stirrerActive, setStirerActive] = useState(false);
   const [titrationColorProgress, setTitrationColorProgress] = useState(0);
+  const [cumulativeVolume, setCumulativeVolume] = useState(5.0); // Track total volume across multiple titrations
+  const [cumulativeColorIntensity, setCumulativeColorIntensity] = useState(0); // Track color intensity across titrations
 
   // Step completion tracking for Acid-Base Titration
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
