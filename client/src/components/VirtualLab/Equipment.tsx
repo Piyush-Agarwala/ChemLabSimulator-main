@@ -278,7 +278,7 @@ export const Equipment: React.FC<EquipmentProps> = ({
             {/* Solution overlay in flask */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                className="absolute bottom-5 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-in-out"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.7}%`,
@@ -289,6 +289,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   clipPath:
                     "polygon(15% 0%, 85% 0%, 95% 60%, 90% 85%, 85% 95%, 15% 95%, 10% 85%, 5% 60%)",
                   background: `linear-gradient(to bottom, ${getMixedColor()}, ${getMixedColor()}dd)`,
+                  filter: `saturate(${1 + (titrationColorProgress || 0) * 0.5}) brightness(${1 + (titrationColorProgress || 0) * 0.2})`,
+                  transition:
+                    "background-color 1000ms ease-in-out, filter 1000ms ease-in-out",
                 }}
               >
                 {/* Liquid surface shimmer */}
