@@ -269,6 +269,7 @@ export default function Experiment() {
                 onTimerStart={() => setIsRunning(true)}
                 onTimerStop={() => setIsRunning(false)}
                 onTimerReset={resetTimer}
+                onProgressReset={handleProgressReset}
               />
             </CardContent>
           </Card>
