@@ -358,13 +358,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }}
             />
 
-            {/* Solution overlay in burette - fills entire tube */}
+            {/* Solution overlay in burette - fills from 42-50mL markings */}
             {chemicals.length > 0 && (
               <div
                 className="absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
-                  height: "200px",
+                  height: "48px",
                   width: "18px",
                   opacity: 0.9,
                   borderRadius: "2px 2px 0 0",
