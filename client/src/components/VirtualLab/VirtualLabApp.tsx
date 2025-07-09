@@ -1236,7 +1236,8 @@ function VirtualLabApp({
 
       // Use easing function for smoother transition
       const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
-      setTitrationColorProgress(easedProgress);
+      const currentColorIntensity = cumulativeColorIntensity + easedProgress;
+      setTitrationColorProgress(currentColorIntensity);
 
       // Continuously increase volume during titration (cumulative across multiple titrations)
       const volumeIncrease = progress * 20.0; // 20mL added per titration cycle
