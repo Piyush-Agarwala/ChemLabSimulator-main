@@ -1171,7 +1171,7 @@ function VirtualLabApp({
                   id: "naoh",
                   name: "Sodium Hydroxide",
                   color: "transparent",
-                  amount: 1.0, // Start with small amount
+                  amount: 1.0, // Start with small amount (will increase with titration)
                   concentration: "0.1 M",
                 },
               ],
