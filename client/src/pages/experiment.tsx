@@ -272,6 +272,7 @@ export default function Experiment() {
                 step={currentStepData}
                 onStepComplete={handleCompleteStep}
                 onProgressUpdate={handleProgressUpdate}
+                onStepProgressUpdate={handleStepProgressUpdate}
                 isActive={isActive}
                 stepNumber={currentStep + 1}
                 totalSteps={experiment.stepDetails.length}
