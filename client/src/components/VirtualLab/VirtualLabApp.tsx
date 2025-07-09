@@ -1773,7 +1773,11 @@ function VirtualLabApp({
           {/* Results Panel - When present */}
           {results.length > 0 && (
             <div className="border-t border-gray-200 bg-white/90 backdrop-blur-sm">
-              <ResultsPanel results={results} onClear={handleClearResults} />
+              <ResultsPanel
+                results={results}
+                onClear={handleClearResults}
+                onTrialAdded={handleTrialAdded}
+              />
             </div>
           )}
         </div>
