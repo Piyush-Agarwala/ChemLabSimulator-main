@@ -110,6 +110,7 @@ export default function Experiment() {
       progressPercentage: 0,
     });
     setCurrentStep(0);
+    setCompletedStepsCount(0);
   };
 
   const handleProgressUpdate = (
