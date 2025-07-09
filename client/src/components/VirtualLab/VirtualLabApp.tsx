@@ -1314,8 +1314,8 @@ function VirtualLabApp({
                   "Water (H₂O)",
                   "Pink endpoint reached",
                 ],
-                volumeAdded: 25.0, // Typical titration volume
-                totalVolume: 50.0,
+                volumeAdded: currentVolume - 5.0, // Volume added from start
+                totalVolume: currentVolume,
                 concentration: "0.1000 M HCl determined",
                 molarity: 0.1,
                 moles: 0.0025,
