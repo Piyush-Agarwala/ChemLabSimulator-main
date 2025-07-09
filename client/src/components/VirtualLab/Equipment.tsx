@@ -646,12 +646,15 @@ export const Equipment: React.FC<EquipmentProps> = ({
           id !== "erlenmeyer_flask" && (
             <div className="absolute inset-0 flex items-end justify-center">
               <div
-                className="rounded-b-lg transition-all duration-500 opacity-80"
+                className="rounded-b-lg transition-all duration-1000 ease-in-out opacity-80"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight()}%`,
                   width: id === "beaker" ? "70%" : "60%",
                   minHeight: "8px",
+                  filter: `saturate(${1 + (titrationColorProgress || 0) * 0.5}) brightness(${1 + (titrationColorProgress || 0) * 0.2})`,
+                  transition:
+                    "background-color 1000ms ease-in-out, height 500ms ease-in-out, filter 1000ms ease-in-out",
                 }}
               >
                 {/* Enhanced liquid effects */}
