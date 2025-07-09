@@ -1275,16 +1275,7 @@ function VirtualLabApp({
       // Step 5: Identify Endpoint - Mark when color starts turning pink (30% progress for slower effect)
       if (easedProgress >= 0.3 && !completedSteps.has(5)) {
         markStepCompleted(5, "Endpoint identified - solution turned pink");
-
-        // Automatically stop titration and stirring when flask turns pink
-        if (isTitrating) {
-          setIsTitrating(false);
-          setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
-        }
-        if (isStirring) {
-          setIsStirring(false);
-          setStirerActive(false);
-        }
+        // Note: No longer automatically stopping - allow continued titration for over-titration effect
       }
 
       // Automatically stop titration when color transition is complete (endpoint reached)
