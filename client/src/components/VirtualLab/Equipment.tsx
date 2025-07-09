@@ -358,21 +358,21 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }}
             />
 
-            {/* Solution overlay in burette - fills up to 30mL mark */}
+            {/* Solution overlay in burette - fills from 50mL to 30mL mark */}
             {chemicals.length > 0 && (
               <div
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2 transition-all duration-500"
+                className="absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
-                  height: "144px",
+                  height: "96px",
                   width: "18px",
                   opacity: 0.9,
-                  borderRadius: "0 0 2px 2px",
-                  clipPath: "polygon(15% 0%, 85% 0%, 80% 100%, 20% 100%)",
+                  borderRadius: "2px 2px 0 0",
+                  clipPath: "polygon(20% 0%, 80% 0%, 85% 100%, 15% 100%)",
                 }}
               >
                 {/* Liquid surface shimmer at 30mL mark */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
               </div>
             )}
 
