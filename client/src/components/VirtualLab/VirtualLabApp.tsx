@@ -1090,7 +1090,7 @@ function VirtualLabApp({
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
         setToastMessage(
-          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ ��� Colorless complex`,
+          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ → Colorless complex`,
         );
         setTimeout(() => setToastMessage(null), 4000);
       }
@@ -1133,8 +1133,8 @@ function VirtualLabApp({
     // Show Results Panel immediately when titration starts
     setShowResultsPanel(true);
 
-    // Mark step 4 as completed: Start titration button pressed
-    markStepCompleted(4, "Titration started");
+    // Step 4: Initial Titration - Start titration button pressed
+    markStepCompleted(4, "Initial titration started");
 
     // Auto-start magnetic stirrer if available
     if (stirrer && !isStirring) {
