@@ -264,7 +264,7 @@ function VirtualLabApp({
           id: "hcl_conc",
           name: "Concentrated HCl",
           formula: "HCl",
-          color: "#FFFF99",
+          color: "#87CEEB",
           concentration: "12 M",
           volume: 20,
         },
