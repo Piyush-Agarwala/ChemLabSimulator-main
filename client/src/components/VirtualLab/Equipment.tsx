@@ -358,16 +358,18 @@ export const Equipment: React.FC<EquipmentProps> = ({
               }}
             />
 
-            {/* Solution overlay in burette - positioned at top */}
+            {/* Solution overlay in burette - shaped like burette tube */}
             {chemicals.length > 0 && (
               <div
-                className="absolute top-12 left-1/2 transform -translate-x-1/2 rounded-t-lg transition-all duration-500"
+                className="absolute top-12 left-1/2 transform -translate-x-1/2 transition-all duration-500"
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.6}%`,
-                  width: "25%",
+                  width: "18px",
                   opacity: 0.9,
                   minHeight: "12px",
+                  borderRadius: "2px 2px 0 0",
+                  clipPath: "polygon(20% 0%, 80% 0%, 85% 100%, 15% 100%)",
                 }}
               >
                 {/* Liquid surface shimmer */}
