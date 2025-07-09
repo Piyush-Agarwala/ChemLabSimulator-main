@@ -1234,8 +1234,11 @@ function VirtualLabApp({
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      // Use easing function for smoother transition
-      const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
+      // Use enhanced easing function for even smoother transition
+      const easedProgress =
+        progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2; // cubic ease-in-out function
       const currentColorIntensity = cumulativeColorIntensity + easedProgress;
       setTitrationColorProgress(currentColorIntensity);
 
