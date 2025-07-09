@@ -248,7 +248,9 @@ export default function Experiment() {
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <span className="text-sm text-gray-600 px-2">
-                      {currentStep + 1} / {experiment.stepDetails.length}
+                      {experiment.title.includes("Acid-Base")
+                        ? `${completedStepsCount} / ${experiment.stepDetails.length}`
+                        : `${currentStep + 1} / ${experiment.stepDetails.length}`}
                     </span>
                     <Button
                       variant="outline"
