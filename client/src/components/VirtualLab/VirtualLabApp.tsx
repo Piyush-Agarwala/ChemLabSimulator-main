@@ -84,6 +84,7 @@ interface VirtualLabProps {
 function VirtualLabApp({
   step,
   onStepComplete,
+  onProgressUpdate,
   isActive,
   stepNumber,
   totalSteps,
@@ -183,7 +184,7 @@ function VirtualLabApp({
         {
           id: "salicylic_acid",
           name: "Salicylic Acid",
-          formula: "C₇H₆O�����",
+          formula: "C₇H₆O���",
           color: "#F8F8FF",
           concentration: "2.0 g",
           volume: 25,
