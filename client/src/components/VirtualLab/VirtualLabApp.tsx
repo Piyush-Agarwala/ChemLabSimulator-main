@@ -86,6 +86,7 @@ function VirtualLabApp({
   step,
   onStepComplete,
   onProgressUpdate,
+  onStepProgressUpdate,
   isActive,
   stepNumber,
   totalSteps,
