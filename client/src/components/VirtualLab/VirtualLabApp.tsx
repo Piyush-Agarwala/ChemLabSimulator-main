@@ -88,6 +88,7 @@ function VirtualLabApp({
   onTimerStart,
   onTimerStop,
   onTimerReset,
+  onProgressReset,
 }: VirtualLabProps) {
   const [equipmentPositions, setEquipmentPositions] = useState<
     EquipmentPosition[]
