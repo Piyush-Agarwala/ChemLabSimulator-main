@@ -1076,7 +1076,7 @@ function VirtualLabApp({
 
       setResults((prev) => [...prev, result]);
 
-      // Mark step 6 as completed when result is calculated for Acid-Base Titration
+      // Step 6: Calculate Concentration - Mark when result is calculated for Acid-Base Titration
       if (
         experimentTitle.includes("Acid-Base") &&
         hasAcid &&
@@ -1084,7 +1084,7 @@ function VirtualLabApp({
         !hasCalculatedResult
       ) {
         setHasCalculatedResult(true);
-        markStepCompleted(6, "Result calculated");
+        markStepCompleted(6, "Concentration calculated");
       }
 
       // Special toast message for conical flask
