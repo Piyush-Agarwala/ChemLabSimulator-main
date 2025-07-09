@@ -59,6 +59,7 @@ interface ResultsPanelProps {
 export const ResultsPanel: React.FC<ResultsPanelProps> = ({
   results,
   onClear,
+  onTrialAdded,
 }) => {
   const [titrationTrials, setTitrationTrials] = useState<TitrationTrial[]>([]);
   const [isAddingTrial, setIsAddingTrial] = useState(false);
