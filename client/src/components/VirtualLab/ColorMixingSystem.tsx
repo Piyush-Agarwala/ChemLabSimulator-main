@@ -13,7 +13,7 @@ interface ColorMixingSystemProps {
   onReactionDetected: (reaction: string) => void;
 }
 
-export const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
+const ColorMixingSystem: React.FC<ColorMixingSystemProps> = ({
   chemicals,
   onReactionDetected,
 }) => {
