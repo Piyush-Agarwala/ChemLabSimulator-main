@@ -145,22 +145,48 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
-        // Color transition from yellow to light pink during titration
+        // Color transition from yellow to light pink, then to darker pink during over-titration
         if (titrationColorProgress > 0) {
-          const startColor = { r: 255, g: 225, b: 53 }; // Yellow #FFE135
-          const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
+          if (titrationColorProgress <= 1) {
+            // First stage: Yellow to light pink
+            const startColor = { r: 255, g: 225, b: 53 }; // Yellow #FFE135
+            const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
 
-          const r = Math.round(
-            startColor.r + (endColor.r - startColor.r) * titrationColorProgress,
-          );
-          const g = Math.round(
-            startColor.g + (endColor.g - startColor.g) * titrationColorProgress,
-          );
-          const b = Math.round(
-            startColor.b + (endColor.b - startColor.b) * titrationColorProgress,
-          );
+            const r = Math.round(
+              startColor.r +
+                (endColor.r - startColor.r) * titrationColorProgress,
+            );
+            const g = Math.round(
+              startColor.g +
+                (endColor.g - startColor.g) * titrationColorProgress,
+            );
+            const b = Math.round(
+              startColor.b +
+                (endColor.b - startColor.b) * titrationColorProgress,
+            );
 
-          return `rgb(${r}, ${g}, ${b})`;
+            return `rgb(${r}, ${g}, ${b})`;
+          } else {
+            // Second stage: Light pink to deeper pink (over-titration)
+            const normalizedProgress = Math.min(
+              (titrationColorProgress - 1) / 2,
+              1,
+            ); // Next 2 units for darker transition
+            const startColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
+            const endColor = { r: 220, g: 20, b: 60 }; // Deeper pink/crimson #DC143C
+
+            const r = Math.round(
+              startColor.r + (endColor.r - startColor.r) * normalizedProgress,
+            );
+            const g = Math.round(
+              startColor.g + (endColor.g - startColor.g) * normalizedProgress,
+            );
+            const b = Math.round(
+              startColor.b + (endColor.b - startColor.b) * normalizedProgress,
+            );
+
+            return `rgb(${r}, ${g}, ${b})`;
+          }
         }
         return "#FFB6C1"; // Pink when phenolphthalein is added to basic solution
       }
