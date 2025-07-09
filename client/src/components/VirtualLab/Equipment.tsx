@@ -273,11 +273,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 style={{
                   backgroundColor: getMixedColor(),
                   height: `${getSolutionHeight() * 0.7}%`,
-                  width: "70%",
-                  opacity: 0.8,
+                  width: "60%",
+                  opacity: 0.85,
                   minHeight: "15px",
-                  borderRadius: "0 0 20px 20px",
-                  clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)",
+                  borderRadius: "0 0 25px 25px",
+                  clipPath:
+                    "polygon(15% 0%, 85% 0%, 95% 60%, 90% 85%, 85% 95%, 15% 95%, 10% 85%, 5% 60%)",
+                  background: `linear-gradient(to bottom, ${getMixedColor()}, ${getMixedColor()}dd)`,
                 }}
               >
                 {/* Liquid surface shimmer */}
