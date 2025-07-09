@@ -39,6 +39,7 @@ export default function Experiment() {
   const updateProgressMutation = useUpdateProgress();
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [completedStepsCount, setCompletedStepsCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(true);
