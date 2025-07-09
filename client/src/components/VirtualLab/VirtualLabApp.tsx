@@ -1595,9 +1595,10 @@ function VirtualLabApp({
                     onTimerReset();
                   }
 
-                  // Reset progress to 0% - this will call the parent component's onStepComplete
-                  // which should update the progress to reflect the reset state
-                  onStepComplete();
+                  // Reset progress to 0%
+                  if (onProgressReset) {
+                    onProgressReset();
+                  }
 
                   // Show reset confirmation
                   setToastMessage("🔄 Experiment reset successfully!");
