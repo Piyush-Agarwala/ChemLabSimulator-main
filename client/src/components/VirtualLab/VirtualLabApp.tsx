@@ -131,12 +131,16 @@ function VirtualLabApp({
       experimentTitle.includes("Acid-Base") &&
       !completedSteps.has(stepNumber)
     ) {
-      setCompletedSteps((prev) => new Set([...prev, stepNumber]));
+      setCompletedSteps(
+        (prev) => new Set(Array.from(prev).concat([stepNumber])),
+      );
       setToastMessage(`✅ Step ${stepNumber} completed: ${message}`);
       setTimeout(() => setToastMessage(null), 3000);
 
       // Update progress when step is completed
-      const newCompletedSteps = new Set([...completedSteps, stepNumber]);
+      const newCompletedSteps = new Set(
+        Array.from(completedSteps).concat([stepNumber]),
+      );
       const progressPercentage = Math.round(
         (newCompletedSteps.size / allSteps.length) * 100,
       );
