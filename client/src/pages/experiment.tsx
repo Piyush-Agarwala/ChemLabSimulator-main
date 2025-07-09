@@ -274,6 +274,7 @@ export default function Experiment() {
               <VirtualLabApp
                 step={currentStepData}
                 onStepComplete={handleCompleteStep}
+                onProgressUpdate={handleProgressUpdate}
                 isActive={isActive}
                 stepNumber={currentStep + 1}
                 totalSteps={experiment.stepDetails.length}
