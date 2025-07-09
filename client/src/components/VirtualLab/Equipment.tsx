@@ -297,9 +297,38 @@ export const Equipment: React.FC<EquipmentProps> = ({
                 {/* Liquid surface shimmer */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-40 animate-pulse"></div>
 
-                {/* Phenolphthalein indicator effect */}
+                {/* Enhanced Phenolphthalein indicator effect with titration animation */}
                 {hasPhenolphthalein && hasNaOH && (
-                  <div className="absolute inset-0 bg-pink-400 opacity-60 animate-pulse rounded-b-lg"></div>
+                  <div
+                    className={`absolute inset-0 rounded-b-lg ${
+                      titrationColorProgress > 0 ? "animate-pulse" : ""
+                    }`}
+                    style={{
+                      background:
+                        titrationColorProgress > 0
+                          ? `radial-gradient(circle at center, ${getMixedColor()}80, transparent 70%)`
+                          : "",
+                      opacity: 0.6 + (titrationColorProgress || 0) * 0.3,
+                      animation:
+                        titrationColorProgress > 0
+                          ? "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+                          : "none",
+                    }}
+                  />
+                )}
+
+                {/* Special swirling effect during active titration */}
+                {titrationColorProgress > 0 && titrationColorProgress < 1 && (
+                  <div className="absolute inset-0 rounded-b-lg overflow-hidden">
+                    <div
+                      className="absolute inset-0 animate-spin"
+                      style={{
+                        background: `conic-gradient(from 0deg, transparent, ${getMixedColor()}40, transparent, ${getMixedColor()}20, transparent)`,
+                        animation: "spin 4s linear infinite",
+                        opacity: 0.3,
+                      }}
+                    />
+                  </div>
                 )}
 
                 {/* Enhanced bubbling animation for reactions and stirring */}
