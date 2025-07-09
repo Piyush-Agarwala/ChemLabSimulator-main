@@ -100,6 +100,17 @@ export default function Experiment() {
     }
   };
 
+  const handleProgressReset = () => {
+    // Reset progress to 0%
+    updateProgressMutation.mutate({
+      experimentId: experimentId,
+      currentStep: 0,
+      completed: false,
+      progressPercentage: 0,
+    });
+    setCurrentStep(0);
+  };
+
   const handleNextStep = () => {
     if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
