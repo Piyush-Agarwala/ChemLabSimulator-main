@@ -1280,10 +1280,14 @@ function VirtualLabApp({
         // Note: No longer automatically stopping - allow continued titration for over-titration effect
       }
 
-      // Automatically stop titration when color transition is complete (endpoint reached)
+      // Update cumulative values when titration cycle completes
       if (progress >= 1) {
         setTimeout(() => {
           if (isTitrating) {
+            // Update cumulative values for next titration cycle
+            setCumulativeVolume(currentVolume);
+            setCumulativeColorIntensity(currentColorIntensity);
+
             setIsTitrating(false);
             setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
 
