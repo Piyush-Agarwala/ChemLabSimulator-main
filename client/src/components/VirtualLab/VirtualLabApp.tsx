@@ -1430,6 +1430,13 @@ function VirtualLabApp({
     setCurrentStep(stepId);
   };
 
+  const handleTrialAdded = () => {
+    // Mark step 6 as completed when first trial is added to Experiment Results
+    if (experimentTitle.includes("Acid-Base")) {
+      markStepCompleted(6, "Concentration calculated - first trial added");
+    }
+  };
+
   return (
     <div
       className="w-full bg-gradient-to-br from-slate-50 to-blue-50 rounded-lg overflow-hidden flex"
