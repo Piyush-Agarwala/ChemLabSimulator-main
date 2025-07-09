@@ -125,6 +125,11 @@ export default function Experiment() {
     });
   };
 
+  const handleStepProgressUpdate = (completedSteps: number) => {
+    // Update the completed steps count for display
+    setCompletedStepsCount(completedSteps);
+  };
+
   const handleNextStep = () => {
     if (currentStep < (experiment?.stepDetails.length || 0) - 1) {
       setCurrentStep(currentStep + 1);
