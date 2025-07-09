@@ -833,8 +833,8 @@ function VirtualLabApp({
       );
       setTimeout(() => setToastMessage(null), 3000);
 
-      // Mark step 3 as completed: Phenolphthalein added to conical flask
-      markStepCompleted(3, "Phenolphthalein added to conical flask");
+      // Step 3: Add Indicator - Phenolphthalein added to conical flask
+      markStepCompleted(3, "Phenolphthalein indicator added");
 
       // Add phenolphthalein to conical flask - this is the correct usage for titration
       setEquipmentPositions((prev) =>
@@ -1090,7 +1090,7 @@ function VirtualLabApp({
       // Special toast message for conical flask
       if (equipmentId === "conical_flask") {
         setToastMessage(
-          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ → Colorless complex`,
+          `🧪 Acid-indicator reaction complete! HCl + C₂₀H₁₄O₄ ��� Colorless complex`,
         );
         setTimeout(() => setToastMessage(null), 4000);
       }
