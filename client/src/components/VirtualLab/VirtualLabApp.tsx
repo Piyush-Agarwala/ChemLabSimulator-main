@@ -128,6 +128,8 @@ function VirtualLabApp({
   const [titrationDropCount, setTitrationDropCount] = useState(0);
   const [stirrerActive, setStirerActive] = useState(false);
   const [titrationColorProgress, setTitrationColorProgress] = useState(0);
+  const [cumulativeVolume, setCumulativeVolume] = useState(5.0); // Track total volume across multiple titrations
+  const [cumulativeColorIntensity, setCumulativeColorIntensity] = useState(0); // Track color intensity across titrations
 
   // Step completion tracking for Acid-Base Titration
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
@@ -1025,7 +1027,7 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + C₂₀H₁���O��� → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁����O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
@@ -1069,7 +1071,7 @@ function VirtualLabApp({
             "1. HCl dissociates: HCl → H⁺ + Cl⁻",
             "2. NaOH dissociates: NaOH ��� Na⁺ + OH��",
             "3. Neutralization: H⁺ + OH⁻ → H₂O",
-            "4. Salt formation: Na⁺ + Cl⁻ → NaCl",
+            "4. Salt formation: Na⁺ + Cl⁻ ��� NaCl",
           ],
           thermodynamics: {
             deltaH: -57.3,
@@ -1169,7 +1171,7 @@ function VirtualLabApp({
                   id: "naoh",
                   name: "Sodium Hydroxide",
                   color: "transparent",
-                  amount: 1.0, // Start with small amount
+                  amount: 1.0, // Start with small amount (will increase with titration)
                   concentration: "0.1 M",
                 },
               ],
@@ -1223,10 +1225,10 @@ function VirtualLabApp({
     setToastMessage("📊 Analysis Panel opened - Monitoring titration progress");
     setTimeout(() => setToastMessage(null), 3000);
 
-    // Start slow color transition from colorless to pink over 10 seconds (slow motion effect)
+    // Start slow color transition from colorless to pink over 5 seconds with volume increase
     setTitrationColorProgress(0);
     const startTime = Date.now();
-    const duration = 10000; // 10 seconds for slow motion effect
+    const duration = 5000; // 5 seconds for color transition
 
     const animateColor = () => {
       const elapsed = Date.now() - startTime;
@@ -1234,27 +1236,73 @@ function VirtualLabApp({
 
       // Use easing function for smoother transition
       const easedProgress = progress * progress * (3 - 2 * progress); // smoothstep function
-      setTitrationColorProgress(easedProgress);
+      const currentColorIntensity = cumulativeColorIntensity + easedProgress;
+      setTitrationColorProgress(currentColorIntensity);
+
+      // Continuously increase volume during titration (cumulative across multiple titrations)
+      const volumeIncrease = progress * 20.0; // 20mL added per titration cycle
+      const currentVolume = cumulativeVolume + volumeIncrease;
+
+      // Update measurements with increasing volume and changing pH
+      setMeasurements((prev) => ({
+        ...prev,
+        volume: currentVolume,
+        ph: 6.5 + progress * 2.8, // pH rises from 6.5 to ~9.3
+        molarity: 0.1 - progress * 0.05, // Molarity decreases slightly due to dilution
+        moles: (currentVolume / 1000) * 0.1, // Calculate moles based on volume
+      }));
+
+      // Update the amount of solution in the conical flask
+      const currentAmount = 1.0 + progress * 2.0; // Increase solution amount in flask
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === "conical_flask") {
+            return {
+              ...pos,
+              chemicals: pos.chemicals.map((chemical) => {
+                if (chemical.id === "naoh") {
+                  return {
+                    ...chemical,
+                    amount: currentAmount,
+                  };
+                }
+                return chemical;
+              }),
+            };
+          }
+          return pos;
+        }),
+      );
 
       // Step 5: Identify Endpoint - Mark when color starts turning pink (30% progress for slower effect)
       if (easedProgress >= 0.3 && !completedSteps.has(5)) {
         markStepCompleted(5, "Endpoint identified - solution turned pink");
+        // Note: No longer automatically stopping - allow continued titration for over-titration effect
       }
 
-      // Automatically stop titration when color transition is complete (endpoint reached)
+      // Update cumulative values when titration cycle completes
       if (progress >= 1) {
         setTimeout(() => {
           if (isTitrating) {
+            // Update cumulative values for next titration cycle
+            setCumulativeVolume(currentVolume);
+            setCumulativeColorIntensity(currentColorIntensity);
+
             setIsTitrating(false);
             setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
 
-            // Automatically open Results Panel by adding a comprehensive titration result
+            // Add result for this titration cycle
             const titrationResult: Result = {
               id: Date.now().toString(),
-              type: "success",
-              title: "Acid-Base Titration Complete",
+              type: cumulativeColorIntensity > 1 ? "warning" : "success",
+              title:
+                cumulativeColorIntensity > 1
+                  ? "Over-Titration Detected"
+                  : "Acid-Base Titration Cycle Complete",
               description:
-                "Endpoint reached - Solution turned completely pink. Titration analysis available.",
+                cumulativeColorIntensity > 1
+                  ? "Solution is over-titrated - Deeper pink color indicates excess base. Press 'Start Titration' to continue adding more NaOH."
+                  : "Titration cycle complete - Solution turned pink. Press 'Start Titration' again to continue adding NaOH.",
               timestamp: new Date().toLocaleTimeString(),
               calculation: {
                 reaction:
@@ -1266,8 +1314,8 @@ function VirtualLabApp({
                   "Water (H₂O)",
                   "Pink endpoint reached",
                 ],
-                volumeAdded: 25.0, // Typical titration volume
-                totalVolume: 50.0,
+                volumeAdded: currentVolume - 5.0, // Volume added from start
+                totalVolume: currentVolume,
                 concentration: "0.1000 M HCl determined",
                 molarity: 0.1,
                 moles: 0.0025,
@@ -1613,6 +1661,8 @@ function VirtualLabApp({
                   setStirerActive(false);
                   setTitrationDropCount(0);
                   setTitrationColorProgress(0);
+                  setCumulativeVolume(5.0);
+                  setCumulativeColorIntensity(0);
                   setCompletedSteps(new Set());
                   setHasCalculatedResult(false);
                   setShowResultsPanel(false);
@@ -1768,143 +1818,6 @@ function VirtualLabApp({
                 ) : null;
               })}
             </WorkBench>
-          </div>
-
-          {/* Chemical Reagents Section */}
-          <div className="border-t border-gray-200 bg-white p-4">
-            <div className="flex items-center mb-3">
-              <svg
-                className="w-4 h-4 mr-2 text-blue-600"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 0a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 0 1h-.5v.5a.5.5 0 0 1-1 0V2h-.5a.5.5 0 0 1 0-1h.5v-.5A.5.5 0 0 1 8 0z" />
-                <path d="M9 4H7a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z" />
-              </svg>
-              <h3 className="font-medium text-gray-900">Chemical Reagents</h3>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              {/* Sodium Hydroxide */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Sodium Hydroxide
-                  </div>
-                  <div className="text-xs text-gray-500">NaOH</div>
-                  <div className="text-xs text-blue-600 font-medium">0.1 M</div>
-                </div>
-              </div>
-
-              {/* Hydrochloric Acid */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-yellow-400 border-2 border-yellow-500 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Hydrochloric Acid
-                  </div>
-                  <div className="text-xs text-gray-500">HCl</div>
-                  <div className="text-xs text-blue-600 font-medium">0.1 M</div>
-                </div>
-              </div>
-
-              {/* Phenolphthalein */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-pink-300 border-2 border-pink-400 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-pink-300 rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Phenolphthalein
-                  </div>
-                  <div className="text-xs text-gray-500">C₂₀H₁₄O₄</div>
-                  <div className="text-xs text-blue-600 font-medium">
-                    Indicator
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* pH Meter and Measurements Section */}
-          <div className="bg-gray-900 text-white p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-6">
-                {/* pH Meter */}
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium">pH</span>
-                  </div>
-                  <div className="bg-black px-4 py-2 rounded font-mono text-xl">
-                    {measurements.ph.toFixed(2)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {measurements.ph < 7
-                      ? "Acidic"
-                      : measurements.ph > 7
-                        ? "Basic"
-                        : "Neutral"}
-                  </div>
-                </div>
-
-                {/* Volume */}
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium">Volume</span>
-                  <div className="bg-black px-4 py-2 rounded font-mono text-xl">
-                    {measurements.volume.toFixed(1)}
-                  </div>
-                  <span className="text-sm text-gray-400">mL</span>
-                </div>
-
-                {/* Molarity */}
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium">Molarity</span>
-                  <div className="bg-black px-4 py-2 rounded font-mono text-xl">
-                    {measurements.molarity.toFixed(3)}
-                  </div>
-                  <span className="text-sm text-gray-400">M</span>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => {
-                    const equivalencePoint = 25.0; // mL for 0.1M solutions
-                    const percentComplete =
-                      (measurements.volume / equivalencePoint) * 100;
-                    console.log(
-                      `Titration ${percentComplete.toFixed(1)}% complete`,
-                    );
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-medium transition-colors"
-                >
-                  Calculate Endpoint
-                </button>
-
-                <button
-                  onClick={() => {
-                    // Reset measurements
-                    setMeasurements((prev) => ({
-                      ...prev,
-                      volume: 0,
-                      concentration: 0,
-                      ph: 7,
-                      molarity: 0,
-                      moles: 0,
-                    }));
-                  }}
-                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-sm font-medium transition-colors"
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* Results Panel - When present */}
