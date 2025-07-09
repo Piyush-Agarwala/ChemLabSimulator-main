@@ -1661,6 +1661,8 @@ function VirtualLabApp({
                   setStirerActive(false);
                   setTitrationDropCount(0);
                   setTitrationColorProgress(0);
+                  setCumulativeVolume(5.0);
+                  setCumulativeColorIntensity(0);
                   setCompletedSteps(new Set());
                   setHasCalculatedResult(false);
                   setShowResultsPanel(false);
