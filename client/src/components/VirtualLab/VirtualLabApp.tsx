@@ -938,7 +938,7 @@ function VirtualLabApp({
           // Check for Acid-Base Titration step completion
           if (experimentTitle.includes("Acid-Base")) {
             if (chemicalId === "hcl" && equipmentId === "conical_flask") {
-              markStepCompleted(2, "HCl added to conical flask");
+              markStepCompleted(2, "HCl sample prepared in conical flask");
             }
           }
 
