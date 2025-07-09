@@ -145,44 +145,53 @@ export const Equipment: React.FC<EquipmentProps> = ({
     // Specific reaction colors with titration color transition
     if (chemicalIds.includes("hcl") && chemicalIds.includes("naoh")) {
       if (chemicalIds.includes("phenol")) {
-        // Color transition from light blue to light pink, then to darker pink during over-titration
+        // Enhanced color transition: lighter pink to darker pink with smooth animation
         if (titrationColorProgress > 0) {
           if (titrationColorProgress <= 1) {
-            // First stage: Light blue to light pink
-            const startColor = { r: 135, g: 206, b: 235 }; // Light blue #87CEEB
+            // First stage: Very light pink to medium pink
+            const startColor = { r: 255, g: 220, b: 230 }; // Very light pink #FFDCE6
             const endColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
 
+            // Apply smooth easing function for more natural color transition
+            const easedProgress =
+              titrationColorProgress *
+              titrationColorProgress *
+              (3 - 2 * titrationColorProgress);
+
             const r = Math.round(
-              startColor.r +
-                (endColor.r - startColor.r) * titrationColorProgress,
+              startColor.r + (endColor.r - startColor.r) * easedProgress,
             );
             const g = Math.round(
-              startColor.g +
-                (endColor.g - startColor.g) * titrationColorProgress,
+              startColor.g + (endColor.g - startColor.g) * easedProgress,
             );
             const b = Math.round(
-              startColor.b +
-                (endColor.b - startColor.b) * titrationColorProgress,
+              startColor.b + (endColor.b - startColor.b) * easedProgress,
             );
 
             return `rgb(${r}, ${g}, ${b})`;
           } else {
-            // Second stage: Light pink to deeper pink (over-titration)
+            // Second stage: Medium pink to deep pink (over-titration)
             const normalizedProgress = Math.min(
               (titrationColorProgress - 1) / 2,
               1,
             ); // Next 2 units for darker transition
             const startColor = { r: 255, g: 182, b: 193 }; // Light pink #FFB6C1
-            const endColor = { r: 220, g: 20, b: 60 }; // Deeper pink/crimson #DC143C
+            const endColor = { r: 199, g: 21, b: 133 }; // Deep pink/magenta #C71585
+
+            // Apply smooth easing for the darker transition as well
+            const easedProgress =
+              normalizedProgress *
+              normalizedProgress *
+              (3 - 2 * normalizedProgress);
 
             const r = Math.round(
-              startColor.r + (endColor.r - startColor.r) * normalizedProgress,
+              startColor.r + (endColor.r - startColor.r) * easedProgress,
             );
             const g = Math.round(
-              startColor.g + (endColor.g - startColor.g) * normalizedProgress,
+              startColor.g + (endColor.g - startColor.g) * easedProgress,
             );
             const b = Math.round(
-              startColor.b + (endColor.b - startColor.b) * normalizedProgress,
+              startColor.b + (endColor.b - startColor.b) * easedProgress,
             );
 
             return `rgb(${r}, ${g}, ${b})`;
