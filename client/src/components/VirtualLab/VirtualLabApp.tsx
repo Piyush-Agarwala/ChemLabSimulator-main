@@ -1291,13 +1291,18 @@ function VirtualLabApp({
             setIsTitrating(false);
             setDropwiseAnimation({ active: false, chemicalId: "", drops: [] });
 
-            // Automatically open Results Panel by adding a comprehensive titration result
+            // Add result for this titration cycle
             const titrationResult: Result = {
               id: Date.now().toString(),
-              type: "success",
-              title: "Acid-Base Titration Complete",
+              type: cumulativeColorIntensity > 1 ? "warning" : "success",
+              title:
+                cumulativeColorIntensity > 1
+                  ? "Over-Titration Detected"
+                  : "Acid-Base Titration Cycle Complete",
               description:
-                "Endpoint reached - Solution turned completely pink. Titration analysis available.",
+                cumulativeColorIntensity > 1
+                  ? "Solution is over-titrated - Deeper pink color indicates excess base. Press 'Start Titration' to continue adding more NaOH."
+                  : "Titration cycle complete - Solution turned pink. Press 'Start Titration' again to continue adding NaOH.",
               timestamp: new Date().toLocaleTimeString(),
               calculation: {
                 reaction:
