@@ -1025,7 +1025,7 @@ function VirtualLabApp({
             : "none";
 
       let reactionTitle = "Acid-Indicator Interaction Detected";
-      let reactionDescription = "HCl + C₂₀H₁���O��� → Colorless complex";
+      let reactionDescription = "HCl + C₂₀H₁����O��� → Colorless complex";
 
       // Enhanced messaging for conical flask
       if (equipmentId === "conical_flask") {
@@ -1247,6 +1247,28 @@ function VirtualLabApp({
         molarity: 0.1 - progress * 0.05, // Molarity decreases slightly due to dilution
         moles: (currentVolume / 1000) * 0.1, // Calculate moles based on volume
       }));
+
+      // Update the amount of solution in the conical flask
+      const currentAmount = 1.0 + progress * 2.0; // Increase solution amount in flask
+      setEquipmentPositions((prev) =>
+        prev.map((pos) => {
+          if (pos.id === "conical_flask") {
+            return {
+              ...pos,
+              chemicals: pos.chemicals.map((chemical) => {
+                if (chemical.id === "naoh") {
+                  return {
+                    ...chemical,
+                    amount: currentAmount,
+                  };
+                }
+                return chemical;
+              }),
+            };
+          }
+          return pos;
+        }),
+      );
 
       // Step 5: Identify Endpoint - Mark when color starts turning pink (30% progress for slower effect)
       if (easedProgress >= 0.3 && !completedSteps.has(5)) {
