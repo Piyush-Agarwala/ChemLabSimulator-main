@@ -160,9 +160,7 @@ export default function Experiment() {
   }
 
   const currentStepData = experiment.stepDetails[currentStep];
-  const progressPercentage = Math.round(
-    ((currentStep + 1) / experiment.stepDetails.length) * 100,
-  );
+  const progressPercentage = progress?.progressPercentage || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
