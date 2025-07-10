@@ -678,6 +678,134 @@ export const Equipment: React.FC<EquipmentProps> = ({
       );
     }
 
+    if (id === "water_bath" && isOnWorkbench) {
+      return (
+        <div className="relative">
+          {/* Enhanced Water Bath Visualization */}
+          <div className="relative w-80 h-60">
+            <svg
+              width="320"
+              height="240"
+              viewBox="0 0 80 60"
+              className="drop-shadow-lg"
+            >
+              {/* Water bath container */}
+              <rect
+                x="10"
+                y="25"
+                width="60"
+                height="25"
+                rx="3"
+                stroke="#6b7280"
+                strokeWidth="2"
+                fill={
+                  isHeating
+                    ? "rgba(239, 68, 68, 0.1)"
+                    : "rgba(249, 115, 22, 0.1)"
+                }
+              />
+
+              {/* Water level */}
+              <rect
+                x="12"
+                y="32"
+                width="56"
+                height="16"
+                rx="2"
+                fill={isHeating ? "#ef4444" : "#3b82f6"}
+                opacity={isHeating ? "0.6" : "0.4"}
+                className={isHeating ? "animate-pulse" : ""}
+              />
+
+              {/* Temperature display */}
+              <rect x="75" y="20" width="20" height="8" rx="1" fill="#374151" />
+              <text
+                x="85"
+                y="26"
+                textAnchor="middle"
+                fontSize="4"
+                fill="white"
+                fontWeight="bold"
+              >
+                {actualTemperature.toFixed(0)}°C
+              </text>
+
+              {/* Heating element */}
+              <rect
+                x="15"
+                y="52"
+                width="50"
+                height="3"
+                rx="1"
+                fill={isHeating ? "#ef4444" : "#6b7280"}
+                className={isHeating ? "animate-pulse" : ""}
+              />
+
+              {/* Steam/bubbles when heating */}
+              {isHeating && actualTemperature > 60 && (
+                <g>
+                  {[...Array(8)].map((_, i) => (
+                    <circle
+                      key={i}
+                      cx={20 + i * 7}
+                      cy={25 + (i % 2) * 3}
+                      r="1"
+                      fill="rgba(255, 255, 255, 0.8)"
+                      className="animate-bounce"
+                      style={{
+                        animationDelay: `${i * 0.2}s`,
+                        animationDuration: "1s",
+                      }}
+                    />
+                  ))}
+                </g>
+              )}
+
+              {/* Control panel */}
+              <rect x="20" y="10" width="25" height="8" rx="2" fill="#374151" />
+              <text
+                x="32.5"
+                y="16"
+                textAnchor="middle"
+                fontSize="3"
+                fill="white"
+              >
+                HEAT CONTROL
+              </text>
+
+              {/* Target temperature indicator */}
+              {targetTemperature > 25 && (
+                <text
+                  x="55"
+                  y="16"
+                  textAnchor="middle"
+                  fontSize="3"
+                  fill="#ef4444"
+                  fontWeight="bold"
+                >
+                  Target: {targetTemperature}°C
+                </text>
+              )}
+            </svg>
+
+            {/* Status indicators */}
+            {isHeating && (
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+                🔥 Heating to {targetTemperature}°C
+              </div>
+            )}
+
+            {actualTemperature >= targetTemperature - 2 &&
+              targetTemperature > 25 && (
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                  ✓ Target Temperature Reached
+                </div>
+              )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="relative">
         {icon}
