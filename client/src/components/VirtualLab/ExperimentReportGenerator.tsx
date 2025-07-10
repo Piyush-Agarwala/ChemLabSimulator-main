@@ -160,7 +160,7 @@ export const ExperimentReportGenerator: React.FC<
 
     const csvContent = [
       ["Measurement", "Value", "Unit", "Notes"].join(","),
-      ...reportData.results.map((result) =>
+      ...(reportData.results || []).map((result) =>
         [
           result.measurement,
           result.value,
