@@ -436,7 +436,23 @@ function VirtualLabApp({
     let interval: NodeJS.Timeout | null = null;
     if (isHeating) {
       interval = setInterval(() => {
-        setHeatingTime((prev) => prev + 1);
+        setHeatingTime((prev) => {
+          const newTime = prev + 1;
+
+          // Check if heating is complete (15 minutes = 900 seconds)
+          if (newTime >= 900 && experimentTitle.includes("Aspirin")) {
+            const currentStep = aspirinGuidedSteps[currentGuidedStep - 1];
+            if (currentStep?.id === 6) {
+              // Heat Reaction step
+              setCurrentGuidedStep((prev) => prev + 1);
+              setToastMessage("✓ Heating complete! Step 6 finished!");
+              setTimeout(() => setToastMessage(null), 3000);
+              setIsHeating(false);
+            }
+          }
+
+          return newTime;
+        });
 
         // Gradually increase temperature towards target
         setActualTemperature((prev) => {
@@ -452,7 +468,13 @@ function VirtualLabApp({
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isHeating, targetTemperature]);
+  }, [
+    isHeating,
+    targetTemperature,
+    currentGuidedStep,
+    experimentTitle,
+    aspirinGuidedSteps,
+  ]);
 
   // Check for experiment completion
   useEffect(() => {
