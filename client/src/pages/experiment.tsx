@@ -272,17 +272,12 @@ export default function Experiment() {
               <VirtualLabApp
                 step={currentStepData}
                 onStepComplete={handleCompleteStep}
-                onProgressUpdate={handleProgressUpdate}
-                onStepProgressUpdate={handleStepProgressUpdate}
                 isActive={isActive}
                 stepNumber={currentStep + 1}
                 totalSteps={experiment.stepDetails.length}
                 experimentTitle={experiment.title}
                 allSteps={experiment.stepDetails}
-                onTimerStart={() => setIsRunning(true)}
-                onTimerStop={() => setIsRunning(false)}
-                onTimerReset={resetTimer}
-                onProgressReset={handleProgressReset}
+                experimentId={experimentId}
               />
             </CardContent>
           </Card>

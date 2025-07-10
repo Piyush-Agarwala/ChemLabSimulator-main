@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FlaskConical, Play, Pause, RotateCcw } from "lucide-react";
+import { AnimatedEquipment } from "./AnimatedEquipment";
 import { ExperimentSteps } from "./ExperimentSteps";
 
 interface WorkBenchProps {
@@ -9,13 +10,6 @@ interface WorkBenchProps {
   isRunning: boolean;
   experimentTitle: string;
   currentGuidedStep?: number;
-  dropwiseAnimation?: {
-    active: boolean;
-    chemicalId: string;
-    drops: Array<{ id: string; x: number; y: number; color: string }>;
-  };
-  isTitrating?: boolean;
-  stirringActive?: boolean;
 }
 
 interface Step {
@@ -34,9 +28,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   isRunning,
   experimentTitle,
   currentGuidedStep = 1,
-  dropwiseAnimation = { active: false, chemicalId: "", drops: [] },
-  isTitrating = false,
-  stirringActive = false,
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [temperature, setTemperature] = useState(22);
@@ -245,7 +236,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
   };
 
   const handleReset = () => {
-    // Reset all workbench state to initial values
     setCurrentStep(1);
     setTimer(0);
     setTemperature(22);
@@ -255,10 +245,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
     setIsDropping(false);
     setBubbling(false);
     setAutoProgress(false);
-
-    // Trigger parent reset callback if available
-    // This ensures the main app state is also reset
-    console.log("WorkBench reset completed");
   };
 
   const formatTime = (seconds: number) => {
@@ -269,27 +255,11 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-
-    // Add visual feedback for drop zone
-    const target = e.currentTarget as HTMLElement;
-    target.style.backgroundColor = "rgba(59, 130, 246, 0.02)";
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    // Remove visual feedback
-    const target = e.currentTarget as HTMLElement;
-    target.style.backgroundColor = "";
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-
-    // Remove visual feedback
-    const target = e.currentTarget as HTMLElement;
-    target.style.backgroundColor = "";
-
-    // Get equipment data
+    // Try to get equipment data first, then fallback to text/plain
     const equipmentId = e.dataTransfer.getData("equipment");
     const id = equipmentId || e.dataTransfer.getData("text/plain");
 
@@ -297,12 +267,7 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-
-      // Ensure minimum distance from edges for better positioning
-      const adjustedX = Math.max(80, Math.min(rect.width - 80, x));
-      const adjustedY = Math.max(80, Math.min(rect.height - 80, y));
-
-      onDrop(id, adjustedX, adjustedY);
+      onDrop(id, x, y);
     }
   };
 
@@ -322,35 +287,75 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
                   </p>
                 </div>
               </div>
+
+              {/* Quick Controls in Header - Only show for relevant experiments */}
+              <div className="flex items-center space-x-3">
+                {experimentTitle.includes("Acid-Base") && (
+                  <>
+                    <button
+                      onClick={() => setIsStirring(!isStirring)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isStirring
+                          ? "bg-white/20 text-white"
+                          : "bg-white/10 text-white/80 hover:bg-white/20"
+                      }`}
+                    >
+                      {isStirring ? "Stop Stirring" : "Start Stirring"}
+                    </button>
+
+                    <button
+                      onClick={() => setIsDropping(!isDropping)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isDropping
+                          ? "bg-white/20 text-white"
+                          : "bg-white/10 text-white/80 hover:bg-white/20"
+                      }`}
+                    >
+                      {isDropping ? "Stop Titrant" : "Start Titrant"}
+                    </button>
+                  </>
+                )}
+
+                <div className="text-xs text-white/80">{experimentTitle}</div>
+              </div>
             </div>
           </div>
 
           <div
             onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className="relative w-full overflow-hidden border-2 border-dashed border-blue-200 rounded-lg"
+            className="relative w-full overflow-hidden"
             style={{
               height: "calc(75vh - 160px)", // Adjusted for top/bottom bars
               minHeight: "500px",
+              backgroundImage: `
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px)
+              `,
+              backgroundSize: "25px 25px",
             }}
           >
-            {/* Placement guidance text */}
-            {React.Children.count(children) === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-gray-500 bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-200">
-                  <div className="text-lg font-medium mb-2">
-                    🧪 Virtual Lab Workspace
-                  </div>
-                  <div className="text-sm">
-                    Drag equipment from above to set up your experiment
-                  </div>
-                  <div className="text-xs mt-1 text-blue-600">
-                    ��� Place burette and conical flask anywhere you like!
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Lab Bench Surface - More prominent */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-amber-200 via-amber-150 to-amber-100 border-t-2 border-amber-300">
+              <div className="absolute inset-0 opacity-40 bg-gradient-to-r from-amber-300 to-amber-200"></div>
+              {/* Enhanced lab bench texture */}
+              <div
+                className="absolute inset-0 opacity-25"
+                style={{
+                  backgroundImage: `repeating-linear-gradient(
+                  90deg,
+                  transparent,
+                  transparent 3px,
+                  rgba(0,0,0,0.1) 3px,
+                  rgba(0,0,0,0.1) 6px
+                )`,
+                }}
+              ></div>
+              {/* Lab bench edge highlight */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 opacity-60"></div>
+            </div>
+
+            {/* Note: Equipment is now dynamically placed by user interaction */}
 
             {/* Helpful hints for Aspirin Synthesis */}
             {experimentTitle.includes("Aspirin") && (
@@ -374,50 +379,6 @@ export const WorkBench: React.FC<WorkBenchProps> = ({
                   {currentGuidedStep > 6 &&
                     "Aspirin synthesis steps completed!"}
                 </div>
-              </div>
-            )}
-
-            {/* Dropwise Animation Layer */}
-            {dropwiseAnimation.active && (
-              <div className="absolute inset-0 pointer-events-none z-30">
-                {dropwiseAnimation.drops.map((drop) => (
-                  <div
-                    key={drop.id}
-                    className="absolute w-3 h-3 rounded-full shadow-lg transform transition-all ease-in"
-                    style={{
-                      backgroundColor: drop.color,
-                      left: drop.x - 6, // Center the drop
-                      top: drop.y,
-                      boxShadow: `0 2px 4px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.5)`,
-                      animation: "dropFall 1.5s ease-in forwards",
-                    }}
-                  >
-                    {/* Drop highlight for realistic effect */}
-                    <div className="absolute top-0 left-1 w-1 h-1 bg-white rounded-full opacity-70"></div>
-                  </div>
-                ))}
-
-                {/* Inject CSS animation directly */}
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html: `
-                    @keyframes dropFall {
-                      0% {
-                        transform: translateY(0) scale(1);
-                        opacity: 1;
-                      }
-                      50% {
-                        transform: translateY(120px) scale(1.1);
-                        opacity: 0.8;
-                      }
-                      100% {
-                        transform: translateY(200px) scale(0.8);
-                        opacity: 0;
-                      }
-                    }
-                  `,
-                  }}
-                />
               </div>
             )}
 
