@@ -645,6 +645,12 @@ function VirtualLabApp({
     setTimeout(() => setToastMessage(null), 2000);
   };
 
+  const handleSkipMinute = () => {
+    setHeatingTime((prev) => prev + 60);
+    setToastMessage("⏩ Skipped +1 minute");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
   const handleEquipmentRemove = (equipmentId: string) => {
     setEquipmentPositions((prev) =>
       prev.filter((pos) => pos.id !== equipmentId),
@@ -766,6 +772,81 @@ function VirtualLabApp({
 
       {/* Main Lab Content */}
       <div className="flex-1 flex flex-col">
+        {/* Heating Control Panel - Top Section */}
+        {experimentTitle.includes("Aspirin") && (
+          <div className="bg-gradient-to-r from-orange-50 to-red-50 border-b border-gray-200 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h3 className="font-semibold text-gray-800 flex items-center">
+                  <Thermometer className="w-5 h-5 mr-2 text-red-600" />
+                  Heating Control
+                </h3>
+                <div className="flex items-center space-x-6">
+                  <div className="text-sm text-gray-700">
+                    <span className="font-medium">Current:</span>{" "}
+                    {actualTemperature.toFixed(0)}°C
+                  </div>
+                  <div className="text-sm text-gray-700">
+                    <span className="font-medium">Target:</span>{" "}
+                    {targetTemperature}°C
+                  </div>
+                  <div className="text-sm text-gray-700">
+                    <span className="font-medium">Time:</span>{" "}
+                    {Math.floor(heatingTime / 60)}:
+                    {(heatingTime % 60).toString().padStart(2, "0")}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() =>
+                    isHeating ? handleStopHeating() : handleStartHeating(85)
+                  }
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    isHeating
+                      ? "bg-red-500 hover:bg-red-600 text-white"
+                      : "bg-orange-500 hover:bg-orange-600 text-white"
+                  }`}
+                >
+                  <Thermometer size={16} />
+                  <span>{isHeating ? "Stop Heating" : "Heat to 85°C"}</span>
+                </button>
+                {isHeating &&
+                  actualTemperature >= targetTemperature &&
+                  heatingTime < 900 && (
+                    <button
+                      onClick={handleSkipMinute}
+                      className="flex items-center space-x-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+                    >
+                      <span>⏩</span>
+                      <span>Skip +1 min</span>
+                    </button>
+                  )}
+              </div>
+            </div>
+            {isHeating && (
+              <div className="mt-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-600">
+                    Heating Progress
+                  </span>
+                  <span className="text-xs text-gray-600">
+                    {Math.min(100, Math.round((heatingTime / 900) * 100))}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-orange-500 h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.min(100, (heatingTime / 900) * 100)}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Equipment Bar - Top Horizontal */}
         <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200 p-3">
           <div className="flex items-center justify-between">
@@ -815,40 +896,6 @@ function VirtualLabApp({
                   setTimeout(() => setToastMessage(null), 3000);
                 }}
               />
-
-              {/* Heating Control Buttons for Aspirin Synthesis */}
-              {experimentTitle.includes("Aspirin") && (
-                <div className="flex items-center space-x-2 ml-4 border-l border-gray-300 pl-4">
-                  <button
-                    onClick={() =>
-                      isHeating ? handleStopHeating() : handleStartHeating(85)
-                    }
-                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      isHeating
-                        ? "bg-red-500 hover:bg-red-600 text-white"
-                        : "bg-orange-500 hover:bg-orange-600 text-white"
-                    }`}
-                  >
-                    <Thermometer size={14} />
-                    <span>
-                      {isHeating
-                        ? `Stop Heating (${actualTemperature.toFixed(0)}°C)`
-                        : "Heat to 85°C"}
-                    </span>
-                  </button>
-
-                  {isHeating && (
-                    <div className="text-xs text-gray-600 flex items-center space-x-2">
-                      <span>Target: {targetTemperature}°C</span>
-                      <span>•</span>
-                      <span>
-                        Time: {Math.floor(heatingTime / 60)}:
-                        {(heatingTime % 60).toString().padStart(2, "0")}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
           <div className="flex items-center space-x-3 mt-2 overflow-x-auto pb-2">
