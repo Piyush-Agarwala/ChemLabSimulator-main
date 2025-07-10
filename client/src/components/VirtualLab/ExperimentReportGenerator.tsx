@@ -322,7 +322,7 @@ export const ExperimentReportGenerator: React.FC<
         return (
           <div className="space-y-4">
             <h3 className="font-medium">Learning Objectives</h3>
-            {reportData.objectives.map((objective, index) => (
+            {(reportData.objectives || []).map((objective, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <Textarea
                   value={objective}
