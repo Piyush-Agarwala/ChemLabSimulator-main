@@ -800,7 +800,7 @@ export const ExperimentReportGenerator: React.FC<
       )}
 
       {/* Conclusion */}
-      {reportData.conclusion.trim() && (
+      {reportData.conclusion && reportData.conclusion.trim() && (
         <div className="section">
           <h3 className="section-title">Conclusion</h3>
           <p>{reportData.conclusion}</p>
