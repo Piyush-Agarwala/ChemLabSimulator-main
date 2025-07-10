@@ -115,6 +115,11 @@ function VirtualLabApp({
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [currentGuidedStep, setCurrentGuidedStep] = useState(1);
+  const [isHeating, setIsHeating] = useState(false);
+  const [heatingTime, setHeatingTime] = useState(0);
+  const [targetTemperature, setTargetTemperature] = useState(25);
+  const [actualTemperature, setActualTemperature] = useState(25);
+  const [experimentCompleted, setExperimentCompleted] = useState(false);
   const [dropwiseAnimation, setDropwiseAnimation] = useState<{
     active: boolean;
     chemicalId: string;
