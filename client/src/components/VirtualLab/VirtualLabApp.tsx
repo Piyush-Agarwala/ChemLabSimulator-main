@@ -140,6 +140,29 @@ function VirtualLabApp({
   const [hasCalculatedResult, setHasCalculatedResult] = useState(false);
   const [showResultsPanel, setShowResultsPanel] = useState(false);
 
+  // Heating simulation effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (isHeating) {
+      interval = setInterval(() => {
+        setHeatingTime((prev) => prev + 1);
+
+        // Gradually increase temperature towards target
+        setActualTemperature((prev) => {
+          const diff = targetTemperature - prev;
+          if (Math.abs(diff) < 1) return targetTemperature;
+          return prev + (diff > 0 ? 2 : -2); // Heat/cool at 2°C per second
+        });
+      }, 1000);
+    } else if (interval) {
+      clearInterval(interval);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isHeating, targetTemperature]);
+
   // Helper function to mark steps as completed for Acid-Base Titration
   const markStepCompleted = (stepNumber: number, message: string) => {
     if (
@@ -1039,7 +1062,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O��� endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O����� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
