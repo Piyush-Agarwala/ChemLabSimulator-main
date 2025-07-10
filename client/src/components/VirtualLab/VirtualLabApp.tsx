@@ -1701,6 +1701,25 @@ function VirtualLabApp({
                           <span className="font-medium text-yellow-800">
                             👆 Current step
                           </span>
+                          {step.requiresHeating && (
+                            <div className="mt-1 text-orange-700">
+                              🔥 Heating required: {step.targetTemperature}°C
+                              {isHeating && (
+                                <div className="text-green-700">
+                                  Current: {actualTemperature.toFixed(0)}°C
+                                  {step.requiredTime && (
+                                    <span className="ml-2">
+                                      Time: {Math.floor(heatingTime / 60)}:
+                                      {(heatingTime % 60)
+                                        .toString()
+                                        .padStart(2, "0")}{" "}
+                                      / {step.requiredTime}:00
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
