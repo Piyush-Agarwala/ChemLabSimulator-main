@@ -811,9 +811,42 @@ function VirtualLabApp({
         if (experimentTitle.includes("Aspirin")) {
           const currentStep = aspirinGuidedSteps[currentGuidedStep - 1];
           if (currentStep?.requiredEquipment === id) {
-            setCurrentGuidedStep((prev) => prev + 1);
-            setToastMessage(`✓ Step ${currentGuidedStep} completed!`);
-            setTimeout(() => setToastMessage(null), 3000);
+            // Special handling for water bath - trigger heating setup
+            if (id === "water_bath" && currentGuidedStep === 5) {
+              setCurrentGuidedStep((prev) => prev + 1);
+              setToastMessage(
+                `✓ Step ${currentGuidedStep} completed! Water bath ready for heating.`,
+              );
+              setTimeout(() => setToastMessage(null), 3000);
+            } else {
+              setCurrentGuidedStep((prev) => prev + 1);
+              setToastMessage(`✓ Step ${currentGuidedStep} completed!`);
+              setTimeout(() => setToastMessage(null), 3000);
+            }
+          }
+
+          // Check for heating requirement completion
+          if (currentStep?.requiresHeating && currentStep.targetTemperature) {
+            if (actualTemperature >= currentStep.targetTemperature - 2) {
+              if (currentGuidedStep === 6) {
+                // Step 6: Reached target temperature
+                setCurrentGuidedStep((prev) => prev + 1);
+                setToastMessage(
+                  `✓ Target temperature ${currentStep.targetTemperature}°C reached!`,
+                );
+                setTimeout(() => setToastMessage(null), 3000);
+              } else if (
+                currentGuidedStep === 7 &&
+                heatingTime >= (currentStep.requiredTime || 0) * 60
+              ) {
+                // Step 7: Maintained temperature for required time
+                setCurrentGuidedStep((prev) => prev + 1);
+                setToastMessage(
+                  `✓ Reaction heated for ${currentStep.requiredTime} minutes! Ready to cool.`,
+                );
+                setTimeout(() => setToastMessage(null), 3000);
+              }
+            }
           }
         }
 
