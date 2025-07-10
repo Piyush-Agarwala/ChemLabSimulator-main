@@ -42,7 +42,7 @@ interface ExperimentData {
     result: string;
   }>;
   images?: string[]; // base64 encoded images
-  conclusion?: string;
+  conclusion: string;
   safetyNotes: string[];
   recommendations: string[];
 }
