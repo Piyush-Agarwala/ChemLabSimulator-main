@@ -48,6 +48,13 @@ export const Equipment: React.FC<EquipmentProps> = ({
   stirrerActive = false,
   hasNaOHInFlask = false,
   titrationColorProgress = 0,
+  isHeating = false,
+  actualTemperature = 25,
+  targetTemperature = 25,
+  heatingTime = 0,
+  onStartHeating,
+  onStopHeating,
+  onRemove,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
