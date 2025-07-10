@@ -1062,7 +1062,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O����� endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O��� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
@@ -1428,6 +1428,32 @@ function VirtualLabApp({
     setIsStirring(false);
     setStirerActive(false);
     setToastMessage("⏹️ Stirring stopped");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  // Heating control functions for Aspirin synthesis
+  const handleStartHeating = (temperature: number = 85) => {
+    setTargetTemperature(temperature);
+    setIsHeating(true);
+    setHeatingTime(0);
+    setToastMessage(
+      `🔥 Starting to heat to ${temperature}°C for Aspirin synthesis`,
+    );
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleStopHeating = () => {
+    setIsHeating(false);
+    setTargetTemperature(25);
+    setToastMessage("❄️ Cooling down to room temperature");
+    setTimeout(() => setToastMessage(null), 2000);
+  };
+
+  const handleEquipmentRemove = (equipmentId: string) => {
+    setEquipmentPositions((prev) =>
+      prev.filter((pos) => pos.id !== equipmentId),
+    );
+    setToastMessage(`🗑️ Removed ${equipmentId} from workbench`);
     setTimeout(() => setToastMessage(null), 2000);
   };
 
