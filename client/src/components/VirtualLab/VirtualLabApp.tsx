@@ -414,7 +414,7 @@ function VirtualLabApp({
               height="36"
               viewBox="0 0 36 36"
               fill="none"
-              className="text-orange-600"
+              className={isHeating ? "text-red-600" : "text-orange-600"}
             >
               <rect
                 x="4"
@@ -424,15 +424,49 @@ function VirtualLabApp({
                 rx="2"
                 stroke="currentColor"
                 strokeWidth="2"
-                fill="rgba(249, 115, 22, 0.1)"
+                fill={
+                  isHeating
+                    ? "rgba(239, 68, 68, 0.2)"
+                    : "rgba(249, 115, 22, 0.1)"
+                }
               />
               <path
                 d="M8 20c2-2 4-2 6 0s4 2 6 0s4-2 6 0s4 2 6 0"
                 stroke="currentColor"
                 strokeWidth="2"
+                className={isHeating ? "animate-pulse" : ""}
               />
-              <circle cx="18" cy="8" r="2" fill="rgba(249, 115, 22, 0.5)" />
+              <circle
+                cx="18"
+                cy="8"
+                r="2"
+                fill={
+                  isHeating
+                    ? "rgba(239, 68, 68, 0.8)"
+                    : "rgba(249, 115, 22, 0.5)"
+                }
+                className={isHeating ? "animate-bounce" : ""}
+              />
               <path d="M16 6l4 4" stroke="currentColor" strokeWidth="1" />
+              {isHeating && (
+                <>
+                  <circle
+                    cx="12"
+                    cy="10"
+                    r="1"
+                    fill="rgba(239, 68, 68, 0.6)"
+                    className="animate-ping"
+                  />
+                  <circle
+                    cx="24"
+                    cy="10"
+                    r="1"
+                    fill="rgba(239, 68, 68, 0.6)"
+                    className="animate-ping"
+                    style={{ animationDelay: "0.5s" }}
+                  />
+                </>
+              )}
             </svg>
           ),
         },
