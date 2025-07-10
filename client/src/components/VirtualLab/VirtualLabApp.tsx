@@ -1152,7 +1152,7 @@ function VirtualLabApp({
           molarity: (limitingAmount * 0.1) / (totalVolume / 1000),
           mechanism: [
             "1. HCl dissociates: HCl → H⁺ + Cl⁻",
-            "2. NaOH dissociates: NaOH ��� Na⁺ + OH��",
+            "2. NaOH dissociates: NaOH ����� Na⁺ + OH��",
             "3. Neutralization: H⁺ + OH⁻ → H₂O",
             "4. Salt formation: Na⁺ + Cl⁻ ��� NaCl",
           ],
@@ -1809,6 +1809,40 @@ function VirtualLabApp({
                 <Undo2 size={14} />
                 <span>Undo ({undoHistory.length})</span>
               </button>
+
+              {/* Heating Control Buttons for Aspirin Synthesis */}
+              {experimentTitle.includes("Aspirin") && (
+                <div className="flex items-center space-x-2 ml-4 border-l border-gray-300 pl-4">
+                  <button
+                    onClick={() =>
+                      isHeating ? handleStopHeating() : handleStartHeating(85)
+                    }
+                    className={`flex items-center space-x-1 px-3 py-1 rounded text-xs font-medium transition-colors ${
+                      isHeating
+                        ? "bg-red-500 hover:bg-red-600 text-white"
+                        : "bg-orange-500 hover:bg-orange-600 text-white"
+                    }`}
+                  >
+                    <Thermometer size={14} />
+                    <span>
+                      {isHeating
+                        ? `Stop Heating (${actualTemperature.toFixed(0)}°C)`
+                        : "Heat to 85°C"}
+                    </span>
+                  </button>
+
+                  {isHeating && (
+                    <div className="text-xs text-gray-600 flex items-center space-x-2">
+                      <span>Target: {targetTemperature}°C</span>
+                      <span>•</span>
+                      <span>
+                        Time: {Math.floor(heatingTime / 60)}:
+                        {(heatingTime % 60).toString().padStart(2, "0")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Titration Control Buttons for Acid-Base Experiment */}
               {experimentTitle.includes("Acid-Base") && (
