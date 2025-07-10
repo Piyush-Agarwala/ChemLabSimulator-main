@@ -1077,6 +1077,19 @@ function VirtualLabApp({
               setToastMessage(`✓ Step ${currentGuidedStep} completed!`);
               setTimeout(() => setToastMessage(null), 3000);
             }
+
+            // Special handling for final cooling step (adding water after heating)
+            if (
+              currentStep?.requiresChemical === chemicalId &&
+              currentGuidedStep === 8
+            ) {
+              setCurrentGuidedStep((prev) => prev + 1);
+              setExperimentCompleted(true);
+              setToastMessage(
+                `🎉 Aspirin synthesis completed! Crystals are precipitating.`,
+              );
+              setTimeout(() => setToastMessage(null), 5000);
+            }
           }
 
           // Calculate reaction if chemicals are mixed
