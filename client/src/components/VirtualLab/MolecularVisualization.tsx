@@ -670,9 +670,9 @@ export const MolecularVisualization: React.FC<MolecularVisualizationProps> = ({
             </div>
             <div>
               <strong>Elements:</strong>{" "}
-              {[...new Set(currentMolecule.atoms.map((a) => a.element))].join(
-                ", ",
-              )}
+              {Array.from(
+                new Set(currentMolecule.atoms.map((a) => a.element)),
+              ).join(", ")}
             </div>
           </div>
 
