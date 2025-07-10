@@ -532,7 +532,7 @@ function VirtualLabApp({
     return [];
   }, [experimentTitle]);
 
-  // Guided steps for Aspirin Synthesis
+  // Enhanced guided steps for Aspirin Synthesis with heating controls
   const aspirinGuidedSteps = [
     {
       id: 1,
@@ -569,14 +569,37 @@ function VirtualLabApp({
     {
       id: 5,
       title: "Set up Water Bath",
-      instruction: "Drag the Water Bath to the workbench and heat to 85°C",
+      instruction:
+        "Drag the Water Bath to the workbench and prepare for heating",
       requiredEquipment: "water_bath",
       completed: false,
     },
     {
       id: 6,
-      title: "Heat Reaction",
-      instruction: "Place the flask in the water bath and heat for 15 minutes",
+      title: "Heat to 85°C",
+      instruction:
+        "Start heating the water bath to 85°C and monitor temperature",
+      requiresHeating: true,
+      targetTemperature: 85,
+      completed: false,
+    },
+    {
+      id: 7,
+      title: "Maintain Reaction Temperature",
+      instruction:
+        "Heat the reaction mixture at 85°C for 15 minutes to complete esterification",
+      requiresHeating: true,
+      targetTemperature: 85,
+      requiredTime: 15, // minutes
+      completed: false,
+    },
+    {
+      id: 8,
+      title: "Cool and Precipitate",
+      instruction:
+        "Stop heating and add distilled water to precipitate aspirin crystals",
+      requiresChemical: "distilled_water",
+      targetEquipment: "erlenmeyer_flask",
       completed: false,
     },
   ];
