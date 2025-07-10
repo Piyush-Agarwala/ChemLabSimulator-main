@@ -26,16 +26,16 @@ interface ExperimentData {
   studentId?: string;
   instructor?: string;
   course?: string;
-  objectives?: string[];
-  procedure?: string[];
-  observations?: string[];
-  results?: Array<{
+  objectives: string[];
+  procedure: string[];
+  observations: string[];
+  results: Array<{
     measurement: string;
     value: number | string;
     unit: string;
     notes?: string;
   }>;
-  calculations?: Array<{
+  calculations: Array<{
     description: string;
     formula: string;
     calculation: string;
@@ -43,8 +43,8 @@ interface ExperimentData {
   }>;
   images?: string[]; // base64 encoded images
   conclusion?: string;
-  safetyNotes?: string[];
-  recommendations?: string[];
+  safetyNotes: string[];
+  recommendations: string[];
 }
 
 interface ExperimentReportGeneratorProps {
