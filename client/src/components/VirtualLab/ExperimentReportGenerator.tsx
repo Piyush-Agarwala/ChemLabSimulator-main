@@ -156,7 +156,7 @@ export const ExperimentReportGenerator: React.FC<
   };
 
   const exportToCSV = () => {
-    if (reportData.results.length === 0) return;
+    if (!reportData.results || reportData.results.length === 0) return;
 
     const csvContent = [
       ["Measurement", "Value", "Unit", "Notes"].join(","),
