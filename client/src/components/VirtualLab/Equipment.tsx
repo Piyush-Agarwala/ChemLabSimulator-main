@@ -28,6 +28,13 @@ interface EquipmentProps {
   stirrerActive?: boolean;
   hasNaOHInFlask?: boolean;
   titrationColorProgress?: number;
+  isHeating?: boolean;
+  actualTemperature?: number;
+  targetTemperature?: number;
+  heatingTime?: number;
+  onStartHeating?: () => void;
+  onStopHeating?: () => void;
+  onRemove?: (id: string) => void;
 }
 
 export const Equipment: React.FC<EquipmentProps> = ({
