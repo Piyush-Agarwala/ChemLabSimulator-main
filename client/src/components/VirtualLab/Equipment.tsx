@@ -250,8 +250,9 @@ export const Equipment: React.FC<EquipmentProps> = ({
                   width: "70%",
                   opacity: 0.8,
                   minHeight: "15px",
-                  borderRadius: "0 0 20px 20px",
-                  clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)",
+                  borderRadius: "0 0 50% 50%",
+                  clipPath:
+                    "polygon(15% 0%, 85% 0%, 95% 20%, 100% 40%, 100% 80%, 95% 90%, 85% 100%, 15% 100%, 5% 90%, 0% 80%, 0% 40%, 5% 20%)",
                 }}
               >
                 {/* Liquid surface shimmer */}
