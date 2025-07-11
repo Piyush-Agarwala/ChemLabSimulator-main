@@ -1033,7 +1033,7 @@ function VirtualLabApp({
           ? "Titration with Indicator in Conical Flask"
           : "Neutralization in Conical Flask";
         reactionDescription = hasIndicator
-          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O��� endpoint indicator)`
+          ? `${limitingAmount.toFixed(1)}mL titration: HCl + NaOH → NaCl + H₂O (C₂��H₁₄O���� endpoint indicator)`
           : `${limitingAmount.toFixed(1)}mL reaction: HCl + NaOH → NaCl + H₂O`;
       }
 
@@ -1768,66 +1768,6 @@ function VirtualLabApp({
                 ) : null;
               })}
             </WorkBench>
-          </div>
-
-          {/* Chemical Reagents Section */}
-          <div className="border-t border-gray-200 bg-white p-4">
-            <div className="flex items-center mb-3">
-              <svg
-                className="w-4 h-4 mr-2 text-blue-600"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 0a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 0 1h-.5v.5a.5.5 0 0 1-1 0V2h-.5a.5.5 0 0 1 0-1h.5v-.5A.5.5 0 0 1 8 0z" />
-                <path d="M9 4H7a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z" />
-              </svg>
-              <h3 className="font-medium text-gray-900">Chemical Reagents</h3>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              {/* Sodium Hydroxide */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Sodium Hydroxide
-                  </div>
-                  <div className="text-xs text-gray-500">NaOH</div>
-                  <div className="text-xs text-blue-600 font-medium">0.1 M</div>
-                </div>
-              </div>
-
-              {/* Hydrochloric Acid */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-yellow-400 border-2 border-yellow-500 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Hydrochloric Acid
-                  </div>
-                  <div className="text-xs text-gray-500">HCl</div>
-                  <div className="text-xs text-blue-600 font-medium">0.1 M</div>
-                </div>
-              </div>
-
-              {/* Phenolphthalein */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-8 h-8 bg-pink-300 border-2 border-pink-400 rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-pink-300 rounded-full"></div>
-                </div>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">
-                    Phenolphthalein
-                  </div>
-                  <div className="text-xs text-gray-500">C₂₀H₁₄O₄</div>
-                  <div className="text-xs text-blue-600 font-medium">
-                    Indicator
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* pH Meter and Measurements Section */}
